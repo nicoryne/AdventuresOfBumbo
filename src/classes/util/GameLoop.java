@@ -4,15 +4,15 @@ import classes.ui.components.GamePanel;
 
 public class GameLoop {
 
-    private Thread frameThread;
-    private double FPS;
+    private final Thread frameThread;
+    private final double FPS;
     private final GamePanel gamePanel;
 
     public GameLoop(double fps, Thread frameThread, GamePanel gamePanel) {
         this.FPS = fps;
         this.frameThread = frameThread;
         this.gamePanel = gamePanel;
-    };
+    }
 
     public void startGameLoop() {
         double drawInterval = 1000000000 / FPS;
@@ -42,21 +42,5 @@ public class GameLoop {
                 timer = 0;
             }
         }
-    }
-
-    public Thread getGameThread() {
-        return frameThread;
-    }
-
-    public void setGameThread(Thread frameThread) {
-        this.frameThread = frameThread;
-    }
-
-    public double getFps() {
-        return FPS;
-    }
-
-    public void setFps(double fps) {
-        this.FPS = fps;
     }
 }

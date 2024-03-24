@@ -10,7 +10,6 @@ public class Main {
 
     private static final String WINDOW_TITLE = "Adventures of Bumbo"; // Title of the game window
 
-
     public static void main(String[] args) {
         Main main = new Main();
         main.setupGameWindow();

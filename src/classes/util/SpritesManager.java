@@ -1,12 +1,10 @@
-package classes.util.handlers;
+package classes.util;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class SpriteHandler {
+public class SpritesManager {
 
     private final ArrayList<BufferedImage> spriteList;
     private int currentSpriteIndex;
@@ -14,12 +12,20 @@ public class SpriteHandler {
     private int frameCounter;
     private final int spritesAvailablePerDirection;
 
-    public SpriteHandler(String folderName, int spriteChangeOnFrame, int spritesAvailablePerDirection) {
+    public SpritesManager(String folderName, int spriteChangeOnFrame, int spritesAvailablePerDirection) {
         this.spriteList = loadSpritesFromFolder(folderName);
         this.spriteChangeOnFrame = spriteChangeOnFrame;
         this.currentSpriteIndex = 0;
         this.frameCounter = 0;
         this.spritesAvailablePerDirection = spritesAvailablePerDirection;
+    }
+
+    public void updateSprite() {
+        frameCounter++;
+        if (frameCounter > spriteChangeOnFrame) {
+            currentSpriteIndex = (currentSpriteIndex + 1) % spritesAvailablePerDirection;
+            frameCounter = 0;
+        }
     }
 
     public BufferedImage getCurrentSprite(String direction) {
@@ -37,38 +43,17 @@ public class SpriteHandler {
         };
     }
 
-    public void updateSprite() {
-        frameCounter++;
-        if (frameCounter > spriteChangeOnFrame) {
-            currentSpriteIndex = (currentSpriteIndex + 1) % spritesAvailablePerDirection;
-            frameCounter = 0;
-        }
-    }
-
     private ArrayList<BufferedImage> loadSpritesFromFolder(String folderName) {
         ArrayList<BufferedImage> sprites = new ArrayList<>();
-        String spritesFolderPath = "src" + File.separator + "res" + File.separator + "sprites" + File.separator + folderName + File.separator;
-        File dir = new File(spritesFolderPath);
-
-        File[] directoryListing = dir.listFiles();
+        String filePath = "sprites" + File.separator + folderName;
+        File[] directoryListing = ImageHandler.getListingsFromRes(filePath);
 
         if (directoryListing != null) {
             for (File child : directoryListing) {
-                if (child.isFile() && isImageFile(child)) {
-                    try {
-                        sprites.add(ImageIO.read(child));
-                    } catch (IOException e) {
-                        throw new RuntimeException("Error loading image from file: " + child.getAbsolutePath(), e);
-                    }
-                }
+                sprites.add(ImageHandler.getBufferedImage(child));
             }
         }
 
         return sprites;
-    }
-
-    private boolean isImageFile(File file) {
-        String name = file.getName().toLowerCase();
-        return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif") || name.endsWith(".bmp");
     }
 }

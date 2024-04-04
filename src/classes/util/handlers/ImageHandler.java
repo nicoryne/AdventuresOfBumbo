@@ -1,4 +1,4 @@
-package classes.util;
+package classes.util.handlers;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

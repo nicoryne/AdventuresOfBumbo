@@ -44,6 +44,7 @@ public class Main {
      */
     private GamePanel createGamePanel() {
         GamePanel gamePanel = new GamePanel();
+        gamePanel.setupGame();
         gamePanel.startGameThread();
         return gamePanel;
     }

@@ -1,4 +1,4 @@
-package classes.util;
+package classes.util.handlers;
 
 import java.io.*;
 import java.util.Objects;
@@ -11,7 +11,7 @@ public abstract class MapHandler {
 
         try {
             BufferedReader br = openMapFile(mapFilePath);
-            int col = 0;
+            int col;
             int row = 0;
 
             while (row < maxRow) {
@@ -28,6 +28,7 @@ public abstract class MapHandler {
                         mapTile2DArray[col][row] = 0; // Set default value if there are fewer numbers on this line
                     }
                 }
+
                 row++;
             }
 

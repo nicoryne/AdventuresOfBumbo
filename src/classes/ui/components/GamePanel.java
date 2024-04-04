@@ -1,12 +1,19 @@
 package classes.ui.components;
 
+import classes.entities.ObjectPlacer;
 import classes.entities.Player;
-import classes.ui.tile.TileManager;
+import classes.entities.item.ItemObject;
+import classes.entities.projectile.ProjectilePrototype;
+import classes.entities.tile.TileManager;
+import classes.util.CollisionChecker;
 import classes.util.GameLoop;
-import classes.util.KeyboardController;
+import classes.util.RenderHelper;
+import classes.util.controllers.KeyboardController;
+import classes.util.controllers.MouseController;
 
 import javax.swing.JPanel;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * The GamePanel class represents a JPanel used for displaying a game screen.
@@ -26,8 +33,13 @@ public class GamePanel extends JPanel implements Runnable {
     private static final int WORLD_WIDTH = ORIGINAL_TILE_SIZE * MAX_WORLD_COL;
     private static final int WORLD_LENGTH = ORIGINAL_TILE_SIZE * MAX_WORLD_ROW;
     private final KeyboardController keyboardController = new KeyboardController();
+    private final MouseController mouseController = new MouseController();
     private GameLoop gameLoop;
-    private final Player player = new Player(this, keyboardController);
+    private final CollisionChecker collisionChecker = new CollisionChecker(this);
+    private final RenderHelper renderChecker = new RenderHelper(this);
+    private final ArrayList<ItemObject> itemObjectArrayList = new ArrayList<>();
+    private final ObjectPlacer objectPlacer = new ObjectPlacer(this);
+    private final Player player = new Player(this, keyboardController, mouseController);
     private final TileManager tileManager = new TileManager(this);
 
     public GamePanel() {
@@ -35,7 +47,13 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(Color.black); // Sets background color to black
         this.setDoubleBuffered(true); // Enables double buffering for smoother graphics
         this.addKeyListener(keyboardController);
+        this.addMouseListener(mouseController);
+        this.addMouseMotionListener(mouseController);
         this.setFocusable(true);
+    }
+
+    public void setupGame() {
+        objectPlacer.setObject();
     }
 
     public void startGameThread() {
@@ -56,8 +74,21 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        tileManager.draw(g2);
-        player.draw(g2);
+        tileManager.render(g2);
+
+        for(ItemObject itemObject : itemObjectArrayList) {
+            if(itemObject != null) {
+                itemObject.render(g2);
+            }
+        }
+
+        for(ProjectilePrototype projectile: player.getProjectiles()) {
+            if(projectile != null && projectile.isAlive()) {
+                projectile.render(g2);
+            }
+        }
+
+        player.render(g2);
         g2.dispose();
     }
 
@@ -93,21 +124,35 @@ public class GamePanel extends JPanel implements Runnable {
         return player;
     }
 
-    public int getPlayerViewableMaxX() {
+    public double getPlayerViewableMaxX() {
         return getPlayer().getWorldPositionX() + getPlayer().getScreenPositionX();
     }
 
-    public int getPlayerViewableMaxY() {
+    public double getPlayerViewableMaxY() {
         return getPlayer().getWorldPositionY() + getPlayer().getScreenPositionY();
     }
 
-    public int getPlayerViewableMinX() {
+    public double getPlayerViewableMinX() {
         return getPlayer().getWorldPositionX() - getPlayer().getScreenPositionX();
     }
 
-    public int getPlayerViewableMinY() {
+    public double getPlayerViewableMinY() {
         return getPlayer().getWorldPositionY() - getPlayer().getScreenPositionY();
     }
 
+    public CollisionChecker getCollisionChecker() {
+        return collisionChecker;
+    }
 
+    public RenderHelper getRenderHelper() {
+        return renderChecker;
+    }
+
+    public TileManager getTileManager() {
+        return tileManager;
+    }
+
+    public ArrayList<ItemObject> getItemObjectArrayList() {
+        return itemObjectArrayList;
+    }
 }

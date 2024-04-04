@@ -1,5 +1,7 @@
 package classes.util;
 
+import classes.util.handlers.ImageHandler;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -23,7 +25,13 @@ public class SpritesManager {
     public void updateSprite() {
         frameCounter++;
         if (frameCounter > spriteChangeOnFrame) {
-            currentSpriteIndex = (currentSpriteIndex + 1) % spritesAvailablePerDirection;
+
+            if(spritesAvailablePerDirection != 0) {
+                currentSpriteIndex = (currentSpriteIndex + 1) % spritesAvailablePerDirection;
+            } else {
+                currentSpriteIndex = (currentSpriteIndex + 1);
+            }
+
             frameCounter = 0;
         }
     }
@@ -33,14 +41,23 @@ public class SpritesManager {
         return spriteList.get(index);
     }
 
+    public BufferedImage getCurrentSprite() {
+        int index = getCurrentSpriteIndex();
+        return spriteList.get(index);
+    }
+
     private int getCurrentSpriteIndex(String direction) {
         return switch (direction) {
             case "SOUTH" -> currentSpriteIndex;
-            case "EAST" -> currentSpriteIndex + 3;
-            case "WEST" -> currentSpriteIndex + 6;
-            case "NORTH" -> currentSpriteIndex + 9;
+            case "EAST" -> currentSpriteIndex + spritesAvailablePerDirection;
+            case "WEST" -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
+            case "NORTH" -> currentSpriteIndex + (spritesAvailablePerDirection * 3);
             default -> throw new IllegalStateException("Unexpected value: " + direction);
         };
+    }
+
+    private int getCurrentSpriteIndex() {
+        return this.currentSpriteIndex;
     }
 
     private ArrayList<BufferedImage> loadSpritesFromFolder(String folderName) {

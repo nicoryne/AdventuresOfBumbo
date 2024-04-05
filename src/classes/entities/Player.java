@@ -7,6 +7,7 @@ import classes.util.CollisionChecker;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
 import classes.util.SpritesManager;
+import classes.util.handlers.SoundHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -34,7 +35,8 @@ public class Player extends MovingEntityObject implements RenderableEntity {
         this.spritesManager = new SpritesManager(
                 "player",
                 10,
-                3);
+                3,
+                TILE_SIZE);
         this.projectilePrototype = new PlayerProjectile(gamePanel, 0,0, 0);
 
         setScreenPositionX(gamePanel.getScreenWidth() / 2.0 - (TILE_SIZE / 2.0));
@@ -153,6 +155,7 @@ public class Player extends MovingEntityObject implements RenderableEntity {
             newPlayerProjectile.setClone(getAngle(), screenX, screenY, getWorldPositionX(), getWorldPositionY(), getCurrentDirection());
             projectiles.add(newPlayerProjectile);
 
+            SoundHandler.playAudio("shoot-1", 0, 1);
             shootCooldown = 0;
         }
     }

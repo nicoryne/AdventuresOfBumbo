@@ -28,9 +28,8 @@ public class RenderHelper {
     public void renderOnScreen(double worldPositionX, double worldPositionY, BufferedImage image, Graphics2D g) {
         int screenX = (int) calculateScreenX(worldPositionX);
         int screenY = (int) calculateScreenY(worldPositionY);
-        int tileSize = gamePanel.getTileSize();
 
-        g.drawImage(image, screenX, screenY, tileSize, tileSize, null);
+        g.drawImage(image, screenX, screenY, null);
     }
 
     private double calculateScreenX(double worldX) {

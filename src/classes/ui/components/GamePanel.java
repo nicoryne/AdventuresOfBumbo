@@ -8,9 +8,12 @@ import classes.entities.tile.TileManager;
 import classes.util.CollisionChecker;
 import classes.util.GameLoop;
 import classes.util.RenderHelper;
+import classes.util.SoundManager;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
+import classes.util.handlers.SoundHandler;
 
+import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.*;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final ObjectPlacer objectPlacer = new ObjectPlacer(this);
     private final Player player = new Player(this, keyboardController, mouseController);
     private final TileManager tileManager = new TileManager(this);
+    private final SoundManager soundManager = SoundManager.getInstance();
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(getScreenWidth(), getScreenHeight())); // Sets preferred size
@@ -58,12 +62,15 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void startGameThread() {
         Thread gameThread = new Thread(this); // Create a new thread with this GamePanel as the target
-        gameLoop = new GameLoop(FPS, gameThread, this);
+        gameLoop = GameLoop.getInstance();
+        gameLoop.setupGameLoop(FPS, gameThread, this);
         gameThread.start(); // Start the thread, which will execute the run() method
     }
 
     @Override
     public void run() {
+        soundManager.setupAudioLibrary();
+        SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.3f);
         gameLoop.startGameLoop();
     }
 
@@ -74,6 +81,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+        double drawStart = 0;
+        drawStart = System.nanoTime();
         tileManager.render(g2);
 
         for(ItemObject itemObject : itemObjectArrayList) {
@@ -89,6 +99,13 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.render(g2);
+
+        double drawEnd = System.nanoTime();
+        double passed = (drawEnd - drawStart);
+
+        g2.setColor(Color.white);
+        g2.drawString("Draw time: " + passed, 10, 400);
+
         g2.dispose();
     }
 

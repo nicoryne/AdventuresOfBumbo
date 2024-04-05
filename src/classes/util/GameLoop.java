@@ -6,9 +6,20 @@ public class GameLoop {
 
     private Thread frameThread;
     private double FPS;
-    private final GamePanel gamePanel;
+    private GamePanel gamePanel;
+    private static GameLoop gameLoopInstance;
 
-    public GameLoop(double fps, Thread frameThread, GamePanel gamePanel) {
+    private GameLoop() {}
+
+    public static GameLoop getInstance() {
+        if(gameLoopInstance == null) {
+            gameLoopInstance = new GameLoop();
+        }
+
+        return gameLoopInstance;
+    }
+
+    public void setupGameLoop(double fps, Thread frameThread, GamePanel gamePanel) {
         this.FPS = fps;
         this.frameThread = frameThread;
         this.gamePanel = gamePanel;

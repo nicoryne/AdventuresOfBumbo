@@ -38,8 +38,15 @@ public class TileManager {
         if (directoryListing != null) {
             for (File child : directoryListing) {
                 BufferedImage tileImage = ImageHandler.getBufferedImage(child);
+                assert tileImage != null;
+
+                BufferedImage scaledImage = new BufferedImage(TILE_SIZE, TILE_SIZE, tileImage.getType());
+                Graphics2D g = scaledImage.createGraphics();
+                g.drawImage(tileImage, 0, 0, TILE_SIZE, TILE_SIZE, null);
+                g.dispose();
+
                 boolean isCollidable = checkIfCollidable(retrieveTileName(String.valueOf(child)));
-                tiles.add(new Tile(tileImage, isCollidable));
+                tiles.add(new Tile(scaledImage, isCollidable));
                 System.out.println(child.getPath() + " (Collidable: " + isCollidable + ")");
             }
         }

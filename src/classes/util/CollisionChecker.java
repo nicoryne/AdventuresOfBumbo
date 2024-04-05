@@ -50,7 +50,6 @@ public class CollisionChecker {
                 return;
         }
 
-        System.out.println(entityTopRow);
         if (isCollidable(firstTile) || isCollidable(secondTitle)) {
             entity.setCollision(true);
         }

@@ -23,7 +23,8 @@ public class ProjectilePrototype extends MovingEntityObject implements Cloneable
         this.spritesManager = new SpritesManager(
                 "projectiles/test",
                 10,
-                0);
+                0,
+                gamePanel.getTileSize());
         this.collisionChecker = gamePanel.getCollisionChecker();
         setEntitySpeed(5);
         setScreenPositionX(screenPositionX);

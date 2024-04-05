@@ -1,18 +1,22 @@
-package classes.util;
+package classes.util.managers;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SoundManager {
 
     private static SoundManager soundManagerInstance;
-    private HashMap<String, Clip> audioLibrary;
-    private SoundManager() {}
+    private final Map<String, Clip> audioLibrary;
+    private SoundManager() {
+        audioLibrary = new ConcurrentHashMap<>();
+        setupAudioLibrary();
+    }
 
-    public static SoundManager getInstance() {
+    public static synchronized SoundManager getInstance() {
         if(soundManagerInstance == null) {
             soundManagerInstance = new SoundManager();
         }
@@ -21,10 +25,9 @@ public class SoundManager {
     }
 
 
-    public void setupAudioLibrary() {
+    public synchronized void setupAudioLibrary() {
         String filePath = "src" + File.separator + "res" + File.separator + "audio" + File.separator;
         File directory = new File(filePath);
-        audioLibrary = new HashMap<>();
 
         try {
             searchForAudioFiles(directory);
@@ -34,11 +37,11 @@ public class SoundManager {
 
     }
 
-    public HashMap<String, Clip> getAudioLibrary() {
+    public synchronized Map<String, Clip> getAudioLibrary() {
         return audioLibrary;
     }
 
-    private void searchForAudioFiles(File directory) throws LineUnavailableException, IOException {
+    private synchronized void searchForAudioFiles(File directory) throws LineUnavailableException, IOException {
         File[] files = directory.listFiles();
 
         assert files != null;
@@ -58,6 +61,9 @@ public class SoundManager {
                     }
                     audioLibrary.put(fileName, clip);
                     System.out.println("LOADED AUDIO: {" + fileName + ", " + audioFile);
+
+                    assert audioFile != null;
+                    audioFile.close();
                 }
             }
         }

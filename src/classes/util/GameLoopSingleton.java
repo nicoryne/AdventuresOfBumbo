@@ -1,22 +1,22 @@
 package classes.util;
 
-import classes.ui.components.GamePanel;
+import classes.ui.GamePanel;
 
-public class GameLoop {
+public class GameLoopSingleton {
 
     private Thread frameThread;
     private double FPS;
     private GamePanel gamePanel;
-    private static GameLoop gameLoopInstance;
+    private static GameLoopSingleton gameLoopSingletonInstance;
 
-    private GameLoop() {}
+    private GameLoopSingleton() {}
 
-    public static GameLoop getInstance() {
-        if(gameLoopInstance == null) {
-            gameLoopInstance = new GameLoop();
+    public static GameLoopSingleton getInstance() {
+        if(gameLoopSingletonInstance == null) {
+            gameLoopSingletonInstance = new GameLoopSingleton();
         }
 
-        return gameLoopInstance;
+        return gameLoopSingletonInstance;
     }
 
     public void setupGameLoop(double fps, Thread frameThread, GamePanel gamePanel) {
@@ -63,11 +63,4 @@ public class GameLoop {
         this.frameThread = frameThread;
     }
 
-    public double getFps() {
-        return FPS;
-    }
-
-    public void setFps(double fps) {
-        this.FPS = fps;
-    }
 }

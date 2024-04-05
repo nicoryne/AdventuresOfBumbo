@@ -1,5 +1,6 @@
-package classes.util;
+package classes.util.managers;
 
+import classes.Game;
 import classes.entities.tile.Tile;
 import classes.util.handlers.ImageHandler;
 
@@ -17,8 +18,8 @@ public class SpritesManager {
     private final int spritesAvailablePerDirection;
     private static int TILE_SIZE;
 
-    public SpritesManager(String folderName, int spriteChangeOnFrame, int spritesAvailablePerDirection, int tileSize) {
-        TILE_SIZE = tileSize;
+    public SpritesManager(String folderName, int spriteChangeOnFrame, int spritesAvailablePerDirection) {
+        TILE_SIZE = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         this.spriteList = loadSpritesFromFolder(folderName);
         this.spriteChangeOnFrame = spriteChangeOnFrame;
         this.currentSpriteIndex = 0;
@@ -74,12 +75,8 @@ public class SpritesManager {
                 BufferedImage spriteImage = ImageHandler.getBufferedImage(child);
                 assert spriteImage != null;
 
-                BufferedImage scaledImage = new BufferedImage(TILE_SIZE, TILE_SIZE, spriteImage.getType());
-                Graphics2D g = scaledImage.createGraphics();
-                g.drawImage(spriteImage, 0, 0, TILE_SIZE, TILE_SIZE, null);
-                g.dispose();
-
-                sprites.add(spriteImage);
+                BufferedImage scaledImage = ImageHandler.scaleImageToTileSize(spriteImage);
+                sprites.add(scaledImage);
             }
         }
 

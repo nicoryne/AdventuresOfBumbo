@@ -1,4 +1,5 @@
-import classes.ui.components.GamePanel;
+import classes.exceptions.GameInitializationException;
+import classes.ui.GamePanel;
 
 import javax.swing.JFrame;
 
@@ -10,7 +11,7 @@ public class Main {
 
     private static final String WINDOW_TITLE = "Bumbo Hell"; // Title of the game window
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws GameInitializationException {
         Main main = new Main();
         main.setupGameWindow();
     }
@@ -18,7 +19,7 @@ public class Main {
     /**
      * Sets up the game window by creating a JFrame and adding the game panel to it.
      */
-    private void setupGameWindow() {
+    private void setupGameWindow() throws GameInitializationException {
         JFrame window = createGameWindow();
         window.add(createGamePanel());
         displayGameWindow(window);
@@ -42,7 +43,7 @@ public class Main {
      *
      * @return The created game panel.
      */
-    private GamePanel createGamePanel() {
+    private GamePanel createGamePanel() throws GameInitializationException {
         GamePanel gamePanel = new GamePanel();
         gamePanel.setupGame();
         gamePanel.startGameThread();

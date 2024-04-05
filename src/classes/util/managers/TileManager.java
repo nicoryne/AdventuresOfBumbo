@@ -1,8 +1,12 @@
-package classes.entities.tile;
+package classes.util.managers;
 
-import classes.ui.components.GamePanel;
+import classes.Game;
+import classes.entities.tile.CollidableTiles;
+import classes.entities.tile.Tile;
+import classes.ui.GamePanel;
 import classes.util.handlers.ImageHandler;
 import classes.util.handlers.MapHandler;
+import classes.util.handlers.RenderHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,16 +19,14 @@ public class TileManager {
 
     private final ArrayList<Tile> tileArrayList;
     private final int[][] mapTile2DArray;
-    private final GamePanel gamePanel;
     private static int MAX_WORLD_COL;
     private static int MAX_WORLD_ROW;
     private static int TILE_SIZE;
 
-    public TileManager(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
-        MAX_WORLD_COL = gamePanel.getMaxWorldCol();
-        MAX_WORLD_ROW = gamePanel.getMaxWorldRow();
-        TILE_SIZE = gamePanel.getTileSize();
+    public TileManager() {
+        MAX_WORLD_COL = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_COL"));
+        MAX_WORLD_ROW = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_ROW"));
+        TILE_SIZE = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         this.tileArrayList = loadTilesFromFolder();
         this.mapTile2DArray = MapHandler.loadMap("world01.txt", MAX_WORLD_COL, MAX_WORLD_ROW);
     }
@@ -40,10 +42,7 @@ public class TileManager {
                 BufferedImage tileImage = ImageHandler.getBufferedImage(child);
                 assert tileImage != null;
 
-                BufferedImage scaledImage = new BufferedImage(TILE_SIZE, TILE_SIZE, tileImage.getType());
-                Graphics2D g = scaledImage.createGraphics();
-                g.drawImage(tileImage, 0, 0, TILE_SIZE, TILE_SIZE, null);
-                g.dispose();
+                BufferedImage scaledImage = ImageHandler.scaleImageToTileSize(tileImage);
 
                 boolean isCollidable = checkIfCollidable(retrieveTileName(String.valueOf(child)));
                 tiles.add(new Tile(scaledImage, isCollidable));
@@ -76,10 +75,10 @@ public class TileManager {
         return false;
     }
 
-    public void render(Graphics2D g) {
+    public void render(Graphics2D g2) {
         for (int worldRow = 0; worldRow < MAX_WORLD_ROW; worldRow++) {
             for (int worldCol = 0; worldCol < MAX_WORLD_COL; worldCol++) {
-                drawTile(g, worldCol, worldRow);
+                drawTile(g2, worldCol, worldRow);
             }
         }
     }
@@ -89,15 +88,12 @@ public class TileManager {
         int worldX = worldCol * TILE_SIZE;
         int worldY = worldRow * TILE_SIZE;
 
-        if (gamePanel.getRenderHelper().isViewableOnScreen(worldX, worldY)) {
+        if (RenderHandler.isViewableOnScreen(worldX, worldY)) {
             BufferedImage image = tileArrayList.get(tileNum).getImage();
-            gamePanel.getRenderHelper().renderOnScreen(worldX, worldY, image, g);
+            RenderHandler.renderOnScreen(worldX, worldY, image, g);
         }
     }
 
-    public GamePanel getGamePanel() {
-        return gamePanel;
-    }
 
     public int[][] getMapTile2DArray() {
         return mapTile2DArray;

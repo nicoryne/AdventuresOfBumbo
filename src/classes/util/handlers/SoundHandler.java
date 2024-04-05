@@ -1,18 +1,26 @@
 package classes.util.handlers;
 
-import classes.util.SoundManager;
+import classes.util.managers.SoundManager;
 
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
 
 public abstract class SoundHandler {
 
     public static void playAudio(String fileName, int loopCount, float volume) {
         Clip clip = getClip(fileName);
 
-        clip.loop(loopCount);
+        clip.addLineListener(e -> {
+            if (e.getType() == LineEvent.Type.STOP) {
+                // This is to ensure the clip rewinds properly once finished
+                clip.setMicrosecondPosition(0);
+            }
+        });
+
         setVolume(volume, clip);
         clip.start();
+        clip.loop(loopCount);
     }
 
     public static void stopAudio(String fileName) {
@@ -30,7 +38,6 @@ public abstract class SoundHandler {
 
     private static Clip getClip(String fileName) {
         SoundManager soundManager = SoundManager.getInstance();
-        System.out.println(fileName);
         return soundManager.getAudioLibrary().get(fileName);
     }
 

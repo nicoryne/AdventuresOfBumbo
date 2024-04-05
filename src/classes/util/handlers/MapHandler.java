@@ -16,9 +16,11 @@ public abstract class MapHandler {
 
             while (row < maxRow) {
                 String line = br.readLine();
+
                 if (line == null) {
                     break; // Reached end of file
                 }
+
                 String[] numbers = line.split(" ");
                 for (col = 0; col < maxCol; col++) {
                     if (col < numbers.length) {

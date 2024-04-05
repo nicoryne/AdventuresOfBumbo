@@ -1,78 +1,64 @@
 package classes.entities;
 
+import classes.entities.components.MovementComponent;
+import classes.entities.components.PositionComponent;
+import classes.entities.components.RenderComponent;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.UUID;
 
-public abstract class EntityObject implements RenderableEntity {
+public abstract class EntityObject implements Entity {
 
-    private final UUID UNIQUE_ENTITY_ID = UUID.randomUUID();
-    private BufferedImage entityImage;
-    private double worldPositionX;
-    private double worldPositionY;
-    private double screenPositionX;
-    private double screenPositionY;
-    private Rectangle solidArea;
-    private boolean isCollisionOn;
+    private PositionComponent<Number> positionComponent;
+
+    private RenderComponent renderComponent;
+
+    private MovementComponent movementComponent;
 
 
-    public void setWorldPositionX(double xCoordinate) {
-        this.worldPositionX = xCoordinate;
+    @Override
+    public void update() {}
+
+    @Override
+    public void render(Graphics2D g2) {
+        BufferedImage sprite = getRenderComponent().getSprite();
+
+        int screenPositionX = getPositionComponent().getScreenPositionX().intValue();
+        int screenPositionY = getPositionComponent().getScreenPositionY().intValue();
+
+
+        g2.drawImage(sprite, screenPositionX, screenPositionY, null);
     }
 
-    public double getWorldPositionX() {
-        return this.worldPositionX;
+    @Override
+    public void kill() {
+        getRenderComponent().setAlive(false);
     }
 
-    public void setWorldPositionY(double yCoordinate) {
-        this.worldPositionY = yCoordinate;
+    @Override
+    public void spawn(double x, double y) {
+        getPositionComponent().setWorldPositionX(x);
+        getPositionComponent().setWorldPositionY(y);
     }
 
-    public double getWorldPositionY() {
-        return this.worldPositionY;
+    public PositionComponent<Number> getPositionComponent() {
+        if(positionComponent == null) {
+            positionComponent = new PositionComponent<Number>();
+        }
+        return positionComponent;
     }
 
-    public double getScreenPositionX() {
-        return screenPositionX;
+    public RenderComponent getRenderComponent() {
+        if(renderComponent == null) {
+            renderComponent = new RenderComponent();
+        }
+        return renderComponent;
     }
 
-    public void setScreenPositionX(double screenPositionX) {
-        this.screenPositionX = screenPositionX;
-    }
-
-    public double getScreenPositionY() {
-        return screenPositionY;
-    }
-
-    public void setScreenPositionY(double screenPositionY) {
-        this.screenPositionY = screenPositionY;
-    }
-
-    public UUID getUniqueEntityId() {
-        return this.UNIQUE_ENTITY_ID;
-    }
-
-    public Rectangle getSolidArea() {
-        return this.solidArea;
-    }
-
-    public void setSolidArea(Rectangle solidArea) {
-        this.solidArea = solidArea;
-    }
-
-    public boolean isCollisionOn() {
-        return isCollisionOn;
-    }
-
-    public void setCollision(boolean collisionOn) {
-        isCollisionOn = collisionOn;
-    }
-
-    public BufferedImage getEntityImage() {
-        return entityImage;
-    }
-
-    public void setEntityImage(BufferedImage entityImage) {
-        this.entityImage = entityImage;
+    public MovementComponent getMovementComponent() {
+        if(movementComponent == null) {
+            movementComponent = new MovementComponent();
+        }
+        return movementComponent;
     }
 }

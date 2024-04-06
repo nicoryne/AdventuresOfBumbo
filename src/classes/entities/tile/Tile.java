@@ -1,40 +1,26 @@
 package classes.entities.tile;
 
+import classes.entities.EntityObject;
+import classes.entities.EntityType;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Tile {
-    private final BufferedImage image;
-    private boolean isCollidable;
-    private Rectangle solidArea;
+public class Tile extends EntityObject {
+    private final boolean isCollidable;
 
     public Tile(BufferedImage image, boolean isCollidable) {
-        this.image = image;
+        this.setEntityType(EntityType.TILE);
+        this.getRenderComponent().setSprite(image);
         this.isCollidable = isCollidable;
 
         if(isCollidable) {
-            setSolidArea(new Rectangle(16, 16));
+            this.getRenderComponent().setHitbox(new Rectangle(16, 16));
         }
     }
 
-    public BufferedImage getImage() {
-        return image;
-    }
 
     public boolean isCollidable() {
         return isCollidable;
     }
-
-    public void toggleCollidable() {
-        isCollidable = !isCollidable();
-    }
-
-    public Rectangle getSolidArea() {
-        return this.solidArea;
-    }
-
-    public void setSolidArea(Rectangle solidArea) {
-        this.solidArea = solidArea;
-    }
-
 }

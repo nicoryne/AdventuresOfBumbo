@@ -1,6 +1,6 @@
 package classes.entities.projectile;
 import classes.Game;
-import classes.entities.CloneableEntity;
+import classes.entities.util.CloneableEntity;
 import classes.entities.EntityObject;
 import classes.util.handlers.CollisionHandler;
 import classes.util.managers.SpritesManager;
@@ -18,7 +18,7 @@ public class ProjectilePrototype extends EntityObject implements CloneableEntity
         super();
         this.spritesManager = new SpritesManager("projectiles/test", 10, 0);
         getRenderComponent().setAlive(true);
-        getMovementComponent().setSpeed(5);
+        getMovementComponent().setSpeed(9);
         getPositionComponent().setScreenPositionX(screenPositionX);
         getPositionComponent().setScreenPositionY(screenPositionY);
         getMovementComponent().setAngle(angle);

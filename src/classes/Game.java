@@ -1,14 +1,16 @@
 package classes;
 
+import classes.entities.player.PlayerBuilder;
+import classes.entities.player.PlayerDirector;
 import classes.entities.EntityObject;
-import classes.entities.Player;
-import classes.entities.projectile.PlayerProjectile;
+import classes.entities.player.Player;
 import classes.entities.projectile.ProjectilePrototype;
 import classes.exceptions.GameInitializationException;
 import classes.util.controllers.ControllerComponents;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
 import classes.util.managers.GameManagerComponents;
+import classes.util.managers.SpritesManager;
 import classes.util.managers.TileManager;
 
 import java.awt.*;
@@ -54,9 +56,11 @@ public class Game {
 
         this.entities = new ArrayList<>();
         this.controllerComponents = new ControllerComponents(new KeyboardController(), new MouseController());
-        this.player = new Player(controllerComponents.getKeyboardController(), controllerComponents.getMouseController());
+        setupPlayer();
         this.gameManagerComponents = new GameManagerComponents(new TileManager());
     }
+
+
 
     public void setProperty(String key, String value) {
         gameProperties.setProperty(key, value);
@@ -64,6 +68,19 @@ public class Game {
 
     public String getProperty(String key) {
         return gameProperties.getProperty(key);
+    }
+
+    private void setupPlayer() {
+        PlayerBuilder playerBuilder = new PlayerBuilder();
+        PlayerDirector playerDirector = new PlayerDirector();
+        KeyboardController keyboardController = controllerComponents.getKeyboardController();
+        MouseController mouseController = getControllerComponents().getMouseController();
+        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
+
+        playerDirector.constructPlayer(playerBuilder, keyboardController, mouseController);
+
+        this.player = playerBuilder.build();
+        this.player.spawn(tileSize * 23, tileSize * 24);
     }
 
     private void loadPropertiesFile() throws IOException {

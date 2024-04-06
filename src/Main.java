@@ -45,7 +45,6 @@ public class Main {
      */
     private GamePanel createGamePanel() throws GameInitializationException {
         GamePanel gamePanel = new GamePanel();
-        gamePanel.setupGame();
         gamePanel.startGameThread();
         return gamePanel;
     }

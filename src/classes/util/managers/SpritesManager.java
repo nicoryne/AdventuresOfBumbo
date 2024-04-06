@@ -16,10 +16,8 @@ public class SpritesManager {
     private final int spriteChangeOnFrame;
     private int frameCounter;
     private final int spritesAvailablePerDirection;
-    private static int TILE_SIZE;
 
     public SpritesManager(String folderName, int spriteChangeOnFrame, int spritesAvailablePerDirection) {
-        TILE_SIZE = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         this.spriteList = loadSpritesFromFolder(folderName);
         this.spriteChangeOnFrame = spriteChangeOnFrame;
         this.currentSpriteIndex = 0;

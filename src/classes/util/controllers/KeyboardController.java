@@ -10,7 +10,7 @@ public class KeyboardController implements KeyListener {
     }
 
     private enum Action {
-        SHOOT
+        ATTACK
     }
 
     private final boolean[] keyDirectionStates = new boolean[4]; // Array to store key states for each direction
@@ -45,7 +45,7 @@ public class KeyboardController implements KeyListener {
                 keyDirectionStates[Direction.RIGHT.ordinal()] = state;
                 break;
             case KeyEvent.VK_F:
-                keyActionStates[Action.SHOOT.ordinal()] = state;
+                keyActionStates[Action.ATTACK.ordinal()] = state;
                 break;
         }
     }
@@ -66,7 +66,7 @@ public class KeyboardController implements KeyListener {
         return keyDirectionStates[Direction.RIGHT.ordinal()];
     }
 
-    public boolean isShooting() {
-        return keyActionStates[Action.SHOOT.ordinal()];
+    public boolean isAttacking() {
+        return keyActionStates[Action.ATTACK.ordinal()];
     }
 }

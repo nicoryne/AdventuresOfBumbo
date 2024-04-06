@@ -31,10 +31,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
     }
 
-    public void setupGame() {
-
-    }
-
     public void startGameThread() {
         Thread gameThread = new Thread(this); // Create a new thread with this GamePanel as the target
         gameLoopSingleton = GameLoopSingleton.getInstance();

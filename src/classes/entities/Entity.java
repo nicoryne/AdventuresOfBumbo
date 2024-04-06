@@ -12,5 +12,4 @@ public interface Entity {
 
     void spawn(double x, double y);
 
-
 }

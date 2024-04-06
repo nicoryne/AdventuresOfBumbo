@@ -15,6 +15,8 @@ public abstract class EntityObject implements Entity {
 
     private MovementComponent movementComponent;
 
+    private EntityType entityType;
+
 
     @Override
     public void update() {}
@@ -41,9 +43,17 @@ public abstract class EntityObject implements Entity {
         getPositionComponent().setWorldPositionY(y);
     }
 
+    public EntityType getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(EntityType entityType) {
+        this.entityType = entityType;
+    }
+
     public PositionComponent<Number> getPositionComponent() {
         if(positionComponent == null) {
-            positionComponent = new PositionComponent<Number>();
+            positionComponent = new PositionComponent<>();
         }
         return positionComponent;
     }

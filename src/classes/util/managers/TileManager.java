@@ -89,7 +89,7 @@ public class TileManager {
         int worldY = worldRow * TILE_SIZE;
 
         if (RenderHandler.isViewableOnScreen(worldX, worldY)) {
-            BufferedImage image = tileArrayList.get(tileNum).getImage();
+            BufferedImage image = tileArrayList.get(tileNum).getRenderComponent().getSprite();
             RenderHandler.renderOnScreen(worldX, worldY, image, g);
         }
     }

@@ -1,9 +1,11 @@
-package classes.entities;
+package classes.entities.player;
 
-import classes.Game;
+import classes.entities.EntityObject;
 import classes.entities.projectile.PlayerProjectile;
 import classes.entities.projectile.ProjectilePrototype;
-import classes.ui.GamePanel;
+import classes.entities.util.ControllableEntity;
+import classes.entities.util.RangedEntity;
+import classes.entities.util.SpriteFilledEntity;
 import classes.util.handlers.CollisionHandler;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
@@ -13,40 +15,20 @@ import classes.util.handlers.SoundHandler;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
-public class Player extends EntityObject {
+public class Player extends EntityObject implements SpriteFilledEntity, ControllableEntity, RangedEntity {
 
     private static int reloadCooldown = 0;
-    private static int reloadTime = 20;
-    private static int TILE_SIZE;
-    private final KeyboardController keyboardController;
-    private final MouseController mouseController;
-    private final SpritesManager spritesManager;
-    private final ArrayList<ProjectilePrototype> projectiles = new ArrayList<>();
+    private static int reloadTime = 10;
+    private KeyboardController keyboardController;
+    private MouseController mouseController;
+    private SpritesManager spritesManager;
+    private ArrayList<ProjectilePrototype> projectiles;
     private final ProjectilePrototype projectilePrototype;
 
-    public Player(KeyboardController keyboardController, MouseController mouseController) {
-        TILE_SIZE = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
-        this.mouseController = mouseController;
-        this.keyboardController = keyboardController;
-        this.spritesManager = new SpritesManager("player", 10, 3);
+    public Player() {
         this.projectilePrototype = new PlayerProjectile(0,0, 0);
-
-        setDefaultValues();
-    }
-
-    public void setDefaultValues() {
-        double spawnX = TILE_SIZE * 24;
-        double spawnY = TILE_SIZE * 20;
-        getRenderComponent().setAlive(true);
-        getPositionComponent().setScreenPositionX(Game.getInstance().getScreenWidth() / 2.0 - (TILE_SIZE / 2.0));
-        getPositionComponent().setScreenPositionY(Game.getInstance().getScreenHeight() / 2.0 - (TILE_SIZE / 2.0));
-        spawn(spawnX, spawnY);
-        getRenderComponent().setHitbox(new Rectangle(16, 16, 16, 20));
-        getMovementComponent().setSpeed(3);
-        getMovementComponent().setDirection("NORTH"); // 'NORTH, SOUTH, EAST, WEST'
     }
 
     @Override
@@ -54,7 +36,7 @@ public class Player extends EntityObject {
         reloadCooldown++;
         move();
         look();
-        shoot();
+        attack();
         updateProjectiles();
     }
 
@@ -133,8 +115,8 @@ public class Player extends EntityObject {
         getMovementComponent().setAngle(angle);
     }
 
-    private void shoot() {
-        boolean validKey = keyboardController.isShooting();
+    private void attack() {
+        boolean validKey = keyboardController.isAttacking();
         double screenX = getPositionComponent().getScreenPositionX().doubleValue() + getRenderComponent().getHitbox().getWidth();
         double screenY = getPositionComponent().getScreenPositionY().doubleValue() + getRenderComponent().getHitbox().getHeight();
         double angle = getMovementComponent().getAngle();
@@ -152,20 +134,28 @@ public class Player extends EntityObject {
         }
     }
 
-    private void updateProjectiles() {
-        Iterator<ProjectilePrototype> iterator = projectiles.iterator();
-        while (iterator.hasNext()) {
-            ProjectilePrototype projectile = iterator.next();
-            if (projectile.getRenderComponent().isAlive()) {
-                projectile.update();
-
-            } else {
-                iterator.remove();
-            }
-        }
+    @Override
+    public void setProjectiles(ArrayList<ProjectilePrototype> projectiles) {
+        this.projectiles = projectiles;
     }
 
+    @Override
     public ArrayList<ProjectilePrototype> getProjectiles() {
         return projectiles;
+    }
+
+    @Override
+    public void setSpritesManager(SpritesManager spritesManager) {
+        this.spritesManager = spritesManager;
+    }
+
+    @Override
+    public void setKeyboardController(KeyboardController keyboardController) {
+        this.keyboardController = keyboardController;
+    }
+
+    @Override
+    public void setMouseController(MouseController mouseController) {
+        this.mouseController = mouseController;
     }
 }

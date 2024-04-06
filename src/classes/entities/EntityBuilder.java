@@ -6,6 +6,8 @@ import java.awt.*;
 
 public interface EntityBuilder {
 
+    void reset();
+
     void setEntityType(EntityType type);
 
     void setScreenPositionX(double screenPositionX);

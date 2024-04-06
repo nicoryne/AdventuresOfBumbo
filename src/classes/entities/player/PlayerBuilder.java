@@ -1,9 +1,8 @@
 package classes.entities.player;
 
-import classes.entities.EntityObject;
 import classes.entities.EntityType;
 import classes.entities.EntityBuilder;
-import classes.entities.projectile.ProjectilePrototype;
+import classes.equips.weapons.Weapon;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
 import classes.util.managers.SpritesManager;
@@ -11,12 +10,13 @@ import classes.util.managers.SpritesManager;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class PlayerBuilder implements EntityBuilder {
+public class PlayerBuilder<W extends Weapon> implements EntityBuilder {
 
-    private Player player;
+    private Player<W> player;
 
+    @Override
     public void reset() {
-        this.player = new Player();
+        this.player = new Player<>();
     }
 
     @Override
@@ -66,11 +66,12 @@ public class PlayerBuilder implements EntityBuilder {
         this.player.setSpritesManager(spritesManager);
     }
 
-    public void setProjectilesList(ArrayList<ProjectilePrototype> projectilesList) {
-        this.player.setProjectiles(projectilesList);
+    public void setWeapon(W weapon) {
+        this.player.setWeapon(weapon);
     }
 
-    public Player build() {
+
+    public Player<W> build() {
         return this.player;
     }
 }

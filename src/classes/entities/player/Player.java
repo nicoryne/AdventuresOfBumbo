@@ -1,11 +1,11 @@
 package classes.entities.player;
 
 import classes.entities.EntityObject;
-import classes.entities.projectile.PlayerProjectile;
-import classes.entities.projectile.ProjectilePrototype;
 import classes.entities.util.ControllableEntity;
-import classes.entities.util.RangedEntity;
 import classes.entities.util.SpriteFilledEntity;
+import classes.equips.weapons.Bow;
+import classes.equips.weapons.Weapon;
+import classes.equips.weapons.util.RangedWeapon;
 import classes.util.handlers.CollisionHandler;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
@@ -14,30 +14,22 @@ import classes.util.handlers.SoundHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 
-public class Player extends EntityObject implements SpriteFilledEntity, ControllableEntity, RangedEntity {
-
-    private static int reloadCooldown = 0;
-    private static int reloadTime = 10;
+public class Player<W extends Weapon> extends EntityObject implements SpriteFilledEntity, ControllableEntity {
     private KeyboardController keyboardController;
     private MouseController mouseController;
     private SpritesManager spritesManager;
-    private ArrayList<ProjectilePrototype> projectiles;
-    private final ProjectilePrototype projectilePrototype;
+    private W weapon;
 
-    public Player() {
-        this.projectilePrototype = new PlayerProjectile(0,0, 0);
-    }
+    public Player() {}
 
     @Override
     public void update() {
-        reloadCooldown++;
         move();
         look();
         attack();
-        updateProjectiles();
+        weapon.incrementReloadCooldown();
     }
 
     @Override
@@ -99,7 +91,6 @@ public class Player extends EntityObject implements SpriteFilledEntity, Controll
             }
 
             spritesManager.updateSprite();
-
         }
     }
 
@@ -124,24 +115,10 @@ public class Player extends EntityObject implements SpriteFilledEntity, Controll
         double worldPositionY = getPositionComponent().getWorldPositionY().doubleValue();
         String direction = getMovementComponent().getDirection();
 
-        if (validKey && reloadCooldown >= reloadTime) {
-            PlayerProjectile newPlayerProjectile = new PlayerProjectile(screenX, screenY, angle);
-            newPlayerProjectile.setClone(angle, screenX, screenY, worldPositionX, worldPositionY, direction);
-            projectiles.add(newPlayerProjectile);
-
-            SoundHandler.playAudio("shoot-1", 0, 1.0f);
-            reloadCooldown = 0;
+        if (validKey) {
+            weapon.attack(angle, screenX, screenY, worldPositionX, worldPositionY, direction);
+            System.out.println(weapon.getWeaponName());
         }
-    }
-
-    @Override
-    public void setProjectiles(ArrayList<ProjectilePrototype> projectiles) {
-        this.projectiles = projectiles;
-    }
-
-    @Override
-    public ArrayList<ProjectilePrototype> getProjectiles() {
-        return projectiles;
     }
 
     @Override
@@ -157,5 +134,13 @@ public class Player extends EntityObject implements SpriteFilledEntity, Controll
     @Override
     public void setMouseController(MouseController mouseController) {
         this.mouseController = mouseController;
+    }
+
+    public W getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(W weapon) {
+        this.weapon = weapon;
     }
 }

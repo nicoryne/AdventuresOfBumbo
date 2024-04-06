@@ -17,9 +17,9 @@ public class SpritesManager {
     private int frameCounter;
     private final int spritesAvailablePerDirection;
 
-    public SpritesManager(String folderName, int spriteChangeOnFrame, int spritesAvailablePerDirection) {
+    public SpritesManager(String folderName, int spritesAvailablePerDirection) {
         this.spriteList = loadSpritesFromFolder(folderName);
-        this.spriteChangeOnFrame = spriteChangeOnFrame;
+        this.spriteChangeOnFrame = 10;
         this.currentSpriteIndex = 0;
         this.frameCounter = 0;
         this.spritesAvailablePerDirection = spritesAvailablePerDirection;

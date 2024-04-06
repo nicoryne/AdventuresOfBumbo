@@ -4,19 +4,22 @@ import classes.entities.player.PlayerBuilder;
 import classes.entities.player.PlayerDirector;
 import classes.entities.EntityObject;
 import classes.entities.player.Player;
-import classes.entities.projectile.ProjectilePrototype;
+import classes.entities.projectile.Projectile;
+import classes.entities.projectile.ProjectileFlyweightFactory;
+import classes.equips.weapons.Bow;
+import classes.equips.weapons.Weapon;
 import classes.exceptions.GameInitializationException;
 import classes.util.controllers.ControllerComponents;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
 import classes.util.managers.GameManagerComponents;
-import classes.util.managers.SpritesManager;
 import classes.util.managers.TileManager;
 
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -31,9 +34,10 @@ public class Game {
 
     private GameManagerComponents gameManagerComponents;
 
-    private Player player;
+    private Player<Weapon> player;
 
     private ArrayList<EntityObject> entities;
+
 
     private Game() {}
 
@@ -71,13 +75,15 @@ public class Game {
     }
 
     private void setupPlayer() {
-        PlayerBuilder playerBuilder = new PlayerBuilder();
+        ProjectileFlyweightFactory.initializeFlyweightProjectiles();
+        PlayerBuilder<Weapon> playerBuilder = new PlayerBuilder<>();
         PlayerDirector playerDirector = new PlayerDirector();
         KeyboardController keyboardController = controllerComponents.getKeyboardController();
         MouseController mouseController = getControllerComponents().getMouseController();
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
+        Bow bow = new Bow();
 
-        playerDirector.constructPlayer(playerBuilder, keyboardController, mouseController);
+        playerDirector.constructPlayer(playerBuilder, keyboardController, mouseController, bow);
 
         this.player = playerBuilder.build();
         this.player.spawn(tileSize * 23, tileSize * 24);
@@ -100,7 +106,7 @@ public class Game {
         return gameManagerComponents;
     }
 
-    public Player getPlayer() {
+    public Player<Weapon> getPlayer() {
         return player;
     }
 
@@ -110,34 +116,33 @@ public class Game {
 
     public void renderEntities(Graphics2D g2){
         getGameManagerComponents().getTileManager().render(g2);
-        ArrayList<ProjectilePrototype> playerProjectiles = player.getProjectiles();
 
-        for(ProjectilePrototype projectile : playerProjectiles) {
-            if(projectile != null && projectile.getRenderComponent().isAlive()) {
-                projectile.render(g2);
-            }
-        }
         player.render(g2);
 
-//        for(EntityObject entity : entities) {
-//            if(entity != null) {
-//                entity.render(g2);
-//            }
-//        }
+        Iterator<EntityObject> entityObjectIterator = entities.iterator();
+        while(entityObjectIterator.hasNext()) {
+            EntityObject entityObject = entityObjectIterator.next();
+            if(entityObject != null && entityObject.getRenderComponent().isAlive()) {
+                entityObject.render(g2);
+            } else {
+                entityObjectIterator.remove();
+            }
+        }
     }
 
     public void updateEntities() {
         player.update();
 
-//        for(EntityObject entity : entities) {
-//            if(entity != null && entity.getRenderComponent().isAlive()) {
-//                entity.update();
-//            } else {
-//                assert entity != null;
-//                entity.kill();
-//            }
-//
-//        }
+        Iterator<EntityObject> entityObjectIterator = entities.iterator();
+        while(entityObjectIterator.hasNext()) {
+            EntityObject entityObject = entityObjectIterator.next();
+            if(entityObject != null && entityObject.getRenderComponent().isAlive()) {
+                entityObject.update();
+            } else {
+                entityObjectIterator.remove();
+            }
+        }
+
     }
 
     public double getPlayerMaxViewableX() {

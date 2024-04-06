@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.8f);
+        SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.3f);
         gameLoopSingleton.startGameLoop();
     }
 

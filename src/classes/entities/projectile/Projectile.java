@@ -1,7 +1,8 @@
 package classes.entities.projectile;
+
 import classes.Game;
-import classes.entities.util.CloneableEntity;
 import classes.entities.EntityObject;
+import classes.entities.util.CloneableEntity;
 import classes.util.handlers.CollisionHandler;
 import classes.util.managers.SpritesManager;
 
@@ -10,19 +11,22 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
-public class ProjectilePrototype extends EntityObject implements CloneableEntity {
+public class Projectile extends EntityObject implements CloneableEntity {
 
-    private final SpritesManager spritesManager;
+    private ProjectileType projectileType;
 
-    public ProjectilePrototype(double screenPositionX, double screenPositionY, double angle) {
-        super();
-        this.spritesManager = new SpritesManager("projectiles/test", 10, 0);
-        getRenderComponent().setAlive(true);
-        getMovementComponent().setSpeed(9);
-        getPositionComponent().setScreenPositionX(screenPositionX);
-        getPositionComponent().setScreenPositionY(screenPositionY);
-        getMovementComponent().setAngle(angle);
-        getRenderComponent().setHitbox(new Rectangle(0, 0, 4, 4));
+    private SpritesManager spritesManager;
+
+    public void setSpritesManager(SpritesManager spritesManager) {
+        this.spritesManager = spritesManager;
+    }
+
+    public ProjectileType getProjectileType() {
+        return projectileType;
+    }
+
+    public void setProjectileType(ProjectileType projectileType) {
+        this.projectileType = projectileType;
     }
 
     @Override
@@ -40,13 +44,8 @@ public class ProjectilePrototype extends EntityObject implements CloneableEntity
         double dxWorld = worldPositionX + (speed * Math.cos(rad));
         double dyWorld = worldPositionY + (speed * Math.sin(rad));
 
-        getPositionComponent().setScreenPositionX(dxScreen);
-        getPositionComponent().setScreenPositionY(dyScreen);
-        getPositionComponent().setWorldPositionX(dxWorld);
-        getPositionComponent().setWorldPositionY(dyWorld);
-
-        getMovementComponent().setColliding(false);
-        CollisionHandler.checkTileCollision(this);
+        updatePositions(dxScreen, dyScreen, dxWorld, dyWorld);
+        checkCollision();
 
         if(isProjectileOutScreen() || getMovementComponent().isColliding()) {
             kill();
@@ -54,7 +53,7 @@ public class ProjectilePrototype extends EntityObject implements CloneableEntity
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(Graphics2D g2) {
         BufferedImage img = spritesManager.getCurrentSprite();
         double tileSize = Double.parseDouble(Game.getInstance().getProperty("TILE_SIZE"));
         double screenPositionX = getPositionComponent().getScreenPositionX().doubleValue();
@@ -75,26 +74,25 @@ public class ProjectilePrototype extends EntityObject implements CloneableEntity
         AffineTransform at = AffineTransform.getTranslateInstance(tx, ty);
         at.rotate(angle, anchorX, anchorY);
 
-        g.drawImage(img, at, null);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.drawImage(img, at, null);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        System.out.println("render");
     }
 
-    public void setClone(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, String currentDirection) {
-        getRenderComponent().setAlive(true);
-        getMovementComponent().setAngle(angle);
-        getPositionComponent().setScreenPositionX(screenPositionX);
-        getPositionComponent().setScreenPositionY(screenPositionY);
-        getPositionComponent().setWorldPositionX(worldPositionX);
-        getPositionComponent().setWorldPositionY(worldPositionY);
-        getMovementComponent().setDirection(currentDirection);
-        getRenderComponent().setSprite(getRenderComponent().getSprite());
-        getRenderComponent().setHitbox(getRenderComponent().getHitbox());
+    @Override
+    public void kill() {
+        super.kill();
+    }
+
+    @Override
+    public void spawn(double x, double y) {
+        super.spawn(x, y);
     }
 
     @Override
     public CloneableEntity clone() {
         try {
-            return (CloneableEntity) (ProjectilePrototype) super.clone();
+            return (CloneableEntity) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new InternalError(e);
         }
@@ -109,4 +107,18 @@ public class ProjectilePrototype extends EntityObject implements CloneableEntity
         return screenPositionX <= 0.0 || screenPositionY <= 0.0 ||
                 screenPositionX >= screenWidth || screenPositionY >= screenHeight;
     }
+
+    private void checkCollision() {
+        getMovementComponent().setColliding(false);
+        CollisionHandler.checkTileCollision(this);
+    }
+
+    private void updatePositions(double dxScreen, double dyScreen, double dxWorld, double dyWorld) {
+        getPositionComponent().setScreenPositionX(dxScreen);
+        getPositionComponent().setScreenPositionY(dyScreen);
+        getPositionComponent().setWorldPositionX(dxWorld);
+        getPositionComponent().setWorldPositionY(dyWorld);
+    }
+
+
 }

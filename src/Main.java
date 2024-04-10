@@ -1,7 +1,13 @@
-import classes.exceptions.GameInitializationException;
-import classes.ui.GamePanel;
+import game.exceptions.GameInitializationException;
+import game.ui.GamePanel;
+import game.ui.components.titlebar.TitleBarPanel;
+import game.util.handlers.ImageHandler;
+import services.server.DBConnection;
 
 import javax.swing.JFrame;
+import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
+import java.util.Objects;
 
 /**
  * The Main class serves as the entry point for the "Adventures of Bumbo" game application.
@@ -10,19 +16,28 @@ import javax.swing.JFrame;
 public class Main {
 
     private static final String WINDOW_TITLE = "Bumbo Hell"; // Title of the game window
+    private JFrame window;
+
 
     public static void main(String[] args) throws GameInitializationException {
         Main main = new Main();
         main.setupGameWindow();
+        DBConnection DBConnection = new DBConnection();
     }
 
     /**
      * Sets up the game window by creating a JFrame and adding the game panel to it.
      */
     private void setupGameWindow() throws GameInitializationException {
-        JFrame window = createGameWindow();
-        window.add(createGamePanel());
+        window = createGameWindow();
+        window.setLayout(new BorderLayout());
+        window.add(new TitleBarPanel(window), BorderLayout.NORTH);
+
+        GamePanel gamePanel = createGamePanel();
+        window.add(gamePanel, BorderLayout.CENTER);
         displayGameWindow(window);
+        window.requestFocusInWindow();
+        gamePanel.requestFocusInWindow();
     }
 
     /**
@@ -35,6 +50,18 @@ public class Main {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Exit application when window is closed
         window.setResizable(false); // Disable window resizing
         window.setTitle(WINDOW_TITLE); // Set the title of the window
+        window.setIconImage(Objects.requireNonNull(ImageHandler.getImageIcon("src/res/icon.png")).getImage());
+        window.setUndecorated(true);
+        double frameCornerArcWidth = 40.0;
+        double frameCornerArcHeight = 40.0;
+        window.setShape(new RoundRectangle2D.Double(
+                0,
+                0,
+                768,
+                576,
+                frameCornerArcWidth,
+                frameCornerArcHeight
+        ));
         return window;
     }
 
@@ -44,7 +71,7 @@ public class Main {
      * @return The created game panel.
      */
     private GamePanel createGamePanel() throws GameInitializationException {
-        GamePanel gamePanel = new GamePanel();
+        GamePanel gamePanel = new GamePanel(window);
         gamePanel.startGameThread();
         return gamePanel;
     }

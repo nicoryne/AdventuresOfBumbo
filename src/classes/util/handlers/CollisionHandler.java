@@ -22,7 +22,7 @@ public abstract class CollisionHandler {
     private static int entityTopRow;
     private static int entityBottomRow;
 
-    public static void checkEntityCollision(MovingEntity entity) {
+    public static void checkProjectileCollision(MovingEntity entity) {
         ArrayList<MovingEntity> entityObjects = Game.getInstance().getEntities();
 
        for(MovingEntity targetEntity : entityObjects) {
@@ -71,7 +71,6 @@ public abstract class CollisionHandler {
         entityLeftCol = getEntityWestPosition(entity) / TILE_SIZE;
         entityRightCol = getEntityEastPosition(entity) / TILE_SIZE;
 
-
         switch (entity.getMovementComponent().getDirection()) {
             case NORTH:
                 handleNorthDirection(entity, speed);
@@ -84,6 +83,18 @@ public abstract class CollisionHandler {
                 break;
             case EAST:
                 handleEastDirection(entity, speed);
+                break;
+            case NORTH_EAST:
+                handleNorthEastDirection(entity, speed);
+                break;
+            case NORTH_WEST:
+                handleNorthWestDirection(entity, speed);
+                break;
+            case SOUTH_EAST:
+                handleSouthEastDirection(entity, speed);
+                break;
+            case SOUTH_WEST:
+                handleSouthWestDirection(entity, speed);
                 break;
             default:
                 return;
@@ -117,6 +128,36 @@ public abstract class CollisionHandler {
         firstTile = getTileNumber(entityRightCol, entityTopRow);
         secondTile = getTileNumber(entityRightCol, entityBottomRow);
     }
+
+    private static void handleNorthEastDirection(EntityObject entity, int speed) {
+        entityTopRow = (getEntityNorthPosition(entity) - speed) / TILE_SIZE;
+        entityRightCol = (getEntityEastPosition(entity) + speed) / TILE_SIZE;
+        firstTile = getTileNumber(entityLeftCol, entityTopRow);
+        secondTile = getTileNumber(entityRightCol, entityTopRow);
+    }
+
+    private static void handleNorthWestDirection(EntityObject entity, int speed) {
+        entityTopRow = (getEntityNorthPosition(entity) - speed) / TILE_SIZE;
+        entityLeftCol = (getEntityWestPosition(entity) - speed) / TILE_SIZE;
+        firstTile = getTileNumber(entityLeftCol, entityTopRow);
+        secondTile = getTileNumber(entityRightCol, entityTopRow);
+    }
+
+    private static void handleSouthEastDirection(EntityObject entity, int speed) {
+        entityBottomRow = (getEntitySouthPosition(entity) + speed) / TILE_SIZE;
+        entityRightCol = (getEntityEastPosition(entity) + speed) / TILE_SIZE;
+        firstTile = getTileNumber(entityLeftCol, entityBottomRow);
+        secondTile = getTileNumber(entityRightCol, entityBottomRow);
+    }
+
+    private static void handleSouthWestDirection(EntityObject entity, int speed) {
+        entityBottomRow = (getEntitySouthPosition(entity) + speed) / TILE_SIZE;
+        entityLeftCol = (getEntityWestPosition(entity) - speed) / TILE_SIZE;
+        firstTile = getTileNumber(entityLeftCol, entityBottomRow);
+        secondTile = getTileNumber(entityRightCol, entityBottomRow);
+    }
+
+
     private static int getTileNumber(int col, int row) {
         TileManager tileManager = Game.getInstance().getGameManagerComponents().getTileManager();
         return tileManager.getMapTile2DArray()[col][row];

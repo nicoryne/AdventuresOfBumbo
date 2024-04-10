@@ -52,9 +52,9 @@ public class SpritesManager {
 
     private int getCurrentSpriteIndex(Directions direction) {
         return switch (direction) {
-            case SOUTH -> currentSpriteIndex;
-            case EAST -> currentSpriteIndex + spritesAvailablePerDirection;
-            case WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
+            case SOUTH, NONE -> currentSpriteIndex;
+            case EAST, SOUTH_EAST, NORTH_EAST -> currentSpriteIndex + spritesAvailablePerDirection;
+            case WEST, SOUTH_WEST, NORTH_WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
             case NORTH -> currentSpriteIndex + (spritesAvailablePerDirection * 3);
         };
     }

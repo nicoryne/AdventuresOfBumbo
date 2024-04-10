@@ -78,7 +78,7 @@ public class Projectile extends MovingEntity {
     }
 
     private void checkEntityCollision(Projectile projectile) {
-        CollisionHandler.checkEntityCollision(projectile);
+        CollisionHandler.checkProjectileCollision(projectile);
     }
 
     private void updatePositions(double dxScreen, double dyScreen, double dxWorld, double dyWorld) {

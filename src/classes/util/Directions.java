@@ -8,5 +8,15 @@ public enum Directions {
 
     WEST,
 
-    SOUTH
+    SOUTH,
+
+    NORTH_EAST,
+
+    NORTH_WEST,
+
+    SOUTH_EAST,
+
+    SOUTH_WEST,
+
+    NONE,
 }

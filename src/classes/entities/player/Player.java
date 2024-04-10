@@ -49,20 +49,9 @@ public class Player<W extends Weapon> extends CharacterEntity implements SpriteF
 
 
         if (validKey) {
-            if (keyboardController.isUpPressed()) {
-                getMovementComponent().setDirection(Directions.NORTH);
-            }
-            if (keyboardController.isDownPressed()) {
-                getMovementComponent().setDirection(Directions.SOUTH);
-            }
-            if (keyboardController.isLeftPressed()) {
-                getMovementComponent().setDirection(Directions.WEST);
-            }
-            if (keyboardController.isRightPressed()) {
-                getMovementComponent().setDirection(Directions.EAST);
-            }
-
+            handleDirections();
             int speed = calculateSpeed();
+            int diagonalSpeed = (int) (speed / Math.sqrt(2));
             getMovementComponent().setColliding(false);
             CollisionHandler.checkTileCollision(this, speed);
 
@@ -70,20 +59,7 @@ public class Player<W extends Weapon> extends CharacterEntity implements SpriteF
                 int worldPositionY = getPositionComponent().getWorldPositionY().intValue();
                 int worldPositionX = getPositionComponent().getWorldPositionX().intValue();
 
-                switch (getMovementComponent().getDirection()) {
-                    case Directions.NORTH:
-                        getPositionComponent().setWorldPositionY(worldPositionY - speed);
-                        break;
-                    case Directions.SOUTH:
-                        getPositionComponent().setWorldPositionY(worldPositionY + speed);
-                        break;
-                    case Directions.WEST:
-                        getPositionComponent().setWorldPositionX(worldPositionX - speed);
-                        break;
-                    case Directions.EAST:
-                        getPositionComponent().setWorldPositionX(worldPositionX + speed);
-                        break;
-                }
+                handleMovement(worldPositionX, worldPositionY, speed, diagonalSpeed);
             } else {
                 SoundHandler.playAudio("bump-1", 0, 1.0f);
             }
@@ -120,6 +96,78 @@ public class Player<W extends Weapon> extends CharacterEntity implements SpriteF
 
     private int calculateSpeed() {
         return (int) (getMovementComponent().getEntitySpeed() + (( getStatComponent().getSpeed() / 100) + getAttributeComponents().getAgility() / 10));
+    }
+
+    private void handleDirections() {
+        boolean up = keyboardController.isUpPressed();
+        boolean down = keyboardController.isDownPressed();
+        boolean left = keyboardController.isLeftPressed();
+        boolean right = keyboardController.isRightPressed();
+
+        int directionCode = (up ? 1 : 0) | (down ? 2 : 0) | (left ? 4 : 0) | (right ? 8 : 0);
+
+        switch (directionCode) {
+            case 1:
+                getMovementComponent().setDirection(Directions.NORTH);
+                break;
+            case 2:
+                getMovementComponent().setDirection(Directions.SOUTH);
+                break;
+            case 4:
+                getMovementComponent().setDirection(Directions.WEST);
+                break;
+            case 8:
+                getMovementComponent().setDirection(Directions.EAST);
+                break;
+            case 9:
+                getMovementComponent().setDirection(Directions.NORTH_EAST);
+                break;
+            case 5:
+                getMovementComponent().setDirection(Directions.NORTH_WEST);
+                break;
+            case 10:
+                getMovementComponent().setDirection(Directions.SOUTH_EAST);
+                break;
+            case 6:
+                getMovementComponent().setDirection(Directions.SOUTH_WEST);
+                break;
+            default:
+                getMovementComponent().setDirection(Directions.NONE);
+                break;
+        }
+    }
+
+    private void handleMovement(int worldPositionX, int worldPositionY, int speed, int diagonalSpeed) {
+        switch (getMovementComponent().getDirection()) {
+            case Directions.NORTH_EAST:
+                getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);
+                getPositionComponent().setWorldPositionX(worldPositionX + diagonalSpeed);
+                break;
+            case Directions.NORTH_WEST:
+                getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);
+                getPositionComponent().setWorldPositionX(worldPositionX - diagonalSpeed);
+                break;
+            case Directions.SOUTH_EAST:
+                getPositionComponent().setWorldPositionY(worldPositionY + diagonalSpeed);
+                getPositionComponent().setWorldPositionX(worldPositionX + diagonalSpeed);
+                break;
+            case Directions.SOUTH_WEST:
+                getPositionComponent().setWorldPositionY(worldPositionY + diagonalSpeed);
+                getPositionComponent().setWorldPositionX(worldPositionX - diagonalSpeed);
+                break;
+            case Directions.NORTH:
+                getPositionComponent().setWorldPositionY(worldPositionY - speed);
+                break;
+            case Directions.SOUTH:
+                getPositionComponent().setWorldPositionY(worldPositionY + speed);
+                break;
+            case Directions.WEST:
+                getPositionComponent().setWorldPositionX(worldPositionX - speed);
+                break;
+            case Directions.EAST:
+                getPositionComponent().setWorldPositionX(worldPositionX + speed);
+                break;
+        }
     }
 
     private void showHitbox(Graphics2D g2, int screenPositionX, int screenPositionY) {

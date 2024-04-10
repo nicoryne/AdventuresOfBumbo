@@ -4,8 +4,14 @@ import classes.Game;
 import classes.util.managers.TileManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class PathFinder {
+
+    private static final int MAX_STEPS = 500;
+
+    private static final int MAX_F_COST = 999;
 
     private Game game;
 
@@ -22,6 +28,7 @@ public class PathFinder {
     private int step = 0;
 
     private final int maxWorldCol;
+
     private final int maxWorldRow;
 
     public PathFinder() {
@@ -33,34 +40,20 @@ public class PathFinder {
 
     public void instantiateNodes() {
         nodeList = new Node[maxWorldCol][maxWorldRow];
-
-        int col = 0;
-        int row = 0;
-
-        while(col < maxWorldCol && row < maxWorldRow) {
-            nodeList[col][row] = new Node(col,row);
-
-            col++;
-            if(col == maxWorldCol) {
-                col = 0;
-                row++;
+        for (int col = 0; col < maxWorldCol; col++) {
+            for (int row = 0; row < maxWorldRow; row++) {
+                nodeList[col][row] = new Node(col, row);
             }
         }
     }
 
     public void resetNodes() {
-        int col = 0;
-        int row = 0;
-
-        while(col < maxWorldCol && row < maxWorldRow) {
-            nodeList[col][row].setOpen(false);
-            nodeList[col][row].setChecked(false);
-            nodeList[col][row].setSolid(false);
-
-            col++;
-            if(col == maxWorldCol) {
-                col = 0;
-                row++;
+        for (int col = 0; col < maxWorldCol; col++) {
+            for (int row = 0; row < maxWorldRow; row++) {
+                Node node = nodeList[col][row];
+                node.setOpen(false);
+                node.setChecked(false);
+                node.setSolid(false);
             }
         }
 
@@ -78,22 +71,16 @@ public class PathFinder {
         goalNode = nodeList[goalCol][goalRow];
         openNodes.add(currentNode);
 
-        int col = 0;
-        int row = 0;
-        while(col < maxWorldCol && row < maxWorldRow) {
-            TileManager tileManager = game.getGameManagerComponents().getTileManager();
-            int tileNum = tileManager.getMapTile2DArray()[col][row];
 
-            if (tileManager.getTileArrayList().get(tileNum).isCollidable()) {
-                nodeList[col][row].setSolid(true);
-            }
+        for(int col = 0; col < maxWorldCol; col++) {
+            for(int row = 0; row < maxWorldRow; row++) {
+                TileManager tileManager = game.getGameManagerComponents().getTileManager();
+                int tileNum = tileManager.getMapTile2DArray()[col][row];
 
-            getCost(nodeList[col][row]);
-
-            col++;
-            if(col == maxWorldCol) {
-                col = 0;
-                row++;
+                if (tileManager.getTileArrayList().get(tileNum).isCollidable()) {
+                    nodeList[col][row].setSolid(true);
+                }
+                getCost(nodeList[col][row]);
             }
         }
     }
@@ -111,50 +98,37 @@ public class PathFinder {
     }
 
     public boolean search() {
-        while(!goalReached && step < 500) {
+        PriorityQueue<Node> openNodesQueue = new PriorityQueue<>(Comparator.comparingInt(Node::getFCost));
+
+        while (!goalReached && step < MAX_STEPS) {
             int col = currentNode.getCol();
             int row = currentNode.getRow();
 
             currentNode.setChecked(true);
-            openNodes.remove(currentNode);
 
-            if(row-1 >= 0) {
-                openNode(nodeList[col][row-1]);
+            if (row - 1 >= 0) {
+                openNode(nodeList[col][row - 1], openNodesQueue);
             }
 
-            if(col-1 >= 0) {
-                openNode(nodeList[col-1][row]);
+            if (col - 1 >= 0) {
+                openNode(nodeList[col - 1][row], openNodesQueue);
             }
 
-            if(row+1 < maxWorldRow) {
-                openNode(nodeList[col][row+1]);
+            if (row + 1 < maxWorldRow) {
+                openNode(nodeList[col][row + 1], openNodesQueue);
             }
 
-            if(col+1 < maxWorldCol) {
-                openNode(nodeList[col+1][row]);
+            if (col + 1 < maxWorldCol) {
+                openNode(nodeList[col + 1][row], openNodesQueue);
             }
 
-            int bestNodeIndex = 0;
-            int bestNodeFCost = 999;
-
-            for(int i = 0; i < openNodes.size(); i++) {
-                if(openNodes.get(i).getFCost() < bestNodeFCost) {
-                    bestNodeIndex = i;
-                    bestNodeFCost = openNodes.get(i).getFCost();
-                } else if(openNodes.get(i).getFCost() == bestNodeFCost) {
-                    if(openNodes.get(i).getGCost() < openNodes.get(bestNodeIndex).getGCost()) {
-                        bestNodeIndex = i;
-                    }
-                }
-            }
-
-            if(openNodes.isEmpty()) {
+            if (openNodesQueue.isEmpty()) {
                 break;
             }
 
-            currentNode = openNodes.get(bestNodeIndex);
+            currentNode = openNodesQueue.poll();
 
-            if(currentNode == goalNode) {
+            if (currentNode == goalNode) {
                 goalReached = true;
                 trackPath();
             }
@@ -165,11 +139,11 @@ public class PathFinder {
         return goalReached;
     }
 
-    private void openNode(Node node) {
-        if(!node.isOpen() && !node.isChecked() && !node.isSolid()) {
+    private void openNode(Node node, PriorityQueue<Node> openNodesQueue) {
+        if (!node.isOpen() && !node.isChecked() && !node.isSolid()) {
             node.setOpen(true);
             node.setParent(currentNode);
-            openNodes.add(node);
+            openNodesQueue.add(node);
         }
     }
 

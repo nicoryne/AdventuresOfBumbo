@@ -21,11 +21,6 @@ public class Enemy extends CharacterEntity {
 
     private SpritesManager spritesManager;
 
-    private static final int MOVE_DELAY = 120;
-
-    private int moveDelayCounter = 0;
-
-    private boolean onPath = true;
 
     public Enemy() {
         this.setEntityType(EntityType.ENEMY);
@@ -34,12 +29,8 @@ public class Enemy extends CharacterEntity {
     @Override
     public void update() {
         super.update();
-        incrementMoveDelayCounter();
 
-        if (moveDelayCounter == MOVE_DELAY) {
-            switchDirection();
-            resetMoveDelayCounter();
-        }
+        switchDirection();
 
         move();
     }
@@ -57,42 +48,25 @@ public class Enemy extends CharacterEntity {
     }
 
     private void switchDirection() {
-        if(onPath) {
-            int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
-            Player<Weapon> player = Game.getInstance().getPlayer();
-            int worldPositionX = player.getPositionComponent().getWorldPositionX().intValue();
-            int worldPositionY = player.getPositionComponent().getWorldPositionY().intValue();
-            int xHitbox = (int) player.getRenderComponent().getHitbox().getX();
-            int yHitbox = (int) player.getRenderComponent().getHitbox().getY();
-            int goalCol = (worldPositionX + xHitbox) / tileSize;
-            int goalRow = (worldPositionY + yHitbox) / tileSize;
+        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
+        Player<Weapon> player = Game.getInstance().getPlayer();
+        int worldPositionX = player.getPositionComponent().getWorldPositionX().intValue();
+        int worldPositionY = player.getPositionComponent().getWorldPositionY().intValue();
+        int xHitbox = (int) player.getRenderComponent().getHitbox().getX();
+        int yHitbox = (int) player.getRenderComponent().getHitbox().getY();
+        int widthHitbox = (int) getRenderComponent().getHitbox().getWidth();
+        int heightHitbox = (int) getRenderComponent().getHitbox().getHeight();
+        int playerCenterX = worldPositionX + xHitbox + widthHitbox / 2;
+        int playerCenterY = worldPositionY + yHitbox + heightHitbox / 2;
+        int playerTileCol = playerCenterX / tileSize;
+        int playerTileRow = playerCenterY / tileSize;
 
-            searchPath(goalCol, goalRow);
-        } else {
-            Random random = new Random();
-            int i = random.nextInt(101);
-
-            if (i <= 25) {
-                getMovementComponent().setDirection(Directions.NORTH);
-            }
-
-            if (i > 25 && i <= 50) {
-                getMovementComponent().setDirection(Directions.SOUTH);
-            }
-
-            if (i > 50 && i <= 75) {
-                getMovementComponent().setDirection(Directions.WEST);
-            }
-
-            if (i > 75) {
-                getMovementComponent().setDirection(Directions.EAST);
-            }
-
-        }
+        searchPath(playerTileCol, playerTileRow);
     }
 
     private void move() {
         int speed = calculateSpeed();
+        int diagonalSpeed = (int) (speed / Math.sqrt(2));
         getMovementComponent().setColliding(false);
         CollisionHandler.checkTileCollision(this, speed);
         CollisionHandler.checkPlayerCollision(this);
@@ -101,20 +75,7 @@ public class Enemy extends CharacterEntity {
             int worldPositionY = getPositionComponent().getWorldPositionY().intValue();
             int worldPositionX = getPositionComponent().getWorldPositionX().intValue();
 
-            switch (getMovementComponent().getDirection()) {
-                case Directions.NORTH:
-                    getPositionComponent().setWorldPositionY(worldPositionY - speed);
-                    break;
-                case Directions.SOUTH:
-                    getPositionComponent().setWorldPositionY(worldPositionY + speed);
-                    break;
-                case Directions.WEST:
-                    getPositionComponent().setWorldPositionX(worldPositionX - speed);
-                    break;
-                case Directions.EAST:
-                    getPositionComponent().setWorldPositionX(worldPositionX + speed);
-                    break;
-            }
+            handleMovement(worldPositionX, worldPositionY, speed, diagonalSpeed);
 
             spritesManager.updateSprite();
         }
@@ -131,8 +92,6 @@ public class Enemy extends CharacterEntity {
         int worldPositionY = getPositionComponent().getWorldPositionY().intValue();
         int xHitbox = (int) getRenderComponent().getHitbox().getX();
         int yHitbox = (int) getRenderComponent().getHitbox().getY();
-        int widthHitbox = (int) getRenderComponent().getHitbox().getWidth();
-        int heightHitbox = (int) getRenderComponent().getHitbox().getHeight();
 
         int startCol = (worldPositionX + xHitbox) / tileSize;
         int startRow = (worldPositionY + yHitbox) / tileSize;
@@ -144,54 +103,111 @@ public class Enemy extends CharacterEntity {
             int nextY = pathFinder.getPathNodes().get(0).getRow() * tileSize;
 
             int entityLeftX = worldPositionX + xHitbox;
-            int entityRightX = worldPositionX + xHitbox + widthHitbox;
             int entityTopY = worldPositionY + yHitbox;
-            int entityBottomY = worldPositionY + yHitbox + heightHitbox;
 
-            if(entityTopY > nextY && entityLeftX >= nextX && entityRightX < nextX + tileSize) {
-                getMovementComponent().setDirection(Directions.NORTH);
-            } else if(entityTopY < nextY && entityLeftX >= nextX && entityRightX < nextX + tileSize) {
-                getMovementComponent().setDirection(Directions.SOUTH);
-            } else if(entityTopY >= nextY && entityBottomY < nextY + tileSize) {
-                if(entityLeftX > nextX) {
-                    getMovementComponent().setDirection(Directions.WEST);
-                } else if (entityLeftX < nextX) {
-                    getMovementComponent().setDirection(Directions.EAST);
-                }
-            } else if (entityTopY > nextY && entityLeftX > nextX) {
-                getMovementComponent().setDirection(Directions.NORTH);
-                CollisionHandler.checkTileCollision(this, calculateSpeed());
-                if(getMovementComponent().isColliding()) {
-                    getMovementComponent().setDirection(Directions.WEST);
-                }
-            } else if(entityTopY > nextY && entityLeftX < nextX) {
-                getMovementComponent().setDirection(Directions.NORTH);
-                CollisionHandler.checkTileCollision(this, calculateSpeed());
-                if(getMovementComponent().isColliding()) {
-                    getMovementComponent().setDirection(Directions.EAST);
-                }
-            } else if(entityTopY < nextY && entityLeftX > nextX) {
-                getMovementComponent().setDirection(Directions.SOUTH);
-                CollisionHandler.checkTileCollision(this, calculateSpeed());
-                if(getMovementComponent().isColliding()) {
-                    getMovementComponent().setDirection(Directions.WEST);
-                }
-            } else if(entityTopY < nextY && entityLeftX < nextX) {
-                getMovementComponent().setDirection(Directions.SOUTH);
-                CollisionHandler.checkTileCollision(this, calculateSpeed());
-                if(getMovementComponent().isColliding()) {
-                    getMovementComponent().setDirection(Directions.EAST);
-                }
-            }
 
-//            int nextCol = pathFinder.getPathNodes().get(0).getCol();
-//            int nextRow = pathFinder.getPathNodes().get(0).getRow();
-//            if(nextCol == goalCol && nextRow == goalRow) {
-//                onPath = false;
-//                System.out.println("PATH STOP!");
-//            }
+            handleDirections(nextX, nextY, entityLeftX, entityTopY);
         }
     }
+
+    private void handleDirections(int nextX, int nextY, int entityLeftX, int entityTopY) {
+        Directions direction;
+
+        if (entityLeftX < nextX) {
+            if (entityTopY < nextY) {
+                direction = Directions.SOUTH_EAST;
+            } else if (entityTopY > nextY) {
+                direction = Directions.NORTH_EAST;
+            } else {
+                direction = Directions.EAST;
+            }
+        } else if (entityLeftX > nextX) {
+            if (entityTopY < nextY) {
+                direction = Directions.SOUTH_WEST;
+            } else if (entityTopY > nextY) {
+                direction = Directions.NORTH_WEST;
+            } else {
+                direction = Directions.WEST;
+            }
+        } else {
+            if (entityTopY < nextY) {
+                direction = Directions.SOUTH;
+            } else if (entityTopY > nextY) {
+                direction = Directions.NORTH;
+            } else {
+                direction = getMovementComponent().getDirection();
+            }
+        }
+
+        getMovementComponent().setDirection(direction);
+        CollisionHandler.checkTileCollision(this, calculateSpeed());
+        if(getMovementComponent().isColliding()) {
+            reverseDirection();
+        }
+    }
+
+    private void handleMovement(int worldPositionX, int worldPositionY, int speed, int diagonalSpeed) {
+        switch (getMovementComponent().getDirection()) {
+            case Directions.NORTH_EAST:
+                getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);
+                getPositionComponent().setWorldPositionX(worldPositionX + diagonalSpeed);
+                break;
+            case Directions.NORTH_WEST:
+                getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);
+                getPositionComponent().setWorldPositionX(worldPositionX - diagonalSpeed);
+                break;
+            case Directions.SOUTH_EAST:
+                getPositionComponent().setWorldPositionY(worldPositionY + diagonalSpeed);
+                getPositionComponent().setWorldPositionX(worldPositionX + diagonalSpeed);
+                break;
+            case Directions.SOUTH_WEST:
+                getPositionComponent().setWorldPositionY(worldPositionY + diagonalSpeed);
+                getPositionComponent().setWorldPositionX(worldPositionX - diagonalSpeed);
+                break;
+            case Directions.NORTH:
+                getPositionComponent().setWorldPositionY(worldPositionY - speed);
+                break;
+            case Directions.SOUTH:
+                getPositionComponent().setWorldPositionY(worldPositionY + speed);
+                break;
+            case Directions.WEST:
+                getPositionComponent().setWorldPositionX(worldPositionX - speed);
+                break;
+            case Directions.EAST:
+                getPositionComponent().setWorldPositionX(worldPositionX + speed);
+                break;
+        }
+    }
+
+    private void reverseDirection() {
+        switch (getMovementComponent().getDirection()) {
+            case Directions.NORTH_EAST:
+                getMovementComponent().setDirection(Directions.SOUTH_WEST);
+                break;
+            case Directions.NORTH_WEST:
+                getMovementComponent().setDirection(Directions.SOUTH_EAST);
+                break;
+            case Directions.SOUTH_EAST:
+                getMovementComponent().setDirection(Directions.NORTH_WEST);
+                break;
+            case Directions.SOUTH_WEST:
+                getMovementComponent().setDirection(Directions.NORTH_EAST);
+                break;
+            case Directions.NORTH:
+                getMovementComponent().setDirection(Directions.SOUTH);
+                break;
+            case Directions.SOUTH:
+                getMovementComponent().setDirection(Directions.NORTH);
+                break;
+            case Directions.WEST:
+                getMovementComponent().setDirection(Directions.EAST);
+                break;
+            case Directions.EAST:
+                getMovementComponent().setDirection(Directions.WEST);
+                break;
+        }
+    }
+
 
     @Override
     public void kill() {
@@ -217,17 +233,5 @@ public class Enemy extends CharacterEntity {
 
     public void setSpritesManager(SpritesManager spritesManager) {
         this.spritesManager = spritesManager;
-    }
-
-    public void incrementMoveDelayCounter() {
-        this.moveDelayCounter++;
-    }
-
-    public void resetMoveDelayCounter() {
-        this.moveDelayCounter = 0;
-    }
-
-    public int getMoveDelayCounter() {
-        return moveDelayCounter;
     }
 }

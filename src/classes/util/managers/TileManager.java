@@ -23,7 +23,6 @@ public class TileManager {
     private static int MAX_WORLD_COL;
     private static int MAX_WORLD_ROW;
     private static int TILE_SIZE;
-
     private boolean drawPath = true;
 
     public TileManager() {

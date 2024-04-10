@@ -7,7 +7,6 @@ import classes.entities.player.PlayerBuilder;
 import classes.entities.player.PlayerDirector;
 import classes.entities.EntityObject;
 import classes.entities.player.Player;
-import classes.entities.projectile.Projectile;
 import classes.entities.projectile.ProjectileFlyweightFactory;
 import classes.equips.weapons.Bow;
 import classes.equips.weapons.Staff;
@@ -43,6 +42,8 @@ public class Game {
     private ArrayList<MovingEntity> entities;
 
     private PathFinder pathFinder;
+
+    private static boolean spawned;
 
 
     private Game() {}

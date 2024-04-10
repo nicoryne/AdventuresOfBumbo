@@ -1,9 +1,10 @@
 package classes.util.managers;
 
 import classes.Game;
+import classes.entities.player.Player;
 import classes.entities.tile.CollidableTiles;
 import classes.entities.tile.Tile;
-import classes.ui.GamePanel;
+import classes.equips.weapons.Weapon;
 import classes.util.handlers.ImageHandler;
 import classes.util.handlers.MapHandler;
 import classes.util.handlers.RenderHandler;
@@ -22,6 +23,8 @@ public class TileManager {
     private static int MAX_WORLD_COL;
     private static int MAX_WORLD_ROW;
     private static int TILE_SIZE;
+
+    private boolean drawPath = true;
 
     public TileManager() {
         MAX_WORLD_COL = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_COL"));
@@ -83,14 +86,29 @@ public class TileManager {
         }
     }
 
-    private void drawTile(Graphics2D g, int worldCol, int worldRow) {
+    private void drawTile(Graphics2D g2, int worldCol, int worldRow) {
         int tileNum = mapTile2DArray[worldCol][worldRow];
+        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         int worldX = worldCol * TILE_SIZE;
         int worldY = worldRow * TILE_SIZE;
 
         if (RenderHandler.isViewableOnScreen(worldX, worldY)) {
             BufferedImage image = tileArrayList.get(tileNum).getRenderComponent().getSprite();
-            RenderHandler.renderOnScreen(worldX, worldY, image, g);
+            RenderHandler.renderOnScreen(worldX, worldY, image, g2);
+        }
+
+        if(drawPath) {
+            g2.setColor(new Color(255, 0, 0, 70));
+            for(int i = 0; i < Game.getInstance().getPathFinder().getPathNodes().size(); i++) {
+                Player<Weapon> player = Game.getInstance().getPlayer();
+                int nodeWorldX = Game.getInstance().getPathFinder().getPathNodes().get(i).getCol() * tileSize;
+                int nodeWorldY = Game.getInstance().getPathFinder().getPathNodes().get(i).getRow() * tileSize;
+                int screenX = nodeWorldX - player.getPositionComponent().getWorldPositionX().intValue() + player.getPositionComponent().getScreenPositionX().intValue();
+                int screenY = nodeWorldY - player.getPositionComponent().getWorldPositionY().intValue() + player.getPositionComponent().getScreenPositionY().intValue();
+
+
+                g2.fillRect(screenX, screenY, tileSize, tileSize);
+            }
         }
     }
 

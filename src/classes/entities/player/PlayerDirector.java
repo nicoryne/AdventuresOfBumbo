@@ -3,6 +3,7 @@ package classes.entities.player;
 import classes.Game;
 import classes.entities.EntityType;
 import classes.equips.weapons.Weapon;
+import classes.util.Directions;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
 import classes.util.managers.SpritesManager;
@@ -20,13 +21,17 @@ public class PlayerDirector {
         builder.setAlive();
         builder.setScreenPositionX(game.getScreenWidth() / 2.0 - (tileSize / 2.0));
         builder.setScreenPositionY(game.getScreenHeight() / 2.0 - (tileSize / 2.0));
-        builder.setHitbox(new Rectangle(16, 16, 16, 20));
-        builder.setSpeed(3);
-        builder.setDirection("NORTH");
+        builder.setHitbox(new Rectangle(8, 8, 32, 32));
+        builder.setEntitySpeed(1);
+        builder.setDirection(Directions.SOUTH);
         builder.setSpritesManager(new SpritesManager("player", 3));
         builder.setKeyboardController(keyboardController);
         builder.setMouseController(mouseController);
         builder.setWeapon(weapon);
+        builder.setHitPoints(100);
+        builder.setMana(100);
+        builder.setSpeed(50);
+
     }
 
 }

@@ -1,0 +1,45 @@
+{
+  "player": {
+    "name": "PLAYER",
+    "type": "PLAYER",
+    "weapon": "Staff",
+    "entitySpeed": 1,
+    "maxHitPoints": 100,
+    "maxMana": 100,
+    "baseSpeed": 50,
+    "agility": 10,
+    "intelligence": 10,
+    "strength": 10,
+    "hitbox": { "x": 8, "y": 8, "width": 32, "height": 32 },
+    "direction": "SOUTH"
+  },
+  "enemies": [
+    {
+      "name": "BUMBO",
+      "type": "ENEMY",
+      "entitySpeed": 1,
+      "maxHitPoints": 100,
+      "maxMana": 100,
+      "baseSpeed": 50,
+      "agility": 10,
+      "intelligence": 10,
+      "strength": 10,
+      "hitbox": { "x": 8, "y": 8, "width": 18, "height": 18 },
+      "direction": "SOUTH"
+    }
+  ],
+  "projectiles" : [
+    {
+      "name": "ARROW",
+      "type": "PROJECTILE",
+      "entitySpeed": 9,
+      "hitbox": { "x": 0, "y": 0, "width": 32, "height": 32 }
+    },
+    {
+      "name": "ORB",
+      "type": "PROJECTILE",
+      "entitySpeed": 6,
+      "hitbox": { "x": 8, "y": 8, "width": 32, "height": 32 }
+    }
+  ]
+}

@@ -17,8 +17,11 @@ public class KeyboardController implements KeyListener {
 
     private final boolean[] keyActionStates = new boolean[1];
 
+    private boolean isPauseToggled;
+
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -31,7 +34,7 @@ public class KeyboardController implements KeyListener {
     }
 
     private void updateKeyState(int keyCode, boolean state) {
-        switch(keyCode) {
+        switch (keyCode) {
             case KeyEvent.VK_W:
                 keyDirectionStates[Direction.UP.ordinal()] = state;
                 break;
@@ -46,6 +49,11 @@ public class KeyboardController implements KeyListener {
                 break;
             case KeyEvent.VK_F:
                 keyActionStates[Action.ATTACK.ordinal()] = state;
+                break;
+            case KeyEvent.VK_P:
+                if (state) { // If the key is pressed
+                    isPauseToggled = !isPauseToggled; // Toggle the pause state
+                }
                 break;
         }
     }
@@ -68,5 +76,9 @@ public class KeyboardController implements KeyListener {
 
     public boolean isAttacking() {
         return keyActionStates[Action.ATTACK.ordinal()];
+    }
+
+    public boolean isPaused() {
+        return isPauseToggled;
     }
 }

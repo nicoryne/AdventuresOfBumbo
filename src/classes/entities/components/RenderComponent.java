@@ -27,6 +27,14 @@ public class RenderComponent {
         this.hitbox = hitbox;
     }
 
+    public void setXHitbox(int value) {
+        this.hitbox.x = value;
+    }
+
+    public void setYHitbox(int value) {
+        this.hitbox.y = value;
+    }
+
     public boolean isAlive() {
         return isAlive;
     }
@@ -34,4 +42,5 @@ public class RenderComponent {
     public void setAlive(boolean alive) {
         isAlive = alive;
     }
+
 }

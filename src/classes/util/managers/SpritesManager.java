@@ -2,6 +2,7 @@ package classes.util.managers;
 
 import classes.Game;
 import classes.entities.tile.Tile;
+import classes.util.Directions;
 import classes.util.handlers.ImageHandler;
 
 import java.awt.*;
@@ -39,7 +40,7 @@ public class SpritesManager {
         }
     }
 
-    public BufferedImage getCurrentSprite(String direction) {
+    public BufferedImage getCurrentSprite(Directions direction) {
         int index = getCurrentSpriteIndex(direction);
         return spriteList.get(index);
     }
@@ -49,13 +50,12 @@ public class SpritesManager {
         return spriteList.get(index);
     }
 
-    private int getCurrentSpriteIndex(String direction) {
+    private int getCurrentSpriteIndex(Directions direction) {
         return switch (direction) {
-            case "SOUTH" -> currentSpriteIndex;
-            case "EAST" -> currentSpriteIndex + spritesAvailablePerDirection;
-            case "WEST" -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
-            case "NORTH" -> currentSpriteIndex + (spritesAvailablePerDirection * 3);
-            default -> throw new IllegalStateException("Unexpected value: " + direction);
+            case SOUTH -> currentSpriteIndex;
+            case EAST -> currentSpriteIndex + spritesAvailablePerDirection;
+            case WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
+            case NORTH -> currentSpriteIndex + (spritesAvailablePerDirection * 3);
         };
     }
 

@@ -1,11 +1,11 @@
 package classes.entities.player;
 
-import classes.entities.EntityObject;
+import classes.entities.CharacterEntity;
+import classes.entities.MovingEntity;
 import classes.entities.util.ControllableEntity;
 import classes.entities.util.SpriteFilledEntity;
-import classes.equips.weapons.Bow;
 import classes.equips.weapons.Weapon;
-import classes.equips.weapons.util.RangedWeapon;
+import classes.util.Directions;
 import classes.util.handlers.CollisionHandler;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
@@ -16,16 +16,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 
-public class Player<W extends Weapon> extends EntityObject implements SpriteFilledEntity, ControllableEntity {
+public class Player<W extends Weapon> extends CharacterEntity implements SpriteFilledEntity, ControllableEntity {
     private KeyboardController keyboardController;
     private MouseController mouseController;
     private SpritesManager spritesManager;
     private W weapon;
 
-    public Player() {}
-
     @Override
     public void update() {
+        CollisionHandler.checkEnemyCollision(this);
         move();
         look();
         attack();
@@ -51,38 +50,37 @@ public class Player<W extends Weapon> extends EntityObject implements SpriteFill
 
         if (validKey) {
             if (keyboardController.isUpPressed()) {
-                getMovementComponent().setDirection("NORTH");
+                getMovementComponent().setDirection(Directions.NORTH);
             }
             if (keyboardController.isDownPressed()) {
-                getMovementComponent().setDirection("SOUTH");
+                getMovementComponent().setDirection(Directions.SOUTH);
             }
             if (keyboardController.isLeftPressed()) {
-                getMovementComponent().setDirection("WEST");
+                getMovementComponent().setDirection(Directions.WEST);
             }
             if (keyboardController.isRightPressed()) {
-                getMovementComponent().setDirection("EAST");
+                getMovementComponent().setDirection(Directions.EAST);
             }
 
-
+            int speed = calculateSpeed();
             getMovementComponent().setColliding(false);
-            CollisionHandler.checkTileCollision(this);
+            CollisionHandler.checkTileCollision(this, speed);
 
             if(!getMovementComponent().isColliding()) {
                 int worldPositionY = getPositionComponent().getWorldPositionY().intValue();
                 int worldPositionX = getPositionComponent().getWorldPositionX().intValue();
-                int speed = getMovementComponent().getSpeed();
 
-                switch(getMovementComponent().getDirection()) {
-                    case "NORTH":
+                switch (getMovementComponent().getDirection()) {
+                    case Directions.NORTH:
                         getPositionComponent().setWorldPositionY(worldPositionY - speed);
                         break;
-                    case "SOUTH":
+                    case Directions.SOUTH:
                         getPositionComponent().setWorldPositionY(worldPositionY + speed);
                         break;
-                    case "WEST":
+                    case Directions.WEST:
                         getPositionComponent().setWorldPositionX(worldPositionX - speed);
                         break;
-                    case "EAST":
+                    case Directions.EAST:
                         getPositionComponent().setWorldPositionX(worldPositionX + speed);
                         break;
                 }
@@ -113,12 +111,21 @@ public class Player<W extends Weapon> extends EntityObject implements SpriteFill
         double angle = getMovementComponent().getAngle();
         double worldPositionX = getPositionComponent().getWorldPositionX().doubleValue();
         double worldPositionY = getPositionComponent().getWorldPositionY().doubleValue();
-        String direction = getMovementComponent().getDirection();
+        Directions direction = getMovementComponent().getDirection();
 
         if (validKey) {
             weapon.attack(angle, screenX, screenY, worldPositionX, worldPositionY, direction);
-            System.out.println(weapon.getWeaponName());
         }
+    }
+
+    private int calculateSpeed() {
+        return (int) (getMovementComponent().getEntitySpeed() + (( getStatComponent().getSpeed() / 100) + getAttributeComponents().getAgility() / 10));
+    }
+
+    private void showHitbox(Graphics2D g2, int screenPositionX, int screenPositionY) {
+        Rectangle hitbox = getRenderComponent().getHitbox();
+        g2.setColor(Color.RED); // Set the color of the outline
+        g2.drawRect((int) (screenPositionX + hitbox.getX()), (int) (screenPositionY + hitbox.getY()), (int) hitbox.getWidth(), (int) hitbox.getHeight());
     }
 
     @Override

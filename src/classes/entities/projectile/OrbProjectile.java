@@ -4,16 +4,16 @@ import classes.util.Directions;
 
 import java.awt.*;
 
-public class ArrowProjectile extends Projectile {
+public class OrbProjectile extends Projectile {
 
-    public ArrowProjectile() {
-        this.setProjectileType(ProjectileType.ARROW);
+    public OrbProjectile() {
+        this.setProjectileType(ProjectileType.ORB);
         ProjectileFlyweight projectileFlyweight = ProjectileFlyweightFactory.getFlyweight(getProjectileType());
         this.setSpritesManager(projectileFlyweight.getSpritesManager());
 
         this.getRenderComponent().setAlive(true);
-        this.getMovementComponent().setEntitySpeed(9);
-        this.getRenderComponent().setHitbox(new Rectangle(0, 0, 32, 32));
+        this.getMovementComponent().setEntitySpeed(6);
+        this.getRenderComponent().setHitbox(new Rectangle(8, 8, 32, 32));
     }
 
     public void clone(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, Directions currentDirection) {
@@ -24,4 +24,5 @@ public class ArrowProjectile extends Projectile {
         this.getPositionComponent().setWorldPositionY(worldPositionY);
         this.getMovementComponent().setDirection(currentDirection);
     }
+
 }

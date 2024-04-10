@@ -1,18 +1,18 @@
 package classes.equips.weapons;
 
 import classes.Game;
-import classes.entities.projectile.ArrowProjectile;
+import classes.entities.projectile.OrbProjectile;
 import classes.equips.weapons.util.RangedWeapon;
 import classes.util.Directions;
 import classes.util.handlers.SoundHandler;
 
 import java.util.ArrayList;
 
-public class Bow extends RangedWeapon<ArrowProjectile> {
+public class Staff extends RangedWeapon<OrbProjectile> {
 
-    public Bow() {
-        this.setProjectile(new ArrowProjectile());
-        this.setWeaponName("Bow");
+    public Staff() {
+        this.setProjectile(new OrbProjectile());
+        this.setWeaponName("Staff");
         this.setWeaponType(WeaponType.RANGED);
         this.setDamage(30);
         this.setRange(20);
@@ -26,7 +26,7 @@ public class Bow extends RangedWeapon<ArrowProjectile> {
     @Override
     public void attack(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, Directions currentDirection) {
         if(canAttack()) {
-            ArrowProjectile projectile  = new ArrowProjectile();
+            OrbProjectile projectile  = new OrbProjectile();
             projectile.clone(angle, screenPositionX, screenPositionY, worldPositionX, worldPositionY, currentDirection);
             projectile.setProjectileSize(getProjectileSize());
             getProjectiles().add(projectile);

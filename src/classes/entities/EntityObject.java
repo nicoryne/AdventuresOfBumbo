@@ -13,8 +13,6 @@ public abstract class EntityObject implements Entity {
 
     private RenderComponent renderComponent;
 
-    private MovementComponent movementComponent;
-
     private EntityType entityType;
 
 
@@ -63,12 +61,5 @@ public abstract class EntityObject implements Entity {
             renderComponent = new RenderComponent();
         }
         return renderComponent;
-    }
-
-    public MovementComponent getMovementComponent() {
-        if(movementComponent == null) {
-            movementComponent = new MovementComponent();
-        }
-        return movementComponent;
     }
 }

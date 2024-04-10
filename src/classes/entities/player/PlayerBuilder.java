@@ -1,16 +1,16 @@
 package classes.entities.player;
 
 import classes.entities.EntityType;
-import classes.entities.EntityBuilder;
+import classes.entities.CharacterBuilder;
 import classes.equips.weapons.Weapon;
+import classes.util.Directions;
 import classes.util.controllers.KeyboardController;
 import classes.util.controllers.MouseController;
 import classes.util.managers.SpritesManager;
 
 import java.awt.*;
-import java.util.ArrayList;
 
-public class PlayerBuilder<W extends Weapon> implements EntityBuilder {
+public class PlayerBuilder<W extends Weapon> implements CharacterBuilder {
 
     private Player<W> player;
 
@@ -45,13 +45,46 @@ public class PlayerBuilder<W extends Weapon> implements EntityBuilder {
     }
 
     @Override
-    public void setSpeed(int speed) {
-        this.player.getMovementComponent().setSpeed(speed);
+    public void setEntitySpeed(int entitySpeed) {
+        this.player.getMovementComponent().setEntitySpeed(entitySpeed);
     }
 
     @Override
-    public void setDirection(String direction) {
+    public void setDirection(Directions direction) {
         this.player.getMovementComponent().setDirection(direction);
+    }
+
+    @Override
+    public void setHitPoints(double hitPoints) {
+        this.player.getStatComponent().setMaxHitPoints(hitPoints);
+        this.player.getStatComponent().setHitPoints(hitPoints);
+    }
+
+    @Override
+    public void setMana(double mana) {
+        this.player.getStatComponent().setMaxMana(mana);
+        this.player.getStatComponent().setMaxHitPoints(mana);
+    }
+
+    @Override
+    public void setStrength(double strength) {
+        this.player.getAttributeComponents().setStrength(strength);
+    }
+
+    @Override
+    public void setAgility(double agility) {
+        this.player.getAttributeComponents().setAgility(agility);
+
+    }
+
+    @Override
+    public void setIntelligence(double intelligence) {
+        this.player.getAttributeComponents().setIntelligence(intelligence);
+    }
+
+    @Override
+    public void setSpeed(int speed) {
+        this.player.getStatComponent().setSpeed(speed);
     }
 
     public void setKeyboardController(KeyboardController keyboardController) {

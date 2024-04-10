@@ -1,6 +1,7 @@
 package classes.equips.weapons;
 
 import classes.equips.weapons.util.AttackingWeapon;
+import classes.util.Directions;
 
 public abstract class Weapon implements AttackingWeapon {
 
@@ -8,7 +9,7 @@ public abstract class Weapon implements AttackingWeapon {
 
     private WeaponType weaponType;
 
-    private int damage;
+    private double damage;
 
     private int range;
 
@@ -32,11 +33,11 @@ public abstract class Weapon implements AttackingWeapon {
         this.weaponType = weaponType;
     }
 
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 
@@ -71,5 +72,5 @@ public abstract class Weapon implements AttackingWeapon {
     }
 
     @Override
-    public void attack(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, String currentDirection) {}
+    public void attack(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, Directions currentDirection) {}
 }

@@ -11,7 +11,7 @@ public class RangedWeapon<P extends Projectile> extends Weapon{
 
     private Projectile projectile;
 
-    private int projectileSize;
+    private double projectileSize;
 
 
     public ArrayList<P> getProjectiles() {
@@ -22,9 +22,9 @@ public class RangedWeapon<P extends Projectile> extends Weapon{
         this.projectiles = projectiles;
     }
 
-    public int getProjectileSize() {return projectileSize;}
+    public double getProjectileSize() {return projectileSize;}
 
-    public void setProjectileSize(int projectileSize) {
+    public void setProjectileSize(double projectileSize) {
         this.projectileSize = projectileSize;
     }
 

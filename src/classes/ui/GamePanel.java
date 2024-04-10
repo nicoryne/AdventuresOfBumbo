@@ -1,6 +1,7 @@
 package classes.ui;
 
 import classes.Game;
+import classes.GameState;
 import classes.exceptions.GameInitializationException;
 import classes.util.GameLoopSingleton;
 import classes.util.handlers.SoundHandler;
@@ -8,6 +9,7 @@ import classes.util.handlers.SoundHandler;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * The GamePanel class represents a JPanel used for displaying a game screen.
@@ -42,29 +44,46 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.3f);
+        SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.5f);
         gameLoopSingleton.startGameLoop();
     }
 
     public void update() {
-        Game.getInstance().updateEntities();
+        toggleGameState();
+
+        if(Game.getInstance().getGameState() == GameState.PLAYING) {
+            Game.getInstance().updateEntities();
+        }
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        double drawStart = 0;
-        drawStart = System.nanoTime();
-
         Game.getInstance().renderEntities(g2);
 
-        double drawEnd = System.nanoTime();
-        double passed = (drawEnd - drawStart);
-
-        g2.setColor(Color.white);
-        g2.drawString("Draw time: " + passed, 10, 400);
+        if(Game.getInstance().getGameState() == GameState.PAUSED) {
+            try {
+                PauseScreen.draw(g2);
+            } catch (IOException | FontFormatException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (Game.getInstance().getGameState() == GameState.DEAD) {
+            try {
+                DeadScreen.draw(g2);
+            } catch (IOException | FontFormatException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         g2.dispose();
+    }
+
+    private void toggleGameState() {
+        if(Game.getInstance().getControllerComponents().getKeyboardController().isPaused()) {
+            Game.getInstance().setGameState(GameState.PAUSED);
+        } else {
+            Game.getInstance().setGameState(GameState.PLAYING);
+        }
     }
 }

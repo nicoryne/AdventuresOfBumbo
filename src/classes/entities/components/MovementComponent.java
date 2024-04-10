@@ -1,21 +1,23 @@
 package classes.entities.components;
 
+import classes.util.Directions;
+
 public class MovementComponent {
 
-    private int speed;
+    private int entitySpeed;
 
     private double angle;
 
-    private String direction;
+    private Directions direction;
 
     private boolean isColliding;
 
-    public int getSpeed() {
-        return speed;
+    public int getEntitySpeed() {
+        return entitySpeed;
     }
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    public void setEntitySpeed(int entitySpeed) {
+        this.entitySpeed = entitySpeed;
     }
 
     public double getAngle() {
@@ -26,11 +28,11 @@ public class MovementComponent {
         this.angle = angle;
     }
 
-    public String getDirection() {
+    public Directions getDirection() {
         return direction;
     }
 
-    public void setDirection(String direction) {
+    public void setDirection(Directions direction) {
         this.direction = direction;
     }
 

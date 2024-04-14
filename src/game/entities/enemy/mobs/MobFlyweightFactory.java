@@ -12,12 +12,13 @@ public class MobFlyweightFactory {
         return mobFlyweightHashmap.get(mobName);
     }
 
-    public static void addProjectFlyweight(MobName mobName, SpritesManager spritesManager) {
+    public static void addMobFlyweight(MobName mobName, SpritesManager spritesManager) {
         MobFlyweight mobFlyweight = new MobFlyweight(mobName, spritesManager);
         mobFlyweightHashmap.put(mobName, mobFlyweight);
     }
 
     public static void initializeFlyweightEnemies() {
-        addProjectFlyweight(MobName.BUMBO, new SpritesManager("enemies/bumbo", 3));
+        addMobFlyweight(MobName.BUMBO, new SpritesManager("enemies/bumbo", 3));
+        addMobFlyweight(MobName.CHORTLE, new SpritesManager("enemies/chortle", 2));
     }
 }

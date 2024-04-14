@@ -4,10 +4,10 @@ import game.util.Directions;
 
 import java.awt.*;
 
-public class BumboMob extends Mob {
+public class ChortleMob extends Mob {
 
-    public BumboMob() {
-        super(MobName.BUMBO);
+    public ChortleMob() {
+        super(MobName.CHORTLE);
         MobFlyweight mobFlyweight = MobFlyweightFactory.getFlyweight(getMobName());
         this.setSpritesManager(mobFlyweight.getSpritesManager());
 
@@ -20,5 +20,4 @@ public class BumboMob extends Mob {
         this.getStatComponent().setSpeed(10);
         this.getStatComponent().setDamage(50);
     }
-
 }

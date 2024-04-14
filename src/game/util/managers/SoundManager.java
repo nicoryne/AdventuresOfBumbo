@@ -13,7 +13,9 @@ import java.util.logging.Level;
 public class SoundManager {
 
     private static SoundManager soundManagerInstance;
+
     private final Map<String, Clip> audioLibrary;
+
     private SoundManager() {
         audioLibrary = new ConcurrentHashMap<>();
         setupAudioLibrary();
@@ -26,7 +28,6 @@ public class SoundManager {
 
         return soundManagerInstance;
     }
-
 
     public synchronized void setupAudioLibrary() {
         String filePath = "src" + File.separator + "res" + File.separator + "audio" + File.separator;
@@ -49,7 +50,6 @@ public class SoundManager {
                 addFileToAudioLibrary(file);
             }
         }
-
     }
 
     private void addFileToAudioLibrary(File file) {

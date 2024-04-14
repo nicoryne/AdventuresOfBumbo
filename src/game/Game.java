@@ -2,6 +2,7 @@ package game;
 
 import game.entities.MovingEntity;
 import game.entities.enemy.mobs.BumboMob;
+import game.entities.enemy.mobs.ChortleMob;
 import game.entities.enemy.mobs.MobFlyweightFactory;
 import game.entities.player.PlayerBuilder;
 import game.entities.player.PlayerDirector;
@@ -16,7 +17,6 @@ import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
 import game.util.managers.GameManagerComponents;
 import game.util.managers.TileManager;
-import game.util.pathfinding.PathFinder;
 import services.LoggerHelper;
 
 import java.awt.*;
@@ -41,10 +41,7 @@ public class Game {
 
     private ArrayList<MovingEntity> entities;
 
-    private PathFinder pathFinder;
-
     private static boolean spawned;
-
 
     private Game() {}
 
@@ -66,7 +63,6 @@ public class Game {
         this.controllerComponents = new ControllerComponents(new KeyboardController(), new MouseController());
         setupPlayer();
         this.gameManagerComponents = new GameManagerComponents(new TileManager());
-        this.pathFinder = new PathFinder();
     }
 
     private void setupPlayer() {
@@ -114,7 +110,6 @@ public class Game {
     }
 
     public void updateEntities() {
-
         player.update();
 
         Iterator<MovingEntity> entityObjectIterator = entities.iterator();
@@ -134,7 +129,7 @@ public class Game {
         Random random = new Random();
         int chance = random.nextInt(100);
 
-        if(chance > 97) {
+        if(chance > 98) {
             int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
             int maxWorldCol = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_COL"));
             int maxWorldRow = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_ROW"));
@@ -218,7 +213,4 @@ public class Game {
         return gameProperties.getProperty(key);
     }
 
-    public PathFinder getPathFinder() {
-        return pathFinder;
-    }
 }

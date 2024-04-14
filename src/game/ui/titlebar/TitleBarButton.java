@@ -1,4 +1,4 @@
-package game.ui.components.titlebar;
+package game.ui.titlebar;
 
 import game.exceptions.FontHandlerException;
 import game.util.handlers.FontHandler;
@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 public class TitleBarButton extends JButton {
     private static final String FONT_NAME = "font-1.ttf";
@@ -20,13 +19,7 @@ public class TitleBarButton extends JButton {
     private static final Color BUTTON_BACKGROUND_SELECTED_COLOR = Color.RED;
 
     public TitleBarButton(String text, ActionListener actionListener) {
-        Font font;
-        try {
-            font = FontHandler.getFont(FONT_NAME, FONT_SIZE);
-        } catch (FontHandlerException e) {
-            throw new RuntimeException(e);
-        }
-
+        Font font = FontHandler.getFont(FONT_NAME, FONT_SIZE);
         this.setPreferredSize(BUTTON_SIZE);
         this.setFocusPainted(false);
         this.setBorderPainted(false);

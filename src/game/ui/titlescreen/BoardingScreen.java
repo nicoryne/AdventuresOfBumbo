@@ -1,21 +1,16 @@
-package game.ui.components.titlescreen;
+package game.ui.titlescreen;
 
 import game.Game;
 import game.exceptions.FontHandlerException;
 import game.util.handlers.FontHandler;
+import services.LoggerHelper;
 
 import java.awt.*;
 
 public abstract class BoardingScreen {
 
     public static void draw(Graphics2D g2, int menuCounter) {
-        Font font;
-        try {
-            font = FontHandler.getFont("font-1.ttf", 48f);
-        } catch (FontHandlerException e) {
-            throw new RuntimeException(e);
-        }
-
+        Font font = FontHandler.getFont("font-1.ttf", 48f);
         g2.setFont(font);
 
         //  LOGIN TEXT

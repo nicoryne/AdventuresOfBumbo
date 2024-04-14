@@ -8,38 +8,33 @@ import java.util.logging.Logger;
 
 public class DBConnection {
 
+    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/login_schema";
+
+    private static final String USERNAME = "root";
+
+    private static final String PASSWORD = "csct-002";
+
     private Connection dbConnection;
 
     public DBConnection() {
-       try {
-           dbConnection = DriverManager.getConnection(
-                   "jdbc:mysql://127.0.0.1:3306/login_schema",
-                   "root",
-                   "csct-002"
-           );
-//           while(resultSet.next()) {
-//               System.out.println(resultSet.getString("username"));
-//               System.out.println(resultSet.getString("password"));
-//           }
-       } catch (SQLException e) {
-           LoggerHelper.logError("Error connecting to database: ", e);
-       }
-    }
-
-    public void addUser() {
-
-    }
-
-    private ResultSet queryDB(String query)  {
-        ResultSet resultSet = null;
-
         try {
-            Statement statement = dbConnection.createStatement();
-            resultSet = statement.executeQuery(query);
+            dbConnection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
         } catch (SQLException e) {
-            LoggerHelper.logError("Error querying from database: ", e);
+            LoggerHelper.logError("Error connecting to database", e);
         }
+    }
 
-        return resultSet;
+    public void close() {
+        if (dbConnection != null) {
+            try {
+                dbConnection.close();
+            } catch (SQLException e) {
+                LoggerHelper.logError("Error closing database connection: ", e);
+            }
+        }
+    }
+
+    public UserDML getUserDML() {
+        return new UserDML(dbConnection);
     }
 }

@@ -13,7 +13,6 @@ public class RangedWeapon<T extends Projectile> extends Weapon{
 
     private double projectileSize;
 
-
     public ArrayList<T> getProjectiles() {
         return projectiles;
     }

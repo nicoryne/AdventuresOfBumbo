@@ -14,17 +14,14 @@ public abstract class EntityObject implements Entity {
 
     private EntityType entityType;
 
-
     @Override
     public void update() {}
 
     @Override
     public void render(Graphics2D g2) {
         BufferedImage sprite = getRenderComponent().getSprite();
-
         int screenPositionX = getPositionComponent().getScreenPositionX().intValue();
         int screenPositionY = getPositionComponent().getScreenPositionY().intValue();
-
 
         g2.drawImage(sprite, screenPositionX, screenPositionY, null);
     }

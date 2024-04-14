@@ -1,12 +1,12 @@
-package game.ui.components.titlebar;
+package game.ui.titlebar;
 
 import game.exceptions.FontHandlerException;
 import game.util.handlers.FontHandler;
 import game.util.handlers.ImageHandler;
+import services.LoggerHelper;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 public class TitleBarPanel extends JPanel {
 
@@ -35,8 +35,8 @@ public class TitleBarPanel extends JPanel {
         this.iconLabel = new JLabel();
         this.titleLabel = new JLabel();
         this.buttonContainer = new JPanel();
-        this.exitButton = new TitleBarButton("X", e -> System.exit(0));
-        this.minimizeButton = new TitleBarButton("---", e -> windowFrame.setExtendedState(Frame.ICONIFIED));
+        this.exitButton = new TitleBarButton("X", e -> handleExit());
+        this.minimizeButton = new TitleBarButton("---", e -> handleIconified(windowFrame));
 
         DraggableTitleBarListener draggableTitleBarListener = new DraggableTitleBarListener(this, windowFrame);
         windowFrame.addMouseMotionListener(draggableTitleBarListener);
@@ -50,6 +50,16 @@ public class TitleBarPanel extends JPanel {
         this.add(iconLabel, BorderLayout.WEST);
         this.add(titleLabel, BorderLayout.CENTER);
         this.add(buttonContainer, BorderLayout.EAST);
+    }
+
+    private void handleExit() {
+        LoggerHelper.logInfo("Exiting program");
+        System.exit(0);
+    }
+
+    private void handleIconified(JFrame windowFrame) {
+        LoggerHelper.logInfo("Minimized program");
+        windowFrame.setExtendedState(Frame.ICONIFIED);
     }
 
     private void decorateComponents() {
@@ -71,15 +81,10 @@ public class TitleBarPanel extends JPanel {
     }
 
     private void decorateTitleLabel(){
-        Font titleFont;
-        try {
-            titleFont = FontHandler.getFont(FONT_NAME, FONT_SIZE);
-        } catch (FontHandlerException e) {
-            throw new RuntimeException(e);
-        }
+        Font titleFont = FontHandler.getFont(FONT_NAME, FONT_SIZE);
+        titleLabel.setFont(titleFont);
 
         titleLabel.setText("umbo Hell");
-        titleLabel.setFont(titleFont);
         titleLabel.setForeground(TEXT_FOREGROUND_COLOR);
     }
 

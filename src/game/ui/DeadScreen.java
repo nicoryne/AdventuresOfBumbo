@@ -10,16 +10,12 @@ import java.io.IOException;
 
 public abstract class DeadScreen {
 
-    public static void draw(Graphics2D g2) throws IOException, FontFormatException {
+    public static void draw(Graphics2D g2) {
         String text = "YOU DIED";
         g2.setColor(Color.white);
 
-        try {
-            Font font = FontHandler.getFont("font-1.ttf", 84f);
-            g2.setFont(font);
-        } catch (FontHandlerException e) {
-            LoggerHelper.logError("Error setting font: ", e);
-        }
+        Font font = FontHandler.getFont("font-1.ttf", 84f);
+        g2.setFont(font);
 
         int x = getXCenteredText(text, g2);
         int y = Game.getInstance().getScreenHeight() / 2;

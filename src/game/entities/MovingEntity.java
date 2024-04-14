@@ -12,5 +12,4 @@ public abstract class MovingEntity extends EntityObject {
         }
         return movementComponent;
     }
-
 }

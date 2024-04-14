@@ -12,14 +12,14 @@ public abstract class ProjectileFlyweightFactory {
         return projectileFlyweightHashMap.get(projectileType);
     }
 
-    public static void addProjectFlyweight(ProjectileType type, SpritesManager spritesManager) {
+    public static void addProjectileFlyweight(ProjectileType type, SpritesManager spritesManager) {
         ProjectileFlyweight projectileFlyweight = new ProjectileFlyweight(type, spritesManager);
         projectileFlyweightHashMap.put(type, projectileFlyweight);
     }
 
     public static void initializeFlyweightProjectiles() {
-        addProjectFlyweight(ProjectileType.ARROW, new SpritesManager("projectiles/arrow", 0));
-        addProjectFlyweight(ProjectileType.ORB, new SpritesManager("projectiles/test", 0));
+        addProjectileFlyweight(ProjectileType.ARROW, new SpritesManager("projectiles/arrow", 0));
+        addProjectileFlyweight(ProjectileType.ORB, new SpritesManager("projectiles/test", 0));
     }
 
 }

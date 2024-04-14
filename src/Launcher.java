@@ -1,8 +1,7 @@
 import game.exceptions.GameInitializationException;
 import game.ui.GamePanel;
-import game.ui.components.titlebar.TitleBarPanel;
+import game.ui.titlebar.TitleBarPanel;
 import game.util.handlers.ImageHandler;
-import services.server.DBConnection;
 
 import javax.swing.JFrame;
 import java.awt.*;
@@ -13,16 +12,15 @@ import java.util.Objects;
  * The Main class serves as the entry point for the "Adventures of Bumbo" game application.
  * It sets up the game window and initializes the game panel.
  */
-public class Main {
+public class Launcher {
 
     private static final String WINDOW_TITLE = "Bumbo Hell"; // Title of the game window
+
     private JFrame window;
 
-
     public static void main(String[] args) throws GameInitializationException {
-        Main main = new Main();
-        main.setupGameWindow();
-        DBConnection DBConnection = new DBConnection();
+        Launcher launcher = new Launcher();
+        launcher.setupGameWindow();
     }
 
     /**

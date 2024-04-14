@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Tile extends EntityObject {
+
     private final boolean isCollidable;
 
     public Tile(BufferedImage image, boolean isCollidable) {
@@ -18,7 +19,6 @@ public class Tile extends EntityObject {
             this.getRenderComponent().setHitbox(new Rectangle(16, 16));
         }
     }
-
 
     public boolean isCollidable() {
         return isCollidable;

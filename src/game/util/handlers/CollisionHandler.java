@@ -1,13 +1,15 @@
 package game.util.handlers;
 
 import game.Game;
-import game.GameState;
+import game.entities.CharacterEntity;
 import game.entities.EntityObject;
 import game.entities.MovingEntity;
 import game.entities.enemy.Enemy;
 import game.entities.player.Player;
+import game.entities.projectile.Projectile;
 import game.equips.weapons.Weapon;
 import game.util.managers.TileManager;
+import services.LoggerHelper;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,46 +24,80 @@ public abstract class CollisionHandler {
     private static int entityTopRow;
     private static int entityBottomRow;
 
-    public static void checkProjectileCollision(MovingEntity entity) {
-        ArrayList<MovingEntity> entityObjects = Game.getInstance().getEntities();
+    public static void checkProjectileCollision(Projectile projectile) {
+        ArrayList<MovingEntity> entities = Game.getInstance().getEntities();
 
-       for(MovingEntity targetEntity : entityObjects) {
-            Rectangle entityHitbox = handleSolidArea(entity);
+       for(MovingEntity targetEntity : entities) {
+            Rectangle entityHitbox = handleSolidArea(projectile);
             Rectangle targetHitbox = handleSolidArea(targetEntity);
 
-            boolean valid = entity.getEntityType() != targetEntity.getEntityType();
+            boolean valid = projectile.getEntityType() != targetEntity.getEntityType();
 
            if(entityHitbox.intersects(targetHitbox) && valid) {
-              targetEntity.kill();
-              entity.kill();
+               projectile.kill();
+
+              if(targetEntity instanceof Enemy enemy) {
+                  enemy.takeDamage(20);
+
+                  if(enemy.getStatComponent().getCurrentHitPoints() <= 0.0) {
+                      enemy.kill();
+                  }
+              }
            }
        }
     }
 
-    public static void checkEnemyCollision(MovingEntity player) {
-        ArrayList<MovingEntity> entityObjects = Game.getInstance().getEntities();
+    public static void checkEnemyCollision(CharacterEntity player) {
+        ArrayList<MovingEntity> entities = Game.getInstance().getEntities();
 
-        for(MovingEntity targetEntity : entityObjects) {
-            if(targetEntity instanceof Enemy) {
-                Rectangle entityHitbox = handleSolidArea(player);
-                Rectangle targetHitbox = handleSolidArea(targetEntity);
+        for(MovingEntity entity : entities) {
+            if(entity instanceof Enemy enemy) {
 
-                if(entityHitbox.intersects(targetHitbox)) {
-                    player.kill();
-                    Game.getInstance().setGameState(GameState.DEAD);
+                if (isFar(enemy, player)) {
+                    return;
+                } else {
+                    LoggerHelper.logInfo("Enemy nearby!");
+                }
+
+                Rectangle playerHitbox = handleSolidArea(player);
+                Rectangle enemyHitbox = handleSolidArea(enemy);
+
+                if(playerHitbox.intersects(enemyHitbox)) {
+                    player.takeDamage(enemy.dealDamage());
                 }
             }
         }
     }
 
-    public static void checkPlayerCollision(MovingEntity entity) {
+    public static void checkOtherEnemyCollision(Enemy enemy) {
+        ArrayList<MovingEntity> entities = Game.getInstance().getEntities();
+
+        for (MovingEntity entity : entities) {
+            if (entity instanceof Enemy otherEnemy && entity != enemy) {
+                Rectangle enemyHitbox = handleSolidArea(enemy);
+                Rectangle otherEnemyHitbox = handleSolidArea(otherEnemy);
+
+                if (enemyHitbox.intersects(otherEnemyHitbox)) {
+                    enemy.getMovementComponent().setColliding(true);
+                    otherEnemy.getMovementComponent().setColliding(true);
+                }
+            }
+        }
+    }
+
+    public static void checkPlayerCollision(Enemy enemy) {
         Player<Weapon> player = Game.getInstance().getPlayer();
 
-        Rectangle playerHitbox = handleSolidArea(player);
-        Rectangle entityHitbox = handleSolidArea(entity);
+        if (isFar(enemy, player)) {
+            return;
+        }
 
-        if (playerHitbox.intersects(entityHitbox)) {
-            entity.getMovementComponent().setColliding(true);
+        Rectangle playerHitbox = handleSolidArea(player);
+        Rectangle enemyHitbox = handleSolidArea(enemy);
+
+        if (playerHitbox.intersects(enemyHitbox)) {
+            enemy.getMovementComponent().setColliding(true);
+            player.takeDamage(enemy.dealDamage());
         }
     }
 
@@ -103,6 +139,19 @@ public abstract class CollisionHandler {
         if (isCollidable(firstTile) || isCollidable(secondTile)) {
             entity.getMovementComponent().setColliding(true);
         }
+    }
+
+    private static boolean isFar(MovingEntity currentEntity, MovingEntity otherEntity) {
+        double distanceSquared = calculateDistanceSquared(currentEntity, otherEntity);
+        double thresholdDistanceSquared = 64 * 64;
+
+        return distanceSquared >= thresholdDistanceSquared;
+    }
+
+    private static double calculateDistanceSquared(MovingEntity entity1, MovingEntity entity2) {
+        double dx = entity1.getPositionComponent().getWorldPositionX().doubleValue() - entity2.getPositionComponent().getWorldPositionX().doubleValue();
+        double dy = entity1.getPositionComponent().getWorldPositionY().doubleValue() - entity2.getPositionComponent().getWorldPositionY().doubleValue();
+        return dx * dx + dy * dy;
     }
     
     private static void handleNorthDirection(EntityObject entity, int speed) {

@@ -21,4 +21,8 @@ public abstract class CharacterEntity extends MovingEntity{
         return statComponent.getDamage();
     }
 
+    protected int calculateSpeed() {
+        return (getMovementComponent().getEntitySpeed() + ((getStatComponent().getSpeed() / 10)));
+    }
+
 }

@@ -8,7 +8,6 @@ public class MobFlyweight {
 
     private final SpritesManager spritesManager;
 
-
     public MobFlyweight(MobName mobName, SpritesManager spritesManager) {
         this.spritesManager = spritesManager;
         this.mobName = mobName;

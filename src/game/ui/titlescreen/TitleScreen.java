@@ -1,18 +1,18 @@
-package game.ui.components.titlescreen;
+package game.ui.titlescreen;
 
 import game.Game;
 import game.exceptions.FontHandlerException;
 import game.util.handlers.FontHandler;
 import game.util.handlers.ImageHandler;
+import services.LoggerHelper;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.Objects;
 
 public abstract class TitleScreen {
 
     public enum TitleScreenState {
-        BOARDING, LOGIN, MAIN
+        BOARDING, LOGIN, REGISTER, MENU, LEADERBOARD, PLAYING
     }
 
     private static final Color TITLE_SHADOW_COLOR = new Color(36, 12, 28);
@@ -33,20 +33,29 @@ public abstract class TitleScreen {
 
     private static TitleScreenState titleState = TitleScreenState.BOARDING;
 
-    public static void draw(Graphics2D g2) throws IOException, FontFormatException {
-        // background
-        g2.drawImage(getBackgroundImage(), 0, 0, Game.getInstance().getScreenWidth(), Game.getInstance().getScreenHeight(), null);
+    public static void draw(Graphics2D g2) {
 
-        // title name text
-        drawTitle(g2);
+        if(titleState != TitleScreenState.PLAYING) {
+            // background
+            g2.drawImage(getBackgroundImage(), 0, 0, Game.getInstance().getScreenWidth(), Game.getInstance().getScreenHeight(), null);
 
-        // login text
-        if(titleState == TitleScreenState.BOARDING) {
-            BoardingScreen.draw(g2, menuCounter);
-            menuItems = 2;
-        } else if (titleState == TitleScreenState.LOGIN) {
-            LoginScreen.draw(g2);
-            menuItems = 0;
+            // title name text
+            drawTitle(g2);
+        }
+
+        switch(titleState) {
+            case BOARDING:
+                BoardingScreen.draw(g2, menuCounter);
+                menuItems = 2;
+                break;
+            case LOGIN:
+                LoginScreen.draw(g2);
+                menuItems = 0;
+                break;
+            case MENU:
+                MenuScreen.draw(g2, menuCounter);
+                menuItems = 2;
+                break;
         }
     }
 
@@ -55,16 +64,11 @@ public abstract class TitleScreen {
         return Objects.requireNonNull(ImageHandler.getImageIcon(path)).getImage();
     }
 
-    private static void drawTitle(Graphics2D g2) throws IOException, FontFormatException {
+    private static void drawTitle(Graphics2D g2)  {
         String text = "BUMBO HELL";
-        Font font;
-        try {
-            font = FontHandler.getFont("font-1.ttf", 84f);
-        } catch (FontHandlerException e) {
-            throw new RuntimeException(e);
-        }
-
+        Font font = FontHandler.getFont("font-1.ttf", 84f);
         g2.setFont(font);
+
         int x = getXCenteredText(text, g2);
         int y = Game.getInstance().getScreenHeight() / 4;
 
@@ -72,7 +76,7 @@ public abstract class TitleScreen {
         g2.setColor(TITLE_SHADOW_COLOR);
         g2.drawString(text, x + 5, y + 5);
 
-            // main color
+        // main color
         g2.setColor(TITLE_MAIN_COLOR);
         g2.drawString(text, x, y);
     }

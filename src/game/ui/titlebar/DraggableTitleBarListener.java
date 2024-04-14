@@ -1,4 +1,4 @@
-package game.ui.components.titlebar;
+package game.ui.titlebar;
 
 import javax.swing.*;
 import java.awt.*;

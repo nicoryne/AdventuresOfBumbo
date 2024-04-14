@@ -1,5 +1,6 @@
 package game.util.managers;
 
+import com.mysql.cj.log.Log;
 import game.Game;
 import game.entities.player.Player;
 import game.entities.tile.CollidableTiles;
@@ -24,7 +25,6 @@ public class TileManager {
     private static int MAX_WORLD_COL;
     private static int MAX_WORLD_ROW;
     private static int TILE_SIZE;
-    private boolean drawPath = false;
 
     public TileManager() {
         MAX_WORLD_COL = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_COL"));
@@ -62,12 +62,18 @@ public class TileManager {
 
         String[] parts = nameWithoutExtension.split("_");
 
-        if (parts.length >= 2) {
-            String tileName = String.join("_", Arrays.copyOfRange(parts, 1, parts.length));
-            return tileName.toUpperCase();
-        } else {
-            throw new IllegalArgumentException("Invalid filename format: " + filename);
+        try {
+            if (parts.length >= 2) {
+                String tileName = String.join("_", Arrays.copyOfRange(parts, 1, parts.length));
+                return tileName.toUpperCase();
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            LoggerHelper.logError("Invalid tile filename format: " + filename, e);
         }
+
+        return null;
     }
 
     private boolean checkIfCollidable(String tileName) {
@@ -89,27 +95,12 @@ public class TileManager {
 
     private void drawTile(Graphics2D g2, int worldCol, int worldRow) {
         int tileNum = mapTile2DArray[worldCol][worldRow];
-        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         int worldX = worldCol * TILE_SIZE;
         int worldY = worldRow * TILE_SIZE;
 
         if (RenderHandler.isViewableOnScreen(worldX, worldY)) {
             BufferedImage image = tileArrayList.get(tileNum).getRenderComponent().getSprite();
             RenderHandler.renderOnScreen(worldX, worldY, image, g2);
-        }
-
-        if(drawPath) {
-            g2.setColor(new Color(255, 0, 0, 70));
-            for(int i = 0; i < Game.getInstance().getPathFinder().getPathNodes().size(); i++) {
-                Player<Weapon> player = Game.getInstance().getPlayer();
-                int nodeWorldX = Game.getInstance().getPathFinder().getPathNodes().get(i).getCol() * tileSize;
-                int nodeWorldY = Game.getInstance().getPathFinder().getPathNodes().get(i).getRow() * tileSize;
-                int screenX = nodeWorldX - player.getPositionComponent().getWorldPositionX().intValue() + player.getPositionComponent().getScreenPositionX().intValue();
-                int screenY = nodeWorldY - player.getPositionComponent().getWorldPositionY().intValue() + player.getPositionComponent().getScreenPositionY().intValue();
-
-
-                g2.fillRect(screenX, screenY, tileSize, tileSize);
-            }
         }
     }
 

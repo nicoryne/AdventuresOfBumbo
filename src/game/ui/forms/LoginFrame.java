@@ -1,4 +1,4 @@
-package game.ui.components.forms;
+package game.ui.forms;
 
 import game.exceptions.FontHandlerException;
 import game.util.handlers.FontHandler;
@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Objects;
 
-public class LoginForm {
+public class LoginFrame {
 
     private static final String WINDOW_TITLE = "Bumbo Hell | Login";
 
@@ -19,25 +19,24 @@ public class LoginForm {
 
     private static final Color BUTTON_SELECTED_COLOR = new Color(102, 33, 55);
 
-    private static final Color BUTTON_CLICKED_COLOR = new Color(72, 60, 63, 255);
-
     private final JFrame loginFrame;
 
-    private JPanel loginPanel;
+    private final JPanel loginPanel;
 
-    private JPanel inputContainer;
+    private final JPanel inputContainer;
 
-    private JPanel buttonContainer;
+    private final JPanel buttonContainer;
 
-    private JLabel unameLabel, passLabel;
+    private final JLabel unameLabel;
+    private final JLabel passLabel;
 
-    private JTextField unameField;
+    private final JTextField unameField;
 
-    private JPasswordField passField;
+    private final JPasswordField passField;
 
     private JButton backBtn, submitBtn;
 
-    public LoginForm(){
+    public LoginFrame(){
         loginFrame = new JFrame();
         loginPanel = new JPanel();
         inputContainer = new JPanel();
@@ -124,11 +123,7 @@ public class LoginForm {
     private void decorateLabel(JLabel label) {
         Font font32;
 
-        try {
-            font32 = FontHandler.getFont("font-1.ttf", 32f);
-        } catch (FontHandlerException e) {
-            throw new RuntimeException(e);
-        }
+        font32 = FontHandler.getFont("font-1.ttf", 32f);
 
         label.setFont(font32);
         addEmptyBorder(label, 10, 50, 10, 50);
@@ -138,11 +133,7 @@ public class LoginForm {
         if(!(textField instanceof JPasswordField)) {
             Font font24;
 
-            try {
-                font24 = FontHandler.getFont("font-2.ttf", 24f);
-            } catch (FontHandlerException e) {
-                throw new RuntimeException(e);
-            }
+            font24 = FontHandler.getFont("font-2.ttf", 24f);
 
             textField.setFont(font24);
         }
@@ -156,11 +147,7 @@ public class LoginForm {
     private void decorateButton(JButton button) {
         Font font24;
 
-        try {
-            font24 = FontHandler.getFont("font-1.ttf", 24f);
-        } catch (FontHandlerException e) {
-            throw new RuntimeException(e);
-        }
+        font24 = FontHandler.getFont("font-1.ttf", 24f);
 
         button.setFont(font24);
         button.setForeground(Color.white);
@@ -187,5 +174,25 @@ public class LoginForm {
         jComponent.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(top, left, bottom, right),
                 jComponent.getBorder()));
+    }
+
+    public void destroy() {
+        loginFrame.dispose();
+    }
+
+    public JTextField getUnameField() {
+        return unameField;
+    }
+
+    public JPasswordField getPassField() {
+        return passField;
+    }
+
+    public JButton getBackBtn() {
+        return backBtn;
+    }
+
+    public JButton getSubmitBtn() {
+        return submitBtn;
     }
 }

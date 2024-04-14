@@ -4,5 +4,7 @@ public enum MobName {
 
     BUMBO,
 
+    CHORTLE,
+
 
 }

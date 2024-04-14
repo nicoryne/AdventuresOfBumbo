@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 public abstract class FontHandler {
 
-    public static Font getFont(String name, float size) throws FontHandlerException {
+    public static Font getFont(String name, float size) {
         try {
             InputStream is = FontHandler.class.getResourceAsStream("/res/font/" + name);
 

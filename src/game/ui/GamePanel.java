@@ -2,19 +2,16 @@ package game.ui;
 
 import game.Game;
 import game.GameState;
-import game.exceptions.GameInitializationException;
-import game.ui.components.forms.LoginForm;
-import game.ui.components.titlescreen.LoginScreen;
-import game.ui.components.titlescreen.TitleScreen;
+import game.ui.forms.LoginFrame;
+import game.ui.titlescreen.TitleScreen;
 import game.util.GameLoopSingleton;
 import game.util.handlers.SoundHandler;
+import services.LoggerHelper;
+import services.server.DBConnection;
 
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
 
 /**
  * The GamePanel class represents a JPanel used for displaying a game screen.
@@ -27,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final Game game;
     private GameState currentState;
     private JFrame window;
-    private LoginForm loginForm;
+    private LoginFrame loginFrame;
     private static final int MENU_UPDATE_COOLDOWN_MS = 200;
     private long lastMenuUpdateTime = 0;
 
@@ -58,7 +55,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        playAudio();
         currentState = Game.getInstance().getGameState();
 
         if(currentState == GameState.TITLE_SCREEN) {
@@ -73,6 +69,8 @@ public class GamePanel extends JPanel implements Runnable {
         if(currentState == GameState.PAUSED) {
             toggleGameState();
         }
+
+        playAudio();
     }
 
     public void paintComponent(Graphics g) {
@@ -98,21 +96,20 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void playAudio() {
-        if(currentState == GameState.PLAYING) {
-            SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.5f);
-        }
-
-        if(currentState == GameState.TITLE_SCREEN) {
-            SoundHandler.playAudio("bgm-2-vempair", Clip.LOOP_CONTINUOUSLY, 0.5f);
+        switch(currentState) {
+            case PLAYING:
+                SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.5f);
+                SoundHandler.stopAudio("bgm-2-vempair");
+                break;
+            case TITLE_SCREEN:
+                SoundHandler.playAudio("bgm-2-vempair", Clip.LOOP_CONTINUOUSLY, 0.5f);
+                SoundHandler.stopAudio("bgm-1-reincarnated");
+                break;
         }
     }
 
     private void drawTitle(Graphics2D g2) {
-        try {
-            TitleScreen.draw(g2);
-        } catch (IOException | FontFormatException e) {
-            throw new RuntimeException(e);
-        }
+        TitleScreen.draw(g2);
     }
 
     private void drawPlaying(Graphics2D g2) {
@@ -120,19 +117,11 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void drawPaused(Graphics2D g2) {
-        try {
-            PauseScreen.draw(g2);
-        } catch (IOException | FontFormatException e) {
-            throw new RuntimeException(e);
-        }
+        PauseScreen.draw(g2);
     }
 
     private void drawDead(Graphics2D g2) {
-        try {
-            DeadScreen.draw(g2);
-        } catch (IOException | FontFormatException e) {
-            throw new RuntimeException(e);
-        }
+        DeadScreen.draw(g2);
     }
 
     private void menuSelector() {
@@ -150,7 +139,30 @@ public class GamePanel extends JPanel implements Runnable {
                     handleBoardingScreen();
                     lastMenuUpdateTime = currentTime;
                 }
+
+                if (TitleScreen.getTitleState() == TitleScreen.TitleScreenState.LOGIN) {
+                    handleLoginScreen();
+                }
+
+                if(TitleScreen.getTitleState() == TitleScreen.TitleScreenState.MENU) {
+                    handleMenuScreen();
+                    lastMenuUpdateTime = currentTime;
+                }
             }
+        }
+    }
+
+    private void handleMenuScreen() {
+        int selected = TitleScreen.getMenuCounter();
+
+        if (selected == 0) {
+            TitleScreen.setTitleState(TitleScreen.TitleScreenState.PLAYING);
+            Game.getInstance().setGameState(GameState.PLAYING);
+        }
+
+        if(selected == 2) {
+            LoggerHelper.logInfo("Exiting program");
+            System.exit(0);
         }
     }
 
@@ -159,11 +171,45 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (selected == 0) {
             TitleScreen.setTitleState(TitleScreen.TitleScreenState.LOGIN);
-            loginForm = new LoginForm();
         }
 
         if(selected == 2) {
+            LoggerHelper.logInfo("Exiting program");
             System.exit(0);
+        }
+    }
+
+    private void handleLoginScreen() {
+        if(loginFrame == null) {
+            loginFrame = new LoginFrame();
+        }
+
+        loginFrame.getBackBtn().addActionListener(v -> {
+            loginFrame.destroy();
+            loginFrame = null;
+            TitleScreen.setTitleState(TitleScreen.TitleScreenState.BOARDING);
+        });
+
+        loginFrame.getSubmitBtn().addActionListener(v -> {
+            String username = loginFrame.getUnameField().getText();
+            String password = "admin";
+
+            if(loginUser(username, password)) {
+                loginFrame.destroy();
+                TitleScreen.setTitleState(TitleScreen.TitleScreenState.MENU);
+                LoggerHelper.logInfo("Welcome " + username + "!");
+            } else {
+                LoggerHelper.logWarning("Failed to login user.");
+            }
+        });
+    }
+
+    private boolean loginUser(String username, String password) {
+        DBConnection db = new DBConnection();
+        try {
+            return db.getUserDML().loginUser(username, password);
+        } finally {
+            db.close();
         }
     }
 }

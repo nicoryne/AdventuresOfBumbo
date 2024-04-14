@@ -9,7 +9,6 @@ import game.util.Directions;
 import game.util.handlers.CollisionHandler;
 import game.util.handlers.RenderHandler;
 import game.util.managers.SpritesManager;
-import game.util.pathfinding.PathFinder;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,7 +18,6 @@ public abstract class Enemy extends CharacterEntity {
     private EnemyType enemyType;
 
     private SpritesManager spritesManager;
-
 
     public Enemy() {
         this.setEntityType(EntityType.ENEMY);
@@ -47,20 +45,24 @@ public abstract class Enemy extends CharacterEntity {
     }
 
     private void switchDirection() {
-        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         Player<Weapon> player = Game.getInstance().getPlayer();
-        int worldPositionX = player.getPositionComponent().getWorldPositionX().intValue();
-        int worldPositionY = player.getPositionComponent().getWorldPositionY().intValue();
-        int xHitbox = (int) player.getRenderComponent().getHitbox().getX();
-        int yHitbox = (int) player.getRenderComponent().getHitbox().getY();
-        int widthHitbox = (int) getRenderComponent().getHitbox().getWidth();
-        int heightHitbox = (int) getRenderComponent().getHitbox().getHeight();
-        int playerCenterX = worldPositionX + xHitbox + widthHitbox / 2;
-        int playerCenterY = worldPositionY + yHitbox + heightHitbox / 2;
-        int playerTileCol = playerCenterX / tileSize;
-        int playerTileRow = playerCenterY / tileSize;
+        int playerWorldPositionX = player.getPositionComponent().getWorldPositionX().intValue();
+        int playerWorldPositionY = player.getPositionComponent().getWorldPositionY().intValue();
+        int playerXHitbox = (int) player.getRenderComponent().getHitbox().getX();
+        int playerYHitbox = (int) player.getRenderComponent().getHitbox().getY();
+        int widthHitbox = (int) player.getRenderComponent().getHitbox().getWidth();
+        int heightHitbox = (int) player.getRenderComponent().getHitbox().getHeight();
+        int playerCenterX = playerWorldPositionX + playerXHitbox + widthHitbox / 2;
+        int playerCenterY = playerWorldPositionY + playerYHitbox + heightHitbox / 2;
 
-        searchPath(playerTileCol, playerTileRow);
+        int worldPositionX = this.getPositionComponent().getWorldPositionX().intValue();
+        int worldPositionY = this.getPositionComponent().getWorldPositionY().intValue();
+        int xHitbox = (int) this.getRenderComponent().getHitbox().getX();
+        int yHitbox = (int) this.getRenderComponent().getHitbox().getY();
+        int entityLeftX = worldPositionX + xHitbox;
+        int entityTopY = worldPositionY + yHitbox;
+
+        handleDirections(playerCenterX, playerCenterY, entityLeftX, entityTopY);
     }
 
     private void move() {
@@ -69,6 +71,7 @@ public abstract class Enemy extends CharacterEntity {
         getMovementComponent().setColliding(false);
         CollisionHandler.checkTileCollision(this, speed);
         CollisionHandler.checkPlayerCollision(this);
+        CollisionHandler.checkOtherEnemyCollision(this);
 
         if(!getMovementComponent().isColliding()) {
             int worldPositionY = getPositionComponent().getWorldPositionY().intValue();
@@ -79,36 +82,6 @@ public abstract class Enemy extends CharacterEntity {
             spritesManager.updateSprite();
         }
     }
-
-    private int calculateSpeed() {
-        return (getMovementComponent().getEntitySpeed() + ((getStatComponent().getSpeed() / 10)));
-    }
-
-    private void searchPath(int goalCol, int goalRow) {
-        PathFinder pathFinder = Game.getInstance().getPathFinder();
-        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
-        int worldPositionX = getPositionComponent().getWorldPositionX().intValue();
-        int worldPositionY = getPositionComponent().getWorldPositionY().intValue();
-        int xHitbox = (int) getRenderComponent().getHitbox().getX();
-        int yHitbox = (int) getRenderComponent().getHitbox().getY();
-
-        int startCol = (worldPositionX + xHitbox) / tileSize;
-        int startRow = (worldPositionY + yHitbox) / tileSize;
-
-        pathFinder.setNodes(startCol, startRow, goalCol, goalRow);
-
-        if (pathFinder.search()) {
-            int nextX = pathFinder.getPathNodes().get(0).getCol() * tileSize;
-            int nextY = pathFinder.getPathNodes().get(0).getRow() * tileSize;
-
-            int entityLeftX = worldPositionX + xHitbox;
-            int entityTopY = worldPositionY + yHitbox;
-
-
-            handleDirections(nextX, nextY, entityLeftX, entityTopY);
-        }
-    }
-
     private void handleDirections(int nextX, int nextY, int entityLeftX, int entityTopY) {
         Directions direction;
 

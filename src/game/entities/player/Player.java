@@ -92,10 +92,6 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         }
     }
 
-    private int calculateSpeed() {
-        return (getMovementComponent().getEntitySpeed() + (( getStatComponent().getSpeed() / 10)));
-    }
-
     @Override
     public double dealDamage() {
         return weapon.getDamage();

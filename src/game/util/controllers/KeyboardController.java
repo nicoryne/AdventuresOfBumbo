@@ -1,7 +1,7 @@
 package game.util.controllers;
 
 import game.Game;
-import game.GameState;
+import game.util.GameState;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

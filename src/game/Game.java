@@ -2,7 +2,6 @@ package game;
 
 import game.entities.MovingEntity;
 import game.entities.enemy.mobs.BumboMob;
-import game.entities.enemy.mobs.ChortleMob;
 import game.entities.enemy.mobs.MobFlyweightFactory;
 import game.entities.player.PlayerBuilder;
 import game.entities.player.PlayerDirector;
@@ -12,6 +11,7 @@ import game.entities.projectile.ProjectileFlyweightFactory;
 import game.equips.weapons.Bow;
 import game.equips.weapons.Staff;
 import game.equips.weapons.Weapon;
+import game.util.GameState;
 import game.util.controllers.ControllerComponents;
 import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;

@@ -1,5 +1,6 @@
 package services.server;
 
+import services.FunnyEncryptor;
 import services.LoggerHelper;
 
 import java.sql.Connection;
@@ -15,14 +16,15 @@ public class UserDML {
         this.dbConnection = dbConnection;
     }
 
-    public void addUser(String username, String password) {
+    public void addUser(String username, char[] password) {
         if (userExists(username)) {
             LoggerHelper.logWarning("Attempted to register user. But username already exists: " + username);
             return;
         }
 
         String query = "INSERT INTO `login_schema`.`users` (`username`, `password`) VALUES (?, ?)";
-        executeUpdate(query, username, password);
+        String encryptedPassword = FunnyEncryptor.encrypt(password);
+        executeUpdate(query, username, encryptedPassword);
     }
 
     public void updateUserPassword(String username, String newPassword) {
@@ -45,18 +47,29 @@ public class UserDML {
         executeUpdate(query, username);
     }
 
-    public boolean loginUser(String username, String password) {
-        String query = "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?";
+    public boolean loginUser(String username, char[] password) {
+        if (!userExists(username)) {
+            LoggerHelper.logWarning("Attempted to delete user. But username does not exist: " + username);
+            return false;
+        }
+
+        String query = "SELECT * FROM `users` WHERE `username` = ?";
         try (PreparedStatement preparedStatement = dbConnection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next();
+                if(resultSet.next()) {
+                    String dbEncryptedPassword = resultSet.getString("password");
+                    String decryptedPassword = FunnyEncryptor.decrypt(dbEncryptedPassword);
+                    String givenString = new String(password);
+
+                    return givenString.equals(decryptedPassword);
+                }
             }
         } catch (SQLException e) {
             LoggerHelper.logError("Error when trying to login user: ", e);
-            return false;
         }
+
+        return false;
     }
 
     private void executeUpdate(String query, String... parameters) {

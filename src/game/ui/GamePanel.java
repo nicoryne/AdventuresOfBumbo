@@ -1,7 +1,7 @@
 package game.ui;
 
 import game.Game;
-import game.GameState;
+import game.util.GameState;
 import game.ui.forms.LoginFrame;
 import game.ui.titlescreen.TitleScreen;
 import game.util.GameLoopSingleton;
@@ -204,7 +204,7 @@ public class GamePanel extends JPanel implements Runnable {
         });
     }
 
-    private boolean loginUser(String username, String password) {
+    private boolean loginUser(String username, char[] password) {
         DBConnection db = new DBConnection();
         try {
             return db.getUserDML().loginUser(username, password);

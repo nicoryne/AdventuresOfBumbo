@@ -3,6 +3,7 @@ package game.ui.forms;
 import game.exceptions.FontHandlerException;
 import game.util.handlers.FontHandler;
 import game.util.handlers.ImageHandler;
+import services.server.DBConnection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -174,6 +175,15 @@ public class LoginFrame {
         jComponent.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(top, left, bottom, right),
                 jComponent.getBorder()));
+    }
+
+    private boolean loginUser(String username, char[] password) {
+        DBConnection db = new DBConnection();
+        try {
+            return db.getUserDML().loginUser(username, password);
+        } finally {
+            db.close();
+        }
     }
 
     public void destroy() {

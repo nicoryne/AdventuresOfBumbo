@@ -49,7 +49,7 @@ public class UserDML {
 
     public boolean loginUser(String username, char[] password) {
         if (!userExists(username)) {
-            LoggerHelper.logWarning("Attempted to delete user. But username does not exist: " + username);
+            LoggerHelper.logWarning("Attempted to login user. But username does not exist: " + username);
             return false;
         }
 

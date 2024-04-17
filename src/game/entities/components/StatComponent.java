@@ -6,8 +6,6 @@ public class StatComponent {
 
     private double currentHitPoints;
 
-    private double maxMana;
-
     private int speed;
 
     private double damage;

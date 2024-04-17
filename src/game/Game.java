@@ -44,9 +44,13 @@ public class Game {
 
     private ArrayList<MovingEntity> entities;
 
+    private Timer timer;
+
     private static boolean spawned;
 
+
     private Game() {}
+    //TODO: implement timer
 
     public static Game getInstance() {
         if (gameInstance == null) {
@@ -222,5 +226,9 @@ public class Game {
 
     public User getUser() {
         return user;
+    }
+
+    public Timer getTimer() {
+        return timer;
     }
 }

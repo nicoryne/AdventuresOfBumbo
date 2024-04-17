@@ -37,4 +37,8 @@ public class DBConnection {
     public UserDML getUserDML() {
         return new UserDML(dbConnection);
     }
+
+    public ScoreDML getScoreDML() {
+        return new ScoreDML(dbConnection);
+    }
 }

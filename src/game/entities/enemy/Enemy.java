@@ -20,6 +20,8 @@ public abstract class Enemy extends CharacterEntity {
 
     private SpritesManager spritesManager;
 
+    private double expDropped;
+
     private static final int SPRITE_MOVE_DELAY_MS = 2;
 
     private int spriteMoveDelayCounter = 0;
@@ -191,7 +193,13 @@ public abstract class Enemy extends CharacterEntity {
         }
     }
 
+    public double getExpDropped() {
+        return expDropped;
+    }
 
+    public void setExpDropped(double expDropped) {
+        this.expDropped = expDropped;
+    }
 
     public EnemyType getEnemyType() {
         return enemyType;

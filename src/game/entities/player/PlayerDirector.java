@@ -24,6 +24,9 @@ public class PlayerDirector {
         builder.setHitbox(new Rectangle(8, 8, 32, 32));
         builder.setEntitySpeed(1);
         builder.setDirection(Directions.SOUTH);
+        builder.setExp(0.0);
+        builder.setLevel(1);
+        builder.setExpToLevelUp(45.0);
         builder.setSpritesManager(new SpritesManager("player", 3));
         builder.setKeyboardController(keyboardController);
         builder.setMouseController(mouseController);

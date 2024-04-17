@@ -26,6 +26,7 @@ public abstract class ImageHandler {
 
     public static ImageIcon getImageIcon(String URL) {
         File file = new File(URL);
+
         if(file.isFile() && isImageFile(file)) {
             return new ImageIcon(URL);
         }

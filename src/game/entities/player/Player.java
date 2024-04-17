@@ -18,6 +18,9 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     private KeyboardController keyboardController;
     private MouseController mouseController;
     private SpritesManager spritesManager;
+    private double exp;
+    private int level;
+    private double expToLevelUp;
     private T weapon;
 
     @Override
@@ -195,5 +198,33 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
 
     public void setWeapon(T weapon) {
         this.weapon = weapon;
+    }
+
+    public double getExp() {
+        return exp;
+    }
+
+    public void setExp(double exp) {
+        this.exp = exp;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void incrementLevel() {
+        this.level++;
+    }
+
+    public double getExpToLevelUp() {
+        return expToLevelUp;
+    }
+
+    public void setExpToLevelUp(double expToLevelUp) {
+        this.expToLevelUp = expToLevelUp;
     }
 }

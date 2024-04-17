@@ -1,51 +1,60 @@
 package services.models;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
+
 public class User {
 
-    private String firstName;
+    private final int userId;
 
-    private String lastName;
+    private final String firstName;
 
-    private String username;
+    private final String lastName;
 
-    private String birthday;
+    private final String username;
 
-    public User(String firstName, String lastName, String username, String birthday) {
+    private final Date birthday;
+
+    private final int age;
+
+    public User(int userId, String firstName, String lastName, String username, Date birthday) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.birthday = birthday;
+        this.age = convertBirthdayToAge(birthday);
+    }
+
+    private int convertBirthdayToAge(Date birthday) {
+        java.util.Date utilDate = new java.util.Date(birthday.getTime());
+        LocalDate birthDate = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public int getAge() {
+        return age;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }

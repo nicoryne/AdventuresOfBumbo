@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 public class UserDML {
 
@@ -67,11 +68,12 @@ public class UserDML {
                     String givenString = new String(password);
 
                     if (givenString.equals(decryptedPassword)) {
+                        int userId = resultSet.getInt("userId");
                         String firstName = resultSet.getString("firstName");
                         String lastName = resultSet.getString("lastName");
-                        String birthday = resultSet.getString("birthday");
+                        Date birthday = resultSet.getDate("birthday");
 
-                        User user = new User(firstName, lastName, username, birthday);
+                        User user = new User(userId, firstName, lastName, username, birthday);
                         Game.getInstance().setUser(user);
                         return true;
                     }

@@ -29,7 +29,6 @@ public class PlayerDirector {
         builder.setMouseController(mouseController);
         builder.setWeapon(weapon);
         builder.setHitPoints(100);
-        builder.setMana(100);
         builder.setSpeed(10);
     }
 

@@ -9,6 +9,7 @@ import game.util.Directions;
 import game.util.handlers.CollisionHandler;
 import game.util.handlers.RenderHandler;
 import game.util.managers.SpritesManager;
+import services.LoggerHelper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -18,6 +19,10 @@ public abstract class Enemy extends CharacterEntity {
     private EnemyType enemyType;
 
     private SpritesManager spritesManager;
+
+    private static final int SPRITE_MOVE_DELAY_MS = 2;
+
+    private int spriteMoveDelayCounter = 0;
 
     public Enemy() {
         this.setEntityType(EntityType.ENEMY);
@@ -78,9 +83,15 @@ public abstract class Enemy extends CharacterEntity {
             int worldPositionX = getPositionComponent().getWorldPositionX().intValue();
 
             handleMovement(worldPositionX, worldPositionY, speed, diagonalSpeed);
-
-            spritesManager.updateSprite();
         }
+
+        if(spriteMoveDelayCounter >= SPRITE_MOVE_DELAY_MS) {
+            spritesManager.updateSprite();
+            spriteMoveDelayCounter = 0;
+        } else {
+            spriteMoveDelayCounter++;
+        }
+
     }
     private void handleDirections(int nextX, int nextY, int entityLeftX, int entityTopY) {
         Directions direction;

@@ -2,6 +2,7 @@ package game.util.controllers;
 
 import game.Game;
 import game.util.GameState;
+import services.LoggerHelper;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -38,12 +39,9 @@ public class KeyboardController implements KeyListener {
     public void keyPressed(KeyEvent e) {
         currentState = Game.getInstance().getGameState();
 
-        if(currentState == GameState.PLAYING || currentState == GameState.PAUSED) {
-            updateGameKeyState(e.getKeyCode(), true);
-        }
-
-        if(currentState == GameState.TITLE_SCREEN) {
-            updateTitleKeyState(e.getKeyCode(), true);
+        switch(currentState) {
+            case PLAYING, PAUSED -> updateGameKeyState(e.getKeyCode(), true);
+            case TITLE_SCREEN -> updateTitleKeyState(e.getKeyCode(), true);
         }
     }
 
@@ -51,12 +49,9 @@ public class KeyboardController implements KeyListener {
     public void keyReleased(KeyEvent e) {
         currentState = Game.getInstance().getGameState();
 
-        if(currentState == GameState.PLAYING || currentState == GameState.PAUSED) {
-            updateGameKeyState(e.getKeyCode(), false);
-        }
-
-        if(currentState == GameState.TITLE_SCREEN) {
-            updateTitleKeyState(e.getKeyCode(), false);
+        switch(currentState) {
+            case PLAYING, PAUSED -> updateGameKeyState(e.getKeyCode(), false);
+            case TITLE_SCREEN -> updateTitleKeyState(e.getKeyCode(), false);
         }
     }
 
@@ -132,6 +127,8 @@ public class KeyboardController implements KeyListener {
     }
 
     public boolean isMenuEntered() {
-        return keyTitleActionStates[TitleAction.ENTER.ordinal()];
+        boolean menuEntered = keyTitleActionStates[TitleAction.ENTER.ordinal()];
+        keyTitleActionStates[TitleAction.ENTER.ordinal()] = false;
+        return menuEntered;
     }
 }

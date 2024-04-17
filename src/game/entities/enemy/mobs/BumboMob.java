@@ -16,7 +16,6 @@ public class BumboMob extends Mob {
         this.getMovementComponent().setDirection(Directions.SOUTH);
         this.getRenderComponent().setHitbox(new Rectangle(8, 8, 18, 18));
         this.getStatComponent().setMaxHitPoints(100);
-        this.getStatComponent().setMaxMana(100);
         this.getStatComponent().setSpeed(10);
         this.getStatComponent().setDamage(50);
     }

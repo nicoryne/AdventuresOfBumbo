@@ -1,6 +1,5 @@
 package game;
 
-import game.exceptions.GameInitializationException;
 import game.ui.GamePanel;
 import game.ui.titlebar.TitleBarPanel;
 import game.util.handlers.ImageHandler;

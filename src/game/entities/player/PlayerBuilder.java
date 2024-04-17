@@ -60,11 +60,6 @@ public class PlayerBuilder<W extends Weapon> implements CharacterBuilder {
         this.player.getStatComponent().setCurrentHitPoints(hitPoints);
     }
 
-    @Override
-    public void setMana(double mana) {
-        this.player.getStatComponent().setMaxMana(mana);
-        this.player.getStatComponent().setMaxHitPoints(mana);
-    }
 
     @Override
     public void setSpeed(int speed) {

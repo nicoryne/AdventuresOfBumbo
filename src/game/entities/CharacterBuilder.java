@@ -24,7 +24,6 @@ public interface CharacterBuilder {
 
     void setHitPoints(double hitPoints);
 
-    void setMana(double mana);
 
     void setSpeed(int speed);
 }

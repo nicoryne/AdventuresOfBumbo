@@ -8,8 +8,6 @@ public class StatComponent {
 
     private double maxMana;
 
-    private double currentMana;
-
     private int speed;
 
     private double damage;
@@ -20,14 +18,6 @@ public class StatComponent {
 
     public void setCurrentHitPoints(double currentHitPoints) {
         this.currentHitPoints = currentHitPoints;
-    }
-
-    public double getCurrentMana() {
-        return currentMana;
-    }
-
-    public void setCurrentMana(double currentMana) {
-        this.currentMana = currentMana;
     }
 
     public int getSpeed() {
@@ -44,14 +34,6 @@ public class StatComponent {
 
     public void setMaxHitPoints(double maxHitPoints) {
         this.maxHitPoints = maxHitPoints;
-    }
-
-    public double getMaxMana() {
-        return maxMana;
-    }
-
-    public void setMaxMana(double maxMana) {
-        this.maxMana = maxMana;
     }
 
     public double getDamage() {

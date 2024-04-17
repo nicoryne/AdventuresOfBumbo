@@ -6,8 +6,10 @@ import game.util.handlers.FontHandler;
 import services.LoggerHelper;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public abstract class MenuScreen {
+    //TODO: maybe add splash screen text (minecraft style)
 
     public static void draw(Graphics2D g2, int menuCounter) {
         Font font = FontHandler.getFont("font-1.ttf", 48f);
@@ -21,7 +23,7 @@ public abstract class MenuScreen {
         g2.setColor(TitleScreen.MENU_SHADOW_COLOR);
         g2.drawString(text, x + 5, y + 5);
 
-        if(menuCounter == 0) {
+        if (menuCounter == 0) {
             g2.setColor(TitleScreen.MENU_SELECTED_COLOR);
             g2.drawString(">", x - TitleScreen.tileSize, y);
         } else {
@@ -64,6 +66,7 @@ public abstract class MenuScreen {
 
         g2.drawString(text, x, y);
     }
+
 
     private static int getXCenteredText(String text, Graphics2D g2) {
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();

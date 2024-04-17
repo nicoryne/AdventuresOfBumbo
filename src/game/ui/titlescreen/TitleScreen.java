@@ -12,7 +12,7 @@ import java.util.Objects;
 public abstract class TitleScreen {
 
     public enum TitleScreenState {
-        BOARDING, LOGIN, REGISTER, MENU, LEADERBOARD, PLAYING
+        BOARDING, MENU, LEADERBOARD, PLAYING
     }
 
     private static final Color TITLE_SHADOW_COLOR = new Color(36, 12, 28);
@@ -35,7 +35,7 @@ public abstract class TitleScreen {
 
     public static void draw(Graphics2D g2) {
 
-        if(titleState != TitleScreenState.PLAYING) {
+        if(titleState != TitleScreenState.PLAYING && titleState != TitleScreenState.LEADERBOARD) {
             // background
             g2.drawImage(getBackgroundImage(), 0, 0, Game.getInstance().getScreenWidth(), Game.getInstance().getScreenHeight(), null);
 
@@ -48,13 +48,13 @@ public abstract class TitleScreen {
                 BoardingScreen.draw(g2, menuCounter);
                 menuItems = 2;
                 break;
-            case LOGIN:
-                LoginScreen.draw(g2);
-                menuItems = 0;
-                break;
             case MENU:
                 MenuScreen.draw(g2, menuCounter);
                 menuItems = 2;
+                break;
+            case LEADERBOARD:
+                LeaderboardScreen.draw(g2, menuCounter);
+                menuItems = 6;
                 break;
         }
     }

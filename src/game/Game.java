@@ -18,6 +18,7 @@ import game.util.controllers.MouseController;
 import game.util.managers.GameManagerComponents;
 import game.util.managers.TileManager;
 import services.LoggerHelper;
+import services.models.User;
 
 import java.awt.*;
 import java.io.FileInputStream;
@@ -28,6 +29,8 @@ import java.util.*;
 public class Game {
 
     private Properties gameProperties;
+
+    private User user;
 
     private static Game gameInstance;
 
@@ -213,4 +216,11 @@ public class Game {
         return gameProperties.getProperty(key);
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

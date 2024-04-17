@@ -3,13 +3,12 @@ package game.ui;
 import com.mysql.cj.log.Log;
 import game.Game;
 import game.ui.dialogs.LoginDialog;
+import game.ui.dialogs.RegisterDialog;
 import game.util.GameState;
-import game.ui.forms.LoginFrame;
 import game.ui.titlescreen.TitleScreen;
 import game.util.GameLoopSingleton;
 import game.util.handlers.SoundHandler;
 import services.LoggerHelper;
-import services.server.DBConnection;
 
 import javax.sound.sampled.Clip;
 import javax.swing.*;
@@ -26,11 +25,11 @@ public class GamePanel extends JPanel implements Runnable {
     private final Game game;
     private GameState currentState;
     private LoginDialog loginDialog;
-    private JFrame window;
+    private RegisterDialog registerDialog;
+    private final JFrame window;
     private static final int MENU_UPDATE_COOLDOWN_MS = 200;
     private long lastMenuUpdateTime = 0;
 
-    private boolean menuEntered = false;
 
     public GamePanel(JFrame window){
         this.game = Game.getInstance();
@@ -60,28 +59,23 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         currentState = Game.getInstance().getGameState();
-
         if(currentState == GameState.TITLE_SCREEN) {
             menuSelector();
             checkEntered();
         }
-
         if(currentState == GameState.PLAYING) {
             Game.getInstance().updateEntities();
             toggleGameState();
         }
-
         if(currentState == GameState.PAUSED) {
             toggleGameState();
         }
-
         playAudio();
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-
         switch(currentState) {
             case TITLE_SCREEN -> drawTitle(g2);
             case PLAYING -> drawPlaying(g2);
@@ -127,47 +121,53 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void checkEntered() {
-        if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuEntered() && !menuEntered) {
+        boolean isMenuEntered = Game.getInstance().getControllerComponents().getKeyboardController().isMenuEntered();
+        if(isMenuEntered) {
             switch(TitleScreen.getTitleState()) {
                 case BOARDING -> handleBoardingScreen();
                 case MENU -> handleMenuScreen();
             }
-        } else if (menuEntered) {
-            menuEntered = false;
         }
     }
 
     private void handleMenuScreen() {
         int selected = TitleScreen.getMenuCounter();
-
-        if (selected == 0) {
-            TitleScreen.setTitleState(TitleScreen.TitleScreenState.PLAYING);
-            Game.getInstance().setGameState(GameState.PLAYING);
-        }
-
-        if(selected == 2) {
-            LoggerHelper.logInfo("Exiting program");
-            System.exit(0);
+        switch(selected) {
+            case 0:
+                TitleScreen.setTitleState(TitleScreen.TitleScreenState.PLAYING);
+                Game.getInstance().setGameState(GameState.PLAYING);
+                break;
+            case 1:
+                TitleScreen.setTitleState(TitleScreen.TitleScreenState.LEADERBOARD);
+                break;
+            case 2:
+                exitProgram();
+                break;
         }
     }
 
     private void handleLoginScreen() {
-        LoginDialog loginDialog = new LoginDialog(window);
-        loginDialog.setVisible(true);
-        menuEntered = true;
+            loginDialog = new LoginDialog(window);
+            loginDialog.setVisible(true);
+    }
+
+    private void handleRegisterScreen() {
+        registerDialog = new RegisterDialog(window);
+        registerDialog.setVisible(true);
     }
 
     private void handleBoardingScreen() {
         int selected = TitleScreen.getMenuCounter();
-
-        if (selected == 0) {
-            handleLoginScreen();
+        switch(selected) {
+            case 0 -> handleLoginScreen();
+            case 1 -> handleRegisterScreen();
+            case 2 -> exitProgram();
         }
+    }
 
-        if(selected == 2) {
-            LoggerHelper.logInfo("Exiting program");
-            System.exit(0);
-        }
+    private void exitProgram() {
+        LoggerHelper.logInfo("Exiting program");
+        System.exit(0);
     }
 
     private void drawTitle(Graphics2D g2) {

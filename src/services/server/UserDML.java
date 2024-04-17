@@ -1,7 +1,10 @@
 package services.server;
 
+import game.Game;
+import game.ui.titlescreen.TitleScreen;
 import services.FunnyEncryptor;
 import services.LoggerHelper;
+import services.models.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,15 +19,16 @@ public class UserDML {
         this.dbConnection = dbConnection;
     }
 
-    public void addUser(String username, char[] password) {
+    public boolean addUser(String username, char[] password, String firstName, String lastName, String birthday) {
         if (userExists(username)) {
             LoggerHelper.logWarning("Attempted to register user. But username already exists: " + username);
-            return;
+            return false;
         }
 
-        String query = "INSERT INTO `login_schema`.`users` (`username`, `password`) VALUES (?, ?)";
+        String query = "INSERT INTO `login_schema`.`users` (`username`, `password`, `firstname`, `lastname`, `birthday`) VALUES (?, ?, ?, ?, ?)";
         String encryptedPassword = FunnyEncryptor.encrypt(password);
-        executeUpdate(query, username, encryptedPassword);
+        executeUpdate(query, username, encryptedPassword, firstName, lastName, birthday);
+        return true;
     }
 
     public void updateUserPassword(String username, String newPassword) {
@@ -62,7 +66,15 @@ public class UserDML {
                     String decryptedPassword = FunnyEncryptor.decrypt(dbEncryptedPassword);
                     String givenString = new String(password);
 
-                    return givenString.equals(decryptedPassword);
+                    if (givenString.equals(decryptedPassword)) {
+                        String firstName = resultSet.getString("firstName");
+                        String lastName = resultSet.getString("lastName");
+                        String birthday = resultSet.getString("birthday");
+
+                        User user = new User(firstName, lastName, username, birthday);
+                        Game.getInstance().setUser(user);
+                        return true;
+                    }
                 }
             }
         } catch (SQLException e) {

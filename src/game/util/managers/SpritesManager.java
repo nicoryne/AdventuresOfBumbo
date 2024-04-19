@@ -15,8 +15,10 @@ public class SpritesManager {
     private final int spriteChangeOnFrame;
     private int frameCounter;
     private final int spritesAvailablePerDirection;
+    private final double scale;
 
-    public SpritesManager(String folderName, int spritesAvailablePerDirection) {
+    public SpritesManager(String folderName, int spritesAvailablePerDirection, double scale) {
+        this.scale = scale;
         this.spriteList = loadSpritesFromFolder(folderName);
         this.spriteChangeOnFrame = 10;
         this.currentSpriteIndex = 0;
@@ -74,7 +76,7 @@ public class SpritesManager {
                     continue;
                 }
 
-                BufferedImage scaledImage = ImageHandler.scaleImageToTileSize(spriteImage);
+                BufferedImage scaledImage = ImageHandler.scaleImageBasedOnTileSize(spriteImage, scale);
                 LoggerHelper.logInfo("[SpritesManager] Loaded sprite image file: " + child.getName());
                 sprites.add(scaledImage);
             }

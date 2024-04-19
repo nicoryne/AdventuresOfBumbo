@@ -1,11 +1,8 @@
 package game.util.managers;
 
-import com.mysql.cj.log.Log;
 import game.Game;
-import game.entities.player.Player;
 import game.entities.tile.CollidableTiles;
 import game.entities.tile.Tile;
-import game.equips.weapons.Weapon;
 import game.util.handlers.ImageHandler;
 import game.util.handlers.MapHandler;
 import game.util.handlers.RenderHandler;
@@ -46,7 +43,7 @@ public class TileManager {
                     continue;
                 }
 
-                BufferedImage scaledImage = ImageHandler.scaleImageToTileSize(tileImage);
+                BufferedImage scaledImage = ImageHandler.scaleImageBasedOnTileSize(tileImage, 1);
 
                 boolean isCollidable = checkIfCollidable(retrieveTileName(String.valueOf(child)));
                 tiles.add(new Tile(scaledImage, isCollidable));

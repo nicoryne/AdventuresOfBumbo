@@ -9,7 +9,7 @@ public abstract class Weapon implements AttackingWeapon {
 
     private WeaponType weaponType;
 
-    private double damage;
+    private int damage;
 
     private int range;
 
@@ -33,11 +33,11 @@ public abstract class Weapon implements AttackingWeapon {
         this.weaponType = weaponType;
     }
 
-    public double getDamage() {
+    public int getDamage() {
         return damage;
     }
 
-    public void setDamage(double damage) {
+    public void setDamage(int damage) {
         this.damage = damage;
     }
 

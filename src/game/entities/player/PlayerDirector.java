@@ -12,7 +12,7 @@ import java.awt.*;
 
 public class PlayerDirector {
 
-    public <W extends Weapon> void constructPlayer(PlayerBuilder<W> builder, KeyboardController keyboardController, MouseController mouseController, W weapon) {
+    public <T extends Weapon> void constructPlayer(PlayerBuilder<T> builder, KeyboardController keyboardController, MouseController mouseController, T weapon) {
         Game game = Game.getInstance();
         int tileSize = Integer.parseInt(game.getProperty("TILE_SIZE"));
 
@@ -27,7 +27,7 @@ public class PlayerDirector {
         builder.setExp(0.0);
         builder.setLevel(1);
         builder.setExpToLevelUp(45.0);
-        builder.setSpritesManager(new SpritesManager("player", 3));
+        builder.setSpritesManager(new SpritesManager("player", 3, 1));
         builder.setKeyboardController(keyboardController);
         builder.setMouseController(mouseController);
         builder.setWeapon(weapon);

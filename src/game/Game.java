@@ -1,6 +1,7 @@
 package game;
 
 import game.entities.MovingEntity;
+import game.entities.drops.DropFlyweightFactory;
 import game.entities.enemy.mobs.BumboMob;
 import game.entities.enemy.mobs.MobFlyweightFactory;
 import game.entities.player.PlayerBuilder;
@@ -44,6 +45,8 @@ public class Game {
 
     private ArrayList<MovingEntity> entities;
 
+    private ArrayList<MovingEntity> drops;
+
     private Timer timer;
 
     private static boolean spawned;
@@ -62,14 +65,24 @@ public class Game {
 
     public void setupGame() {
         this.gameState = GameState.TITLE_SCREEN;
-        this.gameProperties = new Properties();
-        loadPropertiesFile();
-        ProjectileFlyweightFactory.initializeFlyweightProjectiles();
-        MobFlyweightFactory.initializeFlyweightEnemies();
+        setupProperties();
+        setupFlyweightFactories();
         this.entities = new ArrayList<>();
+        this.drops = new ArrayList<>();
         this.controllerComponents = new ControllerComponents(new KeyboardController(), new MouseController());
         setupPlayer();
         this.gameManagerComponents = new GameManagerComponents(new TileManager());
+    }
+
+    private void setupProperties() {
+        this.gameProperties = new Properties();
+        loadPropertiesFile();
+    }
+
+    private void setupFlyweightFactories() {
+        ProjectileFlyweightFactory.initializeFlyweightProjectiles();
+        MobFlyweightFactory.initializeFlyweightEnemies();
+        DropFlyweightFactory.initializeFlyweightDrops();
     }
 
     private void setupPlayer() {
@@ -101,9 +114,37 @@ public class Game {
 
     public void renderEntities(Graphics2D g2){
         getGameManagerComponents().getTileManager().render(g2);
-
+        renderEntityList(g2);
+        renderDropsList(g2);
         player.render(g2);
+    }
 
+    public void updateEntities() {
+        player.update();
+        updateEntityList();
+        updateDropsList();
+        spawnEnemy();
+    }
+
+    private void renderDropsList(Graphics2D g2) {
+        if(drops.isEmpty()) {
+            return;
+        }
+        Iterator<MovingEntity> dropsIterator = drops.iterator();
+        while(dropsIterator.hasNext()) {
+            EntityObject drop = dropsIterator.next();
+            if(drop != null && drop.getRenderComponent().isAlive()) {
+                drop.render(g2);
+            } else {
+                dropsIterator.remove();
+            }
+        }
+    }
+
+    private void renderEntityList(Graphics2D g2) {
+        if(entities.isEmpty()) {
+            return;
+        }
         Iterator<MovingEntity> entityObjectIterator = entities.iterator();
         while(entityObjectIterator.hasNext()) {
             EntityObject entityObject = entityObjectIterator.next();
@@ -113,11 +154,12 @@ public class Game {
                 entityObjectIterator.remove();
             }
         }
-
     }
 
-    public void updateEntities() {
-        player.update();
+    private void updateEntityList() {
+        if(entities.isEmpty()) {
+            return;
+        }
 
         Iterator<MovingEntity> entityObjectIterator = entities.iterator();
         while(entityObjectIterator.hasNext()) {
@@ -128,8 +170,22 @@ public class Game {
                 entityObjectIterator.remove();
             }
         }
+    }
 
-        spawnEnemy();
+    private void updateDropsList() {
+        if(drops.isEmpty()) {
+            return;
+        }
+
+        Iterator<MovingEntity> dropsIterator = drops.iterator();
+        while(dropsIterator.hasNext()) {
+            EntityObject drop = dropsIterator.next();
+            if(drop != null && drop.getRenderComponent().isAlive()) {
+                drop.update();
+            } else {
+                dropsIterator.remove();
+            }
+        }
     }
 
     public void spawnEnemy() {
@@ -182,6 +238,10 @@ public class Game {
         int maxScreenRows = Integer.parseInt(gameInstance.getProperty("MAX_SCREEN_ROW"));
 
         return tileSize * maxScreenRows;
+    }
+
+    public void addObject(MovingEntity entity) {
+        drops.add(entity);
     }
 
     public ControllerComponents getControllerComponents() {

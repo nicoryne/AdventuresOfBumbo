@@ -3,6 +3,8 @@ package game.entities.enemy;
 import game.Game;
 import game.entities.CharacterEntity;
 import game.entities.EntityType;
+import game.entities.drops.Drop;
+import game.entities.drops.DropStandardExp;
 import game.entities.player.Player;
 import game.equips.weapons.Weapon;
 import game.util.Directions;
@@ -33,9 +35,7 @@ public abstract class Enemy extends CharacterEntity {
     @Override
     public void update() {
         super.update();
-
         switchDirection();
-
         move();
     }
 
@@ -53,23 +53,7 @@ public abstract class Enemy extends CharacterEntity {
 
     private void switchDirection() {
         Player<Weapon> player = Game.getInstance().getPlayer();
-        int playerWorldPositionX = player.getPositionComponent().getWorldPositionX().intValue();
-        int playerWorldPositionY = player.getPositionComponent().getWorldPositionY().intValue();
-        int playerXHitbox = (int) player.getRenderComponent().getHitbox().getX();
-        int playerYHitbox = (int) player.getRenderComponent().getHitbox().getY();
-        int widthHitbox = (int) player.getRenderComponent().getHitbox().getWidth();
-        int heightHitbox = (int) player.getRenderComponent().getHitbox().getHeight();
-        int playerCenterX = playerWorldPositionX + playerXHitbox + widthHitbox / 2;
-        int playerCenterY = playerWorldPositionY + playerYHitbox + heightHitbox / 2;
-
-        int worldPositionX = this.getPositionComponent().getWorldPositionX().intValue();
-        int worldPositionY = this.getPositionComponent().getWorldPositionY().intValue();
-        int xHitbox = (int) this.getRenderComponent().getHitbox().getX();
-        int yHitbox = (int) this.getRenderComponent().getHitbox().getY();
-        int entityLeftX = worldPositionX + xHitbox;
-        int entityTopY = worldPositionY + yHitbox;
-
-        handleDirections(playerCenterX, playerCenterY, entityLeftX, entityTopY);
+        handleDirections(getPlayerCenterX(player), getPlayerCenterY(player), getEntityLeftX(), getEntityTopY());
     }
 
     private void move() {
@@ -93,7 +77,6 @@ public abstract class Enemy extends CharacterEntity {
         } else {
             spriteMoveDelayCounter++;
         }
-
     }
     private void handleDirections(int nextX, int nextY, int entityLeftX, int entityTopY) {
         Directions direction;
@@ -191,6 +174,44 @@ public abstract class Enemy extends CharacterEntity {
                 getMovementComponent().setDirection(Directions.WEST);
                 break;
         }
+    }
+
+    @Override
+    public void kill() {
+        super.kill();
+        spawnExp();
+    }
+
+    public void spawnExp() {
+        DropStandardExp dropStandardExp = new DropStandardExp();
+        dropStandardExp.spawn(this.getPositionComponent().getWorldPositionX().doubleValue(), this.getPositionComponent().getWorldPositionY().doubleValue());
+        Game.getInstance().addObject(dropStandardExp);
+    }
+
+    private int getEntityLeftX() {
+        int worldPositionX = this.getPositionComponent().getWorldPositionX().intValue();
+        int xHitbox = (int) this.getRenderComponent().getHitbox().getX();
+        return worldPositionX + xHitbox;
+    }
+
+    private int getEntityTopY() {
+        int worldPositionY = this.getPositionComponent().getWorldPositionY().intValue();
+        int yHitbox = (int) this.getRenderComponent().getHitbox().getY();
+        return worldPositionY + yHitbox;
+    }
+
+    private <T extends Weapon> int getPlayerCenterX(Player<T> player) {
+        int playerWorldPositionX = player.getPositionComponent().getWorldPositionX().intValue();
+        int playerXHitbox = (int) player.getRenderComponent().getHitbox().getX();
+        int widthHitbox = (int) player.getRenderComponent().getHitbox().getWidth();
+        return playerWorldPositionX + playerXHitbox + widthHitbox / 2;
+    }
+
+    private <T extends Weapon> int getPlayerCenterY(Player<T> player) {
+        int playerWorldPositionY = player.getPositionComponent().getWorldPositionY().intValue();
+        int playerYHitbox = (int) player.getRenderComponent().getHitbox().getY();
+        int heightHitbox = (int) player.getRenderComponent().getHitbox().getHeight();
+        return playerWorldPositionY + playerYHitbox + heightHitbox / 2;
     }
 
     public double getExpDropped() {

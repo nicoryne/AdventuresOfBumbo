@@ -22,7 +22,7 @@ public interface CharacterBuilder {
 
     void setDirection(Directions direction);
 
-    void setHitPoints(double hitPoints);
+    void setHitPoints(int hitPoints);
 
 
     void setSpeed(int speed);

@@ -4,7 +4,9 @@ import game.Game;
 import game.entities.CharacterEntity;
 import game.entities.EntityObject;
 import game.entities.MovingEntity;
+import game.entities.drops.DropStandardExp;
 import game.entities.enemy.Enemy;
+import game.entities.drops.Drop;
 import game.entities.player.Player;
 import game.entities.projectile.Projectile;
 import game.equips.weapons.Weapon;
@@ -13,6 +15,7 @@ import services.LoggerHelper;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public abstract class CollisionHandler {
 
@@ -26,28 +29,52 @@ public abstract class CollisionHandler {
 
     public static void checkProjectileCollision(Projectile projectile) {
         ArrayList<MovingEntity> entities = Game.getInstance().getEntities();
-
-       for(MovingEntity targetEntity : entities) {
+        for (MovingEntity targetEntity : entities) {
             Rectangle entityHitbox = handleSolidArea(projectile);
             Rectangle targetHitbox = handleSolidArea(targetEntity);
 
             boolean valid = projectile.getEntityType() != targetEntity.getEntityType();
 
-           if(entityHitbox.intersects(targetHitbox) && valid) {
-               projectile.kill();
-
-              if(targetEntity instanceof Enemy enemy) {
-                  enemy.takeDamage(20);
-
-                  if(enemy.getStatComponent().getCurrentHitPoints() <= 0.0) {
-                      enemy.kill();
-                  }
-              }
-           }
-       }
+            if (entityHitbox.intersects(targetHitbox) && valid) {
+                projectile.kill();
+                if (targetEntity instanceof Enemy enemy) {
+                    enemy.takeDamage(20);
+                }
+            }
+        }
     }
 
-    public static void checkEnemyCollision(CharacterEntity player) {
+    public static <T extends Weapon> void checkDropCollision(Player<T> player) {
+        ArrayList<MovingEntity> entities = Game.getInstance().getEntities();
+
+        for(MovingEntity entity : entities) {
+            if(entity instanceof  Drop drop) {
+                if (isFar(drop, player)) {
+                    return;
+                } else {
+                    LoggerHelper.logInfo("Drop nearby!");
+                }
+
+                Rectangle playerHitbox = handleSolidArea(player);
+                Rectangle dropHitbox = handleSolidArea(drop);
+
+                if(playerHitbox.intersects(dropHitbox)) {
+                    switch (drop.getDropType()) {
+                        case STANDARD_EXP:
+                            double exp = ((DropStandardExp) drop).getExpDropped();
+                            player.takeExp(exp);
+                            break;
+                        default:
+                            return;
+                    }
+
+                    drop.kill();
+                }
+            }
+        }
+    }
+
+    public static <T extends Weapon> void checkEnemyCollision(Player<T> player) {
         ArrayList<MovingEntity> entities = Game.getInstance().getEntities();
 
         for(MovingEntity entity : entities) {
@@ -55,8 +82,6 @@ public abstract class CollisionHandler {
 
                 if (isFar(enemy, player)) {
                     return;
-                } else {
-                    LoggerHelper.logInfo("Enemy nearby!");
                 }
 
                 Rectangle playerHitbox = handleSolidArea(player);

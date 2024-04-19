@@ -40,7 +40,7 @@ public class Projectile extends MovingEntity {
         checkTileCollision();
         checkEntityCollision();
 
-        if(isProjectileOutScreen() || getMovementComponent().isColliding()) {
+        if(isProjectileOutOfScreen() || getMovementComponent().isColliding()) {
             kill();
         }
     }
@@ -56,18 +56,8 @@ public class Projectile extends MovingEntity {
         }
     }
 
-    @Override
-    public void kill() {
-        super.kill();
-    }
 
-    @Override
-    public void spawn(double x, double y) {
-        super.spawn(x, y);
-    }
-
-
-    private boolean isProjectileOutScreen() {
+    private boolean isProjectileOutOfScreen() {
         return !(RenderHandler.isViewableOnScreen(getPositionComponent().getWorldPositionX().doubleValue(),
                 getPositionComponent().getWorldPositionY().doubleValue()));
     }

@@ -55,7 +55,7 @@ public class PlayerBuilder<W extends Weapon> implements CharacterBuilder {
     }
 
     @Override
-    public void setHitPoints(double hitPoints) {
+    public void setHitPoints(int hitPoints) {
         this.player.getStatComponent().setMaxHitPoints(hitPoints);
         this.player.getStatComponent().setCurrentHitPoints(hitPoints);
     }

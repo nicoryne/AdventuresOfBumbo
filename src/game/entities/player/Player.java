@@ -1,5 +1,6 @@
 package game.entities.player;
 
+import game.Game;
 import game.entities.CharacterEntity;
 import game.entities.util.ControllableEntity;
 import game.equips.weapons.Weapon;
@@ -26,10 +27,12 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     @Override
     public void update() {
         CollisionHandler.checkEnemyCollision(this);
+        CollisionHandler.checkDropCollision(this);
         move();
         look();
         attack();
         weapon.incrementReloadCooldown();
+        incrementTakeDamageCounter();
     }
 
     @Override
@@ -40,6 +43,8 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         int screenPositionY = getPositionComponent().getScreenPositionY().intValue();
 
         g2.drawImage(sprite, screenPositionX, screenPositionY,null);
+        showHPBar(g2);
+        showXPBar(g2);
     }
 
     private void move() {
@@ -96,7 +101,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     }
 
     @Override
-    public double dealDamage() {
+    public int dealDamage() {
         return weapon.getDamage();
     }
 
@@ -178,6 +183,17 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         g2.drawRect((int) (screenPositionX + hitbox.getX()), (int) (screenPositionY + hitbox.getY()), (int) hitbox.getWidth(), (int) hitbox.getHeight());
     }
 
+    private void showXPBar(Graphics2D g2) {
+        int screenWidth = Game.getInstance().getScreenWidth();
+
+        int expWidth = (int) (screenWidth - exp);
+
+        g2.setColor(Color.WHITE);
+        g2.drawRect(0, 0, screenWidth, 30);
+        g2.setColor(Color.BLUE);
+        g2.fillRect(0, 0, expWidth, 30);
+    }
+
     public void setSpritesManager(SpritesManager spritesManager) {
         this.spritesManager = spritesManager;
     }
@@ -208,6 +224,10 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         this.exp = exp;
     }
 
+    public void takeExp(double exp) {
+        this.exp += exp;
+    }
+
     public int getLevel() {
         return level;
     }
@@ -227,4 +247,6 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     public void setExpToLevelUp(double expToLevelUp) {
         this.expToLevelUp = expToLevelUp;
     }
+
+
 }

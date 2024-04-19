@@ -5,4 +5,5 @@ public enum EntityType {
     ENEMY,
     PROJECTILE,
     TILE,
+    DROP,
 }

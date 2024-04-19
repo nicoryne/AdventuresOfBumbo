@@ -34,11 +34,12 @@ public abstract class ImageHandler {
         return null;
     }
 
-    public static BufferedImage scaleImageToTileSize(BufferedImage spriteImage) {
+    public static BufferedImage scaleImageBasedOnTileSize(BufferedImage spriteImage, double scale) {
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
-        BufferedImage scaledImage = new BufferedImage(tileSize, tileSize, spriteImage.getType());
+        int scaledSize = (int) Math.floor(tileSize * scale);
+        BufferedImage scaledImage = new BufferedImage(scaledSize, scaledSize, spriteImage.getType());
         Graphics2D g = scaledImage.createGraphics();
-        g.drawImage(spriteImage, 0, 0, tileSize, tileSize, null);
+        g.drawImage(spriteImage, 0, 0, scaledSize, scaledSize, null);
         g.dispose();
         return scaledImage;
     }

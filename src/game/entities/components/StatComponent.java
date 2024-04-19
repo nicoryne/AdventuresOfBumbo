@@ -2,19 +2,19 @@ package game.entities.components;
 
 public class StatComponent {
 
-    private double maxHitPoints;
+    private int maxHitPoints;
 
-    private double currentHitPoints;
+    private int currentHitPoints;
 
     private int speed;
 
-    private double damage;
+    private int damage;
 
-    public double getCurrentHitPoints() {
+    public int getCurrentHitPoints() {
         return currentHitPoints;
     }
 
-    public void setCurrentHitPoints(double currentHitPoints) {
+    public void setCurrentHitPoints(int currentHitPoints) {
         this.currentHitPoints = currentHitPoints;
     }
 
@@ -26,19 +26,19 @@ public class StatComponent {
         this.speed = speed;
     }
 
-    public double getMaxHitPoints() {
+    public int getMaxHitPoints() {
         return maxHitPoints;
     }
 
-    public void setMaxHitPoints(double maxHitPoints) {
+    public void setMaxHitPoints(int maxHitPoints) {
         this.maxHitPoints = maxHitPoints;
     }
 
-    public double getDamage() {
+    public int getDamage() {
         return damage;
     }
 
-    public void setDamage(double damage) {
+    public void setDamage(int damage) {
         this.damage = damage;
     }
 }

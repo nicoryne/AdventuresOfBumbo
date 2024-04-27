@@ -3,7 +3,6 @@ package game.entities.enemy;
 import game.Game;
 import game.entities.CharacterEntity;
 import game.entities.EntityType;
-import game.entities.drops.Drop;
 import game.entities.drops.DropStandardExp;
 import game.entities.player.Player;
 import game.equips.weapons.Weapon;
@@ -27,6 +26,8 @@ public abstract class Enemy extends CharacterEntity {
     private static final int SPRITE_MOVE_DELAY_MS = 2;
 
     private int spriteMoveDelayCounter = 0;
+
+    private int pointsGiven;
 
     public Enemy() {
         this.setEntityType(EntityType.ENEMY);
@@ -180,11 +181,12 @@ public abstract class Enemy extends CharacterEntity {
     public void kill() {
         super.kill();
         spawnExp();
+        Game.getInstance().getPlayer().addPoints(pointsGiven);
     }
 
     public void spawnExp() {
         DropStandardExp dropStandardExp = new DropStandardExp();
-        dropStandardExp.spawn(this.getPositionComponent().getWorldPositionX().doubleValue(), this.getPositionComponent().getWorldPositionY().doubleValue());
+        dropStandardExp.spawn(this.getPositionComponent().getWorldPositionX().doubleValue(), this.getPositionComponent().getWorldPositionY().doubleValue(), expDropped);
         Game.getInstance().addObject(dropStandardExp);
     }
 
@@ -236,5 +238,13 @@ public abstract class Enemy extends CharacterEntity {
 
     public void setSpritesManager(SpritesManager spritesManager) {
         this.spritesManager = spritesManager;
+    }
+
+    public int getPointsGiven() {
+        return pointsGiven;
+    }
+
+    public void setPointsGiven(int pointsGiven) {
+        this.pointsGiven = pointsGiven;
     }
 }

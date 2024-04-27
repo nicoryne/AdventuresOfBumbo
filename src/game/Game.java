@@ -3,6 +3,7 @@ package game;
 import game.entities.MovingEntity;
 import game.entities.drops.DropFlyweightFactory;
 import game.entities.enemy.mobs.BumboMob;
+import game.entities.enemy.mobs.ChortleMob;
 import game.entities.enemy.mobs.MobFlyweightFactory;
 import game.entities.player.PlayerBuilder;
 import game.entities.player.PlayerDirector;
@@ -13,6 +14,7 @@ import game.equips.weapons.Bow;
 import game.equips.weapons.Staff;
 import game.equips.weapons.Weapon;
 import game.util.GameState;
+import game.util.Stopwatch;
 import game.util.controllers.ControllerComponents;
 import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
@@ -47,10 +49,9 @@ public class Game {
 
     private ArrayList<MovingEntity> drops;
 
-    private Timer timer;
-
     private static boolean spawned;
 
+    private Stopwatch stopwatch;
 
     private Game() {}
     //TODO: implement timer
@@ -72,6 +73,7 @@ public class Game {
         this.controllerComponents = new ControllerComponents(new KeyboardController(), new MouseController());
         setupPlayer();
         this.gameManagerComponents = new GameManagerComponents(new TileManager());
+        this.stopwatch = new Stopwatch();
     }
 
     private void setupProperties() {
@@ -116,10 +118,15 @@ public class Game {
         getGameManagerComponents().getTileManager().render(g2);
         renderEntityList(g2);
         renderDropsList(g2);
+        stopwatch.draw(g2);
         player.render(g2);
     }
 
     public void updateEntities() {
+        if(!stopwatch.isActive()) {
+            stopwatch.start();
+        }
+
         player.update();
         updateEntityList();
         updateDropsList();
@@ -130,6 +137,7 @@ public class Game {
         if(drops.isEmpty()) {
             return;
         }
+
         Iterator<MovingEntity> dropsIterator = drops.iterator();
         while(dropsIterator.hasNext()) {
             EntityObject drop = dropsIterator.next();
@@ -272,6 +280,10 @@ public class Game {
         return entities;
     }
 
+    public ArrayList<MovingEntity> getDrops() {
+        return drops;
+    }
+
     public void setProperty(String key, String value) {
         gameProperties.setProperty(key, value);
     }
@@ -286,9 +298,5 @@ public class Game {
 
     public User getUser() {
         return user;
-    }
-
-    public Timer getTimer() {
-        return timer;
     }
 }

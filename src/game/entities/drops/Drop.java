@@ -26,28 +26,28 @@ public abstract class Drop extends MovingEntity {
 
     @Override
     public void update() {
-        Player<Weapon> player = Game.getInstance().getPlayer();
-        if(isPlayerFar(player)) {
-            return;
-        }
-
-        int playerWorldPositionX = player.getPositionComponent().getWorldPositionX().intValue();
-        int playerWorldPositionY = player.getPositionComponent().getWorldPositionY().intValue();
-        int playerXHitbox = (int) player.getRenderComponent().getHitbox().getX();
-        int playerYHitbox = (int) player.getRenderComponent().getHitbox().getY();
-        int widthHitbox = (int) player.getRenderComponent().getHitbox().getWidth();
-        int heightHitbox = (int) player.getRenderComponent().getHitbox().getHeight();
-        int playerCenterX = playerWorldPositionX + playerXHitbox + widthHitbox / 2;
-        int playerCenterY = playerWorldPositionY + playerYHitbox + heightHitbox / 2;
-
-        int worldPositionX = this.getPositionComponent().getWorldPositionX().intValue();
-        int worldPositionY = this.getPositionComponent().getWorldPositionY().intValue();
-        int xHitbox = (int) this.getRenderComponent().getHitbox().getX();
-        int yHitbox = (int) this.getRenderComponent().getHitbox().getY();
-        int entityLeftX = worldPositionX + xHitbox;
-        int entityTopY = worldPositionY + yHitbox;
-
-        handleMovement(playerCenterX, playerCenterY, entityLeftX, entityTopY);
+//        Player<Weapon> player = Game.getInstance().getPlayer();
+//        if(isPlayerFar(player)) {
+//            return;
+//        }
+//
+//        int playerWorldPositionX = player.getPositionComponent().getWorldPositionX().intValue();
+//        int playerWorldPositionY = player.getPositionComponent().getWorldPositionY().intValue();
+//        int playerXHitbox = (int) player.getRenderComponent().getHitbox().getX();
+//        int playerYHitbox = (int) player.getRenderComponent().getHitbox().getY();
+//        int widthHitbox = (int) player.getRenderComponent().getHitbox().getWidth();
+//        int heightHitbox = (int) player.getRenderComponent().getHitbox().getHeight();
+//        int playerCenterX = playerWorldPositionX + playerXHitbox + widthHitbox / 2;
+//        int playerCenterY = playerWorldPositionY + playerYHitbox + heightHitbox / 2;
+//
+//        int worldPositionX = this.getPositionComponent().getWorldPositionX().intValue();
+//        int worldPositionY = this.getPositionComponent().getWorldPositionY().intValue();
+//        int xHitbox = (int) this.getRenderComponent().getHitbox().getX();
+//        int yHitbox = (int) this.getRenderComponent().getHitbox().getY();
+//        int entityLeftX = worldPositionX + xHitbox;
+//        int entityTopY = worldPositionY + yHitbox;
+//
+//        handleMovement(playerCenterX, playerCenterY, entityLeftX, entityTopY);
     }
 
     @Override

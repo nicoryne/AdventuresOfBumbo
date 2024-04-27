@@ -19,6 +19,7 @@ public class BumboMob extends Mob {
         this.getStatComponent().setSpeed(10);
         this.getStatComponent().setDamage(50);
         this.setExpDropped(3.0);
+        this.setPointsGiven(50);
     }
 
 }

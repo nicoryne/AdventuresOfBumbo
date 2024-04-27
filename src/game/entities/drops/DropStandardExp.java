@@ -14,14 +14,7 @@ public class DropStandardExp extends Drop {
         this.setSpritesManager(dropFlyweight.getSpritesManager());
 
         this.getRenderComponent().setAlive(true);
-        this.getRenderComponent().setHitbox(new Rectangle(0, 0, 32, 32));
-    }
-
-    public void clone(double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY) {
-        this.getPositionComponent().setScreenPositionX(screenPositionX);
-        this.getPositionComponent().setScreenPositionY(screenPositionY);
-        this.getPositionComponent().setWorldPositionX(worldPositionX);
-        this.getPositionComponent().setWorldPositionY(worldPositionY);
+        this.getRenderComponent().setHitbox(new Rectangle(0, 0, 16, 16));
     }
 
     @Override

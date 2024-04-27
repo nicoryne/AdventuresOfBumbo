@@ -45,16 +45,10 @@ public abstract class CollisionHandler {
     }
 
     public static <T extends Weapon> void checkDropCollision(Player<T> player) {
-        ArrayList<MovingEntity> entities = Game.getInstance().getEntities();
+        ArrayList<MovingEntity> entities = Game.getInstance().getDrops();
 
         for(MovingEntity entity : entities) {
             if(entity instanceof  Drop drop) {
-                if (isFar(drop, player)) {
-                    return;
-                } else {
-                    LoggerHelper.logInfo("Drop nearby!");
-                }
-
                 Rectangle playerHitbox = handleSolidArea(player);
                 Rectangle dropHitbox = handleSolidArea(drop);
 
@@ -97,17 +91,16 @@ public abstract class CollisionHandler {
     public static void checkOtherEnemyCollision(Enemy enemy) {
         ArrayList<MovingEntity> entities = Game.getInstance().getEntities();
 
-        for (MovingEntity entity : entities) {
-            if (entity instanceof Enemy otherEnemy && entity != enemy) {
-                Rectangle enemyHitbox = handleSolidArea(enemy);
-                Rectangle otherEnemyHitbox = handleSolidArea(otherEnemy);
-
-                if (enemyHitbox.intersects(otherEnemyHitbox)) {
-                    enemy.getMovementComponent().setColliding(true);
-                    otherEnemy.getMovementComponent().setColliding(true);
-                }
-            }
-        }
+//        for (MovingEntity entity : entities) {
+//            if (entity instanceof Enemy otherEnemy && entity != enemy) {
+//                Rectangle enemyHitbox = handleSolidArea(enemy);
+//                Rectangle otherEnemyHitbox = handleSolidArea(otherEnemy);
+//
+//                if (enemyHitbox.intersects(otherEnemyHitbox)) {
+//                    otherEnemy.getMovementComponent().setColliding(true);
+//                }
+//            }
+//        }
     }
 
     public static void checkPlayerCollision(Enemy enemy) {

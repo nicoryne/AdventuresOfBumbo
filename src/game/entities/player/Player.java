@@ -8,8 +8,10 @@ import game.util.Directions;
 import game.util.handlers.CollisionHandler;
 import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
+import game.util.handlers.FontHandler;
 import game.util.managers.SpritesManager;
 import game.util.handlers.SoundHandler;
+import services.LoggerHelper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -20,8 +22,9 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     private MouseController mouseController;
     private SpritesManager spritesManager;
     private double exp;
-    private int level;
+    private int level = 1;
     private double expToLevelUp;
+    private int points;
     private T weapon;
 
     @Override
@@ -45,6 +48,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         g2.drawImage(sprite, screenPositionX, screenPositionY,null);
         showHPBar(g2);
         showXPBar(g2);
+        showPoints(g2);
     }
 
     private void move() {
@@ -52,7 +56,6 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
                 || keyboardController.isDownPressed()
                 || keyboardController.isLeftPressed()
                 || keyboardController.isRightPressed();
-
 
         if (validKey && getRenderComponent().isAlive()) {
             handleDirections();
@@ -184,14 +187,44 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     }
 
     private void showXPBar(Graphics2D g2) {
+        Font font = FontHandler.getFont("font-1.ttf", 16f);
         int screenWidth = Game.getInstance().getScreenWidth();
-
-        int expWidth = (int) (screenWidth - exp);
+        int expWidth = (int) ((screenWidth / expToLevelUp) * exp);
+        String expString = "EXP: " + exp + " / " + expToLevelUp;
 
         g2.setColor(Color.WHITE);
         g2.drawRect(0, 0, screenWidth, 30);
         g2.setColor(Color.BLUE);
         g2.fillRect(0, 0, expWidth, 30);
+
+        g2.setFont(font);
+        int x = getXCenteredText(expString, g2);
+        g2.setColor(Color.white);
+        g2.drawString(expString, x, 20);
+    }
+
+    private void showPoints(Graphics2D g2) {
+        Font font = FontHandler.getFont("font-1.ttf", 24f);
+        String pointString = "Points: " + points;
+
+        g2.setColor(Color.WHITE);
+        g2.setFont(font);
+        int x = Game.getInstance().getScreenWidth() / 2;
+        int y = Game.getInstance().getScreenHeight() / 8;
+        g2.setColor(Color.white);
+        g2.drawString(pointString, x, y);
+    }
+
+    private static int getXCenteredText(String text, Graphics2D g2) {
+        int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+
+        return Game.getInstance().getScreenWidth() / 2 - length / 2;
+    }
+
+    private void levelUp() {
+        this.exp = 0;
+        level++;
+        expToLevelUp = expToLevelUp + (level * 5);
     }
 
     public void setSpritesManager(SpritesManager spritesManager) {
@@ -226,7 +259,11 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
 
     public void takeExp(double exp) {
         this.exp += exp;
+        if(this.exp >= expToLevelUp) {
+            levelUp();
+        }
     }
+
 
     public int getLevel() {
         return level;
@@ -248,5 +285,11 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         this.expToLevelUp = expToLevelUp;
     }
 
+    public int getPoints() {
+        return points;
+    }
 
+    public void addPoints(int points) {
+        this.points += points;
+    }
 }

@@ -1,7 +1,7 @@
 package game.util;
 
 import game.Game;
-import game.util.handlers.FontHandler;
+import game.util.managers.FontManager;
 
 import java.awt.*;
 
@@ -25,7 +25,8 @@ public class Stopwatch {
     }
 
     public void draw(Graphics2D g2) {
-        Font font = FontHandler.getFont("font-1.ttf", 24f);
+        Font font = FontManager.getInstance().getFont("Dofdedwsss", 24f);
+
         double elapsedTime = elapsedTime();
         int seconds = (int) elapsedTime % 60;
         int minutes = (int) elapsedTime / 60;

@@ -44,13 +44,6 @@ public abstract class ImageHandler {
         return scaledImage;
     }
 
-    public static File[] getListingsFromRes(String folderName) {
-        String folderPath = "src" + File.separator + "res" + File.separator + folderName + File.separator;
-        File dir = new File(folderPath);
-
-        return dir.listFiles();
-    }
-
     private static boolean isImageFile(File file) {
         String name = file.getName().toLowerCase();
         return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif") || name.endsWith(".bmp");

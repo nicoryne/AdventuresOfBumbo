@@ -1,18 +1,16 @@
 package game.ui.titlescreen;
 
 import game.Game;
-import game.exceptions.FontHandlerException;
-import game.util.handlers.FontHandler;
-import services.LoggerHelper;
+import game.util.managers.FontManager;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 public abstract class MenuScreen {
     //TODO: maybe add splash screen text (minecraft style)
 
     public static void draw(Graphics2D g2, int menuCounter) {
-        Font font = FontHandler.getFont("font-1.ttf", 48f);
+        Font font = FontManager.getInstance().getFont("Dofded", 48f);
+
         g2.setFont(font);
 
         //  PLAY

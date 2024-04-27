@@ -6,9 +6,9 @@ public class ControllerComponents {
 
     private final MouseController mouseController;
 
-    public ControllerComponents(KeyboardController keyboardController, MouseController mouseController) {
-        this.keyboardController = keyboardController;
-        this.mouseController = mouseController;
+    public ControllerComponents() {
+        this.keyboardController = new KeyboardController();
+        this.mouseController = new MouseController();
     }
 
     public KeyboardController getKeyboardController() {

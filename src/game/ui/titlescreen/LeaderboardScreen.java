@@ -1,8 +1,8 @@
 package game.ui.titlescreen;
 
 import game.Game;
-import game.util.handlers.FontHandler;
 import game.util.handlers.ImageHandler;
+import game.util.managers.FontManager;
 import services.models.User;
 
 import java.awt.*;
@@ -34,7 +34,7 @@ public abstract class LeaderboardScreen {
     }
 
     private static void drawBodyContainer(Graphics2D g2) {
-        Font font = FontHandler.getFont("font-1.ttf", 32f);
+        Font font = FontManager.getInstance().getFont("Dofded", 32f);
 
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         int x = (Game.getInstance().getScreenWidth() / 14);
@@ -61,7 +61,8 @@ public abstract class LeaderboardScreen {
 
     private static void drawBackButton(Graphics2D g2) {
         String text = "<";
-        Font font = FontHandler.getFont("font-1.ttf", 48f);
+        Font font = FontManager.getInstance().getFont("Dofded", 48f);
+
         g2.setFont(font);
 
         int x = Game.getInstance().getScreenWidth() / 14;
@@ -78,7 +79,8 @@ public abstract class LeaderboardScreen {
 
     private static void drawTitle(Graphics2D g2)  {
         String text = "LEADERBOARD";
-        Font font = FontHandler.getFont("font-1.ttf", 48f);
+        Font font = FontManager.getInstance().getFont("Dofded", 48f);
+
         g2.setFont(font);
 
         int x = getXCenteredText(text, g2);
@@ -94,7 +96,8 @@ public abstract class LeaderboardScreen {
     }
 
     private static void drawPlayerProfile(int x, int y, int width, int height, Graphics2D g2, Color bgColor, User user) {
-        Font font = FontHandler.getFont("font-1.ttf", 32f);
+        Font font = FontManager.getInstance().getFont("Dofded", 32f);
+
         g2.setFont(font);
         g2.setColor(bgColor);
         g2.drawRect(x, y, width, height);

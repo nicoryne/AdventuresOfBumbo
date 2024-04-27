@@ -1,16 +1,15 @@
 package game.ui.titlescreen;
 
 import game.Game;
-import game.exceptions.FontHandlerException;
-import game.util.handlers.FontHandler;
-import services.LoggerHelper;
+import game.util.managers.FontManager;
 
 import java.awt.*;
 
 public abstract class BoardingScreen {
 
     public static void draw(Graphics2D g2, int menuCounter) {
-        Font font = FontHandler.getFont("font-1.ttf", 48f);
+        Font font = FontManager.getInstance().getFont("Dofded", 48f);
+
         g2.setFont(font);
 
         //  LOGIN TEXT

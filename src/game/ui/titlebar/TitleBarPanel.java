@@ -1,8 +1,8 @@
 package game.ui.titlebar;
 
-import game.exceptions.FontHandlerException;
-import game.util.handlers.FontHandler;
+import game.Game;
 import game.util.handlers.ImageHandler;
+import game.util.managers.FontManager;
 import services.LoggerHelper;
 
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class TitleBarPanel extends JPanel {
     private static final Dimension TITLE_PANEL_SIZE = (new Dimension(768, 40));
     private static final Color PANEL_BACKGROUND_COLOR = Color.black;
     private static final Color TEXT_FOREGROUND_COLOR = Color.white;
-    private static final String FONT_NAME = "font-1.ttf";
+    private static final String FONT_NAME = "Dofded";
     private static final float FONT_SIZE = 16f;
 
     public TitleBarPanel(JFrame windowFrame){
@@ -81,8 +81,9 @@ public class TitleBarPanel extends JPanel {
     }
 
     private void decorateTitleLabel(){
-        Font titleFont = FontHandler.getFont(FONT_NAME, FONT_SIZE);
-        titleLabel.setFont(titleFont);
+        Font font = FontManager.getInstance().getFont(FONT_NAME, FONT_SIZE);
+
+        titleLabel.setFont(font);
 
         titleLabel.setText("umbo Hell");
         titleLabel.setForeground(TEXT_FOREGROUND_COLOR);

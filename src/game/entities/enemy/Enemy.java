@@ -117,32 +117,32 @@ public abstract class Enemy extends CharacterEntity {
 
     private void handleMovement(int worldPositionX, int worldPositionY, int speed, int diagonalSpeed) {
         switch (getMovementComponent().getDirection()) {
-            case Directions.NORTH_EAST:
+            case NORTH_EAST:
                 getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);
                 getPositionComponent().setWorldPositionX(worldPositionX + diagonalSpeed);
                 break;
-            case Directions.NORTH_WEST:
+            case NORTH_WEST:
                 getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);
                 getPositionComponent().setWorldPositionX(worldPositionX - diagonalSpeed);
                 break;
-            case Directions.SOUTH_EAST:
+            case SOUTH_EAST:
                 getPositionComponent().setWorldPositionY(worldPositionY + diagonalSpeed);
                 getPositionComponent().setWorldPositionX(worldPositionX + diagonalSpeed);
                 break;
-            case Directions.SOUTH_WEST:
+            case SOUTH_WEST:
                 getPositionComponent().setWorldPositionY(worldPositionY + diagonalSpeed);
                 getPositionComponent().setWorldPositionX(worldPositionX - diagonalSpeed);
                 break;
-            case Directions.NORTH:
+            case NORTH:
                 getPositionComponent().setWorldPositionY(worldPositionY - speed);
                 break;
-            case Directions.SOUTH:
+            case SOUTH:
                 getPositionComponent().setWorldPositionY(worldPositionY + speed);
                 break;
-            case Directions.WEST:
+            case WEST:
                 getPositionComponent().setWorldPositionX(worldPositionX - speed);
                 break;
-            case Directions.EAST:
+            case EAST:
                 getPositionComponent().setWorldPositionX(worldPositionX + speed);
                 break;
         }
@@ -150,28 +150,28 @@ public abstract class Enemy extends CharacterEntity {
 
     private void reverseDirection() {
         switch (getMovementComponent().getDirection()) {
-            case Directions.NORTH_EAST:
+            case NORTH_EAST:
                 getMovementComponent().setDirection(Directions.SOUTH_WEST);
                 break;
-            case Directions.NORTH_WEST:
+            case NORTH_WEST:
                 getMovementComponent().setDirection(Directions.SOUTH_EAST);
                 break;
-            case Directions.SOUTH_EAST:
+            case SOUTH_EAST:
                 getMovementComponent().setDirection(Directions.NORTH_WEST);
                 break;
-            case Directions.SOUTH_WEST:
+            case SOUTH_WEST:
                 getMovementComponent().setDirection(Directions.NORTH_EAST);
                 break;
-            case Directions.NORTH:
+            case NORTH:
                 getMovementComponent().setDirection(Directions.SOUTH);
                 break;
-            case Directions.SOUTH:
+            case SOUTH:
                 getMovementComponent().setDirection(Directions.NORTH);
                 break;
-            case Directions.WEST:
+            case WEST:
                 getMovementComponent().setDirection(Directions.EAST);
                 break;
-            case Directions.EAST:
+            case EAST:
                 getMovementComponent().setDirection(Directions.WEST);
                 break;
         }

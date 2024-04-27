@@ -1,6 +1,7 @@
 package game.util.managers;
 
 import game.util.Directions;
+import game.util.handlers.FileHandler;
 import game.util.handlers.ImageHandler;
 import services.LoggerHelper;
 
@@ -66,7 +67,7 @@ public class SpritesManager {
     private ArrayList<BufferedImage> loadSpritesFromFolder(String folderName) {
         ArrayList<BufferedImage> sprites = new ArrayList<>();
         String filePath = "sprites" + File.separator + folderName;
-        File[] directoryListing = ImageHandler.getListingsFromRes(filePath);
+        File[] directoryListing = FileHandler.getListingsFromRes(filePath);
 
         if (directoryListing != null) {
             for (File child : directoryListing) {

@@ -6,8 +6,8 @@ public class GameManagerComponents {
 
     private final SoundManager soundManager;
 
-    public GameManagerComponents(TileManager tileManager) {
-        this.tileManager = tileManager;
+    public GameManagerComponents() {
+        this.tileManager = new TileManager();
         this.soundManager = SoundManager.getInstance();
     }
 

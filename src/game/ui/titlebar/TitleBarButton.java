@@ -1,7 +1,7 @@
 package game.ui.titlebar;
 
-import game.exceptions.FontHandlerException;
-import game.util.handlers.FontHandler;
+import game.Game;
+import game.util.managers.FontManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class TitleBarButton extends JButton {
-    private static final String FONT_NAME = "font-1.ttf";
+    private static final String FONT_NAME = "Dofded";
     private static final float FONT_SIZE = 16f;
     private static final Dimension BUTTON_SIZE = new Dimension(50, 50);
     private static final Color TEXT_FOREGROUND_COLOR = Color.WHITE;
@@ -19,7 +19,8 @@ public class TitleBarButton extends JButton {
     private static final Color BUTTON_BACKGROUND_SELECTED_COLOR = Color.RED;
 
     public TitleBarButton(String text, ActionListener actionListener) {
-        Font font = FontHandler.getFont(FONT_NAME, FONT_SIZE);
+        Font font = FontManager.getInstance().getFont(FONT_NAME, FONT_SIZE);
+
         this.setPreferredSize(BUTTON_SIZE);
         this.setFocusPainted(false);
         this.setBorderPainted(false);

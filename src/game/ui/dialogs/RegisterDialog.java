@@ -1,6 +1,7 @@
 package game.ui.dialogs;
 
-import game.util.handlers.FontHandler;
+import game.Game;
+import game.util.managers.FontManager;
 import services.server.DBConnection;
 
 import javax.swing.*;
@@ -102,7 +103,8 @@ public class RegisterDialog extends JDialog {
     }
 
     private void setupFont() {
-        Font font = FontHandler.getFont("font-2.ttf", 16f);
+        Font font = FontManager.getInstance().getFont("Pixellari", 16f);
+
         usernameLabel.setFont(font);
         passwordLabel.setFont(font);
         usernameField.setFont(font);

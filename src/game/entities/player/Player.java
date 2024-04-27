@@ -8,10 +8,9 @@ import game.util.Directions;
 import game.util.handlers.CollisionHandler;
 import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
-import game.util.handlers.FontHandler;
+import game.util.managers.FontManager;
 import game.util.managers.SpritesManager;
 import game.util.handlers.SoundHandler;
-import services.LoggerHelper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -149,32 +148,32 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
 
     private void handleMovement(int worldPositionX, int worldPositionY, int speed, int diagonalSpeed) {
         switch (getMovementComponent().getDirection()) {
-            case Directions.NORTH_EAST:
+            case NORTH_EAST:
                 getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);
                 getPositionComponent().setWorldPositionX(worldPositionX + diagonalSpeed);
                 break;
-            case Directions.NORTH_WEST:
+            case NORTH_WEST:
                 getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);
                 getPositionComponent().setWorldPositionX(worldPositionX - diagonalSpeed);
                 break;
-            case Directions.SOUTH_EAST:
+            case SOUTH_EAST:
                 getPositionComponent().setWorldPositionY(worldPositionY + diagonalSpeed);
                 getPositionComponent().setWorldPositionX(worldPositionX + diagonalSpeed);
                 break;
-            case Directions.SOUTH_WEST:
+            case SOUTH_WEST:
                 getPositionComponent().setWorldPositionY(worldPositionY + diagonalSpeed);
                 getPositionComponent().setWorldPositionX(worldPositionX - diagonalSpeed);
                 break;
-            case Directions.NORTH:
+            case NORTH:
                 getPositionComponent().setWorldPositionY(worldPositionY - speed);
                 break;
-            case Directions.SOUTH:
+            case SOUTH:
                 getPositionComponent().setWorldPositionY(worldPositionY + speed);
                 break;
-            case Directions.WEST:
+            case WEST:
                 getPositionComponent().setWorldPositionX(worldPositionX - speed);
                 break;
-            case Directions.EAST:
+            case EAST:
                 getPositionComponent().setWorldPositionX(worldPositionX + speed);
                 break;
         }
@@ -187,7 +186,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     }
 
     private void showXPBar(Graphics2D g2) {
-        Font font = FontHandler.getFont("font-1.ttf", 16f);
+        Font font = FontManager.getInstance().getFont("Dofded", 16f);
         int screenWidth = Game.getInstance().getScreenWidth();
         int expWidth = (int) ((screenWidth / expToLevelUp) * exp);
         String expString = "EXP: " + exp + " / " + expToLevelUp;
@@ -204,7 +203,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     }
 
     private void showPoints(Graphics2D g2) {
-        Font font = FontHandler.getFont("font-1.ttf", 24f);
+        Font font = FontManager.getInstance().getFont("Dofded", 24f);
         String pointString = "Points: " + points;
 
         g2.setColor(Color.WHITE);

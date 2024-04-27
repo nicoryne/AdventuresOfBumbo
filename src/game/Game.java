@@ -70,9 +70,9 @@ public class Game {
         setupFlyweightFactories();
         this.entities = new ArrayList<>();
         this.drops = new ArrayList<>();
-        this.controllerComponents = new ControllerComponents(new KeyboardController(), new MouseController());
+        this.controllerComponents = new ControllerComponents();
         setupPlayer();
-        this.gameManagerComponents = new GameManagerComponents(new TileManager());
+        this.gameManagerComponents = new GameManagerComponents();
         this.stopwatch = new Stopwatch();
     }
 
@@ -92,7 +92,7 @@ public class Game {
         PlayerDirector playerDirector = new PlayerDirector();
 
         KeyboardController keyboardController = controllerComponents.getKeyboardController();
-        MouseController mouseController = getControllerComponents().getMouseController();
+        MouseController mouseController = controllerComponents.getMouseController();
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         Bow bow = new Bow();
         Staff staff = new Staff();
@@ -104,8 +104,8 @@ public class Game {
     }
 
     private void loadPropertiesFile() {
-        String rootPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
-        String gameConfigPath = rootPath + "conf/game.properties";
+//        String rootPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
+        String gameConfigPath = "src/conf/game.properties";
 
         try (FileInputStream inputStream = new FileInputStream(gameConfigPath)) {
             gameProperties.load(inputStream);

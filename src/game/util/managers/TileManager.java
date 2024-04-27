@@ -3,6 +3,7 @@ package game.util.managers;
 import game.Game;
 import game.entities.tile.CollidableTiles;
 import game.entities.tile.Tile;
+import game.util.handlers.FileHandler;
 import game.util.handlers.ImageHandler;
 import game.util.handlers.MapHandler;
 import game.util.handlers.RenderHandler;
@@ -33,7 +34,7 @@ public class TileManager {
 
     private ArrayList<Tile> loadTilesFromFolder() {
         ArrayList<Tile> tiles = new ArrayList<>();
-        File[] directoryListing = ImageHandler.getListingsFromRes("tiles");
+        File[] directoryListing = FileHandler.getListingsFromRes("tiles");
 
         if (directoryListing != null) {
             for (File child : directoryListing) {

@@ -1,10 +1,8 @@
 package game.ui.titlescreen;
 
 import game.Game;
-import game.exceptions.FontHandlerException;
-import game.util.handlers.FontHandler;
 import game.util.handlers.ImageHandler;
-import services.LoggerHelper;
+import game.util.managers.FontManager;
 
 import java.awt.*;
 import java.util.Objects;
@@ -66,7 +64,8 @@ public abstract class TitleScreen {
 
     private static void drawTitle(Graphics2D g2)  {
         String text = "BUMBO HELL";
-        Font font = FontHandler.getFont("font-1.ttf", 84f);
+        Font font = FontManager.getInstance().getFont("Dofded", 84f);
+
         g2.setFont(font);
 
         int x = getXCenteredText(text, g2);

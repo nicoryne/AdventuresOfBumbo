@@ -2,7 +2,7 @@ package game.ui.dialogs;
 
 import game.Game;
 import game.ui.titlescreen.TitleScreen;
-import game.util.handlers.FontHandler;
+import game.util.managers.FontManager;
 import services.LoggerHelper;
 import services.server.DBConnection;
 
@@ -12,7 +12,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.RoundRectangle2D;
 
 public class LoginDialog extends JDialog {
 
@@ -99,7 +98,8 @@ public class LoginDialog extends JDialog {
     }
 
     private void setupFont() {
-        Font font = FontHandler.getFont("font-2.ttf", 16f);
+        Font font = FontManager.getInstance().getFont("Pixellari", 16f);
+
         usernameLabel.setFont(font);
         passwordLabel.setFont(font);
         usernameField.setFont(font);

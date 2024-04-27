@@ -3,7 +3,6 @@ package game;
 import game.entities.MovingEntity;
 import game.entities.drops.DropFlyweightFactory;
 import game.entities.enemy.mobs.BumboMob;
-import game.entities.enemy.mobs.ChortleMob;
 import game.entities.enemy.mobs.MobFlyweightFactory;
 import game.entities.player.PlayerBuilder;
 import game.entities.player.PlayerDirector;
@@ -13,13 +12,11 @@ import game.entities.projectile.ProjectileFlyweightFactory;
 import game.equips.weapons.Bow;
 import game.equips.weapons.Staff;
 import game.equips.weapons.Weapon;
-import game.util.GameState;
 import game.util.Stopwatch;
 import game.util.controllers.ControllerComponents;
 import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
 import game.util.managers.GameManagerComponents;
-import game.util.managers.TileManager;
 import services.LoggerHelper;
 import services.models.User;
 
@@ -37,7 +34,7 @@ public class Game {
 
     private static Game gameInstance;
 
-    private GameState gameState;
+    private GamePanel gamePanel;
 
     private ControllerComponents controllerComponents;
 
@@ -48,8 +45,6 @@ public class Game {
     private ArrayList<MovingEntity> entities;
 
     private ArrayList<MovingEntity> drops;
-
-    private static boolean spawned;
 
     private Stopwatch stopwatch;
 
@@ -64,8 +59,8 @@ public class Game {
         return gameInstance;
     }
 
-    public void setupGame() {
-        this.gameState = GameState.TITLE_SCREEN;
+    public void setupGame(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
         setupProperties();
         setupFlyweightFactories();
         this.entities = new ArrayList<>();
@@ -268,14 +263,6 @@ public class Game {
         entities.add(entityObject);
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
     public ArrayList<MovingEntity> getEntities() {
         return entities;
     }
@@ -298,5 +285,9 @@ public class Game {
 
     public User getUser() {
         return user;
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
     }
 }

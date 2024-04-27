@@ -1,6 +1,6 @@
 package game.util;
 
-public enum GameState {
+public enum ScreenStates {
 
     TITLE_SCREEN,
 

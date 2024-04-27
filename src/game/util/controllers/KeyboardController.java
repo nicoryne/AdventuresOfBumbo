@@ -1,8 +1,7 @@
 package game.util.controllers;
 
 import game.Game;
-import game.util.GameState;
-import services.LoggerHelper;
+import game.util.ScreenStates;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -29,7 +28,7 @@ public class KeyboardController implements KeyListener {
 
     private boolean isPauseToggled;
 
-    private GameState currentState;
+    private ScreenStates currentState;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -37,7 +36,7 @@ public class KeyboardController implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        currentState = Game.getInstance().getGameState();
+        currentState = Game.getInstance().getGamePanel().getScreenState();
 
         switch(currentState) {
             case PLAYING, PAUSED -> updateGameKeyState(e.getKeyCode(), true);
@@ -47,7 +46,7 @@ public class KeyboardController implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        currentState = Game.getInstance().getGameState();
+        currentState = Game.getInstance().getGamePanel().getScreenState();
 
         switch(currentState) {
             case PLAYING, PAUSED -> updateGameKeyState(e.getKeyCode(), false);

@@ -1,6 +1,6 @@
 package game.util;
 
-import game.ui.GamePanel;
+import game.GamePanel;
 import services.LoggerHelper;
 
 public class GameLoopSingleton {

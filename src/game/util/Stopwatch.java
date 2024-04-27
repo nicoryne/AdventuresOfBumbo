@@ -25,7 +25,7 @@ public class Stopwatch {
     }
 
     public void draw(Graphics2D g2) {
-        Font font = FontManager.getInstance().getFont("Dofdedwsss", 24f);
+        Font font = FontManager.getInstance().getFont("Dofded", 24f);
 
         double elapsedTime = elapsedTime();
         int seconds = (int) elapsedTime % 60;

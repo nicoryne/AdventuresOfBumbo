@@ -2,6 +2,8 @@ package game.entities;
 
 import game.Game;
 import game.entities.components.StatComponent;
+import game.entities.player.Player;
+import game.util.ScreenStates;
 
 import java.awt.*;
 

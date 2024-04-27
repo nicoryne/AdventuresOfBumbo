@@ -1,10 +1,10 @@
-package game.ui;
+package game;
 
-import com.mysql.cj.log.Log;
-import game.Game;
+import game.ui.DeadScreen;
+import game.ui.PauseScreen;
 import game.ui.dialogs.LoginDialog;
 import game.ui.dialogs.RegisterDialog;
-import game.util.GameState;
+import game.util.ScreenStates;
 import game.ui.titlescreen.TitleScreen;
 import game.util.GameLoopSingleton;
 import game.util.handlers.SoundHandler;
@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private GameLoopSingleton gameLoopSingleton;
     private final Game game;
-    private GameState currentState;
+    private ScreenStates screenState;
     private LoginDialog loginDialog;
     private RegisterDialog registerDialog;
     private final JFrame window;
@@ -33,8 +33,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public GamePanel(JFrame window){
         this.game = Game.getInstance();
+        this.screenState = ScreenStates.TITLE_SCREEN;
         this.window = window;
-        game.setupGame();
+        game.setupGame(this);
         this.setPreferredSize(new Dimension(game.getScreenWidth(), game.getScreenHeight()));
         this.setDoubleBuffered(true);
         this.addKeyListener(game.getControllerComponents().getKeyboardController());
@@ -58,17 +59,23 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        currentState = Game.getInstance().getGameState();
-        if(currentState == GameState.TITLE_SCREEN) {
-            menuSelector();
-            checkEntered();
-        }
-        if(currentState == GameState.PLAYING) {
-            Game.getInstance().updateEntities();
-            toggleGameState();
-        }
-        if(currentState == GameState.PAUSED) {
-            toggleGameState();
+        switch(screenState) {
+            case TITLE_SCREEN:
+                menuSelector();
+                checkEntered();
+                break;
+            case PLAYING:
+                Game.getInstance().updateEntities();
+                toggleGameState();
+                if(isPlayerDead()) {
+                    screenState = ScreenStates.DEAD;
+                }
+                break;
+            case PAUSED:
+                toggleGameState();
+                break;
+            case DEAD:
+                break;
         }
         playAudio();
     }
@@ -76,7 +83,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        switch(currentState) {
+        switch(screenState) {
             case TITLE_SCREEN -> drawTitle(g2);
             case PLAYING -> drawPlaying(g2);
             case PAUSED -> drawPaused(g2);
@@ -88,14 +95,14 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void toggleGameState() {
         if(Game.getInstance().getControllerComponents().getKeyboardController().isPaused()) {
-            Game.getInstance().setGameState(GameState.PAUSED);
+            screenState = ScreenStates.PAUSED;
         } else {
-            Game.getInstance().setGameState(GameState.PLAYING);
+            screenState = ScreenStates.PLAYING;
         }
     }
 
     private void playAudio() {
-        switch(currentState) {
+        switch(screenState) {
             case PLAYING:
                 SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.5f);
                 SoundHandler.stopAudio("bgm-2-vempair");
@@ -135,7 +142,7 @@ public class GamePanel extends JPanel implements Runnable {
         switch(selected) {
             case 0:
                 TitleScreen.setTitleState(TitleScreen.TitleScreenState.PLAYING);
-                Game.getInstance().setGameState(GameState.PLAYING);
+                screenState = ScreenStates.PLAYING;
                 break;
             case 1:
                 TitleScreen.setTitleState(TitleScreen.TitleScreenState.LEADERBOARD);
@@ -186,4 +193,15 @@ public class GamePanel extends JPanel implements Runnable {
         DeadScreen.draw(g2);
     }
 
+    private boolean isPlayerDead() {
+        return !Game.getInstance().getPlayer().getRenderComponent().isAlive();
+    }
+
+    public ScreenStates getScreenState() {
+        return screenState;
+    }
+
+    public void setScreenState(ScreenStates screenState) {
+        this.screenState = screenState;
+    }
 }

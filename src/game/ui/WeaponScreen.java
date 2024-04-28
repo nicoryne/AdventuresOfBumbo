@@ -7,7 +7,7 @@ import java.awt.*;
 
 public abstract class WeaponScreen {
 
-    public static void draw(Graphics2D g2)  {
+    public static void draw(Graphics2D g2, int menuCounter)  {
         String text = "PAUSED";
         g2.setColor(Color.white);
 

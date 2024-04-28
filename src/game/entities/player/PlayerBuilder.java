@@ -86,8 +86,12 @@ public class PlayerBuilder<W extends Weapon> implements CharacterBuilder {
         this.player.setMouseController(mouseController);
     }
 
-    public void setSpritesManager(SpritesManager spritesManager) {
-        this.player.setSpritesManager(spritesManager);
+    public void setMovementSpritesManager(SpritesManager spritesManager) {
+        this.player.setMovementSpritesManager(spritesManager);
+    }
+
+    public void setIdleSpritesManager(SpritesManager spritesManager) {
+        this.player.setIdleSpritesManager(spritesManager);
     }
 
     public void setWeapon(W weapon) {

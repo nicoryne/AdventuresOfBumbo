@@ -5,6 +5,7 @@ import game.entities.projectile.ArrowProjectile;
 import game.equips.weapons.util.RangedWeapon;
 import game.util.Directions;
 import game.util.handlers.SoundHandler;
+import game.util.managers.SpritesManager;
 
 import java.util.ArrayList;
 

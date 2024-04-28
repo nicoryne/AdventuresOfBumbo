@@ -30,13 +30,11 @@ public class SpritesManager {
     public void updateSprite() {
         frameCounter++;
         if (frameCounter > spriteChangeOnFrame) {
-
             if(spritesAvailablePerDirection != 0) {
                 currentSpriteIndex = (currentSpriteIndex + 1) % spritesAvailablePerDirection;
             } else {
                 currentSpriteIndex = (currentSpriteIndex + 1);
             }
-
             frameCounter = 0;
         }
     }
@@ -53,10 +51,14 @@ public class SpritesManager {
 
     private int getCurrentSpriteIndex(Directions direction) {
         return switch (direction) {
-            case SOUTH, NONE -> currentSpriteIndex;
-            case EAST, SOUTH_EAST, NORTH_EAST -> currentSpriteIndex + spritesAvailablePerDirection;
-            case WEST, SOUTH_WEST, NORTH_WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
-            case NORTH -> currentSpriteIndex + (spritesAvailablePerDirection * 3);
+            case EAST -> currentSpriteIndex;
+            case NORTH -> currentSpriteIndex + spritesAvailablePerDirection;
+            case NORTH_EAST -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
+            case NORTH_WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 3);
+            case SOUTH, NONE -> currentSpriteIndex + (spritesAvailablePerDirection * 4);
+            case SOUTH_EAST -> currentSpriteIndex + (spritesAvailablePerDirection * 5);
+            case SOUTH_WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 6);
+            case WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 7);
         };
     }
 

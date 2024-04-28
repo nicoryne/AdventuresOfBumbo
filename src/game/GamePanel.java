@@ -153,6 +153,21 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    private void handleWeaponScreen() {
+        int selected = TitleScreen.getMenuCounter();
+        switch(selected) {
+            case 0:
+                TitleScreen.setTitleState(TitleScreen.TitleScreenState.PLAYING);
+                break;
+            case 1:
+                TitleScreen.setTitleState(TitleScreen.TitleScreenState.LEADERBOARD);
+                break;
+            case 2:
+                exitProgram();
+                break;
+        }
+    }
+
     private void handleLoginScreen() {
             loginDialog = new LoginDialog(window);
             loginDialog.setVisible(true);

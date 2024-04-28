@@ -5,6 +5,7 @@ import game.entities.projectile.OrbProjectile;
 import game.equips.weapons.util.RangedWeapon;
 import game.util.Directions;
 import game.util.handlers.SoundHandler;
+import game.util.managers.SpritesManager;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ public class Staff extends RangedWeapon<OrbProjectile> {
         this.setProjectile(new OrbProjectile());
         this.setWeaponName("Staff");
         this.setWeaponType(WeaponType.RANGED);
+        this.setSpritesManager(new SpritesManager(""));
         this.setDamage(30);
         this.setRange(20);
         this.setFireRate(60); // lowest should be 14 so that audio can catch up

@@ -48,8 +48,10 @@ public class Game {
 
     private Stopwatch stopwatch;
 
+    private int difficulty;
+
     private Game() {}
-    //TODO: implement timer
+
 
     public static Game getInstance() {
         if (gameInstance == null) {
@@ -69,6 +71,7 @@ public class Game {
         setupPlayer();
         this.gameManagerComponents = new GameManagerComponents();
         this.stopwatch = new Stopwatch();
+        this.difficulty = 1;
     }
 
     private void setupProperties() {
@@ -99,7 +102,6 @@ public class Game {
     }
 
     private void loadPropertiesFile() {
-//        String rootPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
         String gameConfigPath = "src/conf/game.properties";
 
         try (FileInputStream inputStream = new FileInputStream(gameConfigPath)) {
@@ -122,10 +124,14 @@ public class Game {
             stopwatch.start();
         }
 
+        if(stopwatch.elapsedTime() >= 30 && stopwatch.elapsedTime() % 30 == 0) {
+            difficulty++;
+        }
+
         player.update();
         updateEntityList();
         updateDropsList();
-        spawnEnemy();
+//        spawnEnemy();
     }
 
     private void renderDropsList(Graphics2D g2) {
@@ -195,7 +201,7 @@ public class Game {
         Random random = new Random();
         int chance = random.nextInt(100);
 
-        if(chance > 98) {
+        if(chance < difficulty) {
             int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
             int maxWorldCol = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_COL"));
             int maxWorldRow = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_ROW"));

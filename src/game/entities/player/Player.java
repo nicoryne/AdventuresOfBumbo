@@ -19,7 +19,8 @@ import java.awt.image.BufferedImage;
 public class Player<T extends Weapon> extends CharacterEntity implements ControllableEntity {
     private KeyboardController keyboardController;
     private MouseController mouseController;
-    private SpritesManager spritesManager;
+    private SpritesManager movementSpritesManager;
+    private SpritesManager idleSpritesManager;
     private double exp;
     private int level = 1;
     private double expToLevelUp;
@@ -39,8 +40,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
 
     @Override
     public void render(Graphics2D g2) {
-        BufferedImage sprite = spritesManager.getCurrentSprite(getMovementComponent().getDirection());
-
+        BufferedImage sprite = getRenderComponent().getSprite();
         int screenPositionX = getPositionComponent().getScreenPositionX().intValue();
         int screenPositionY = getPositionComponent().getScreenPositionY().intValue();
 
@@ -72,7 +72,11 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
                 SoundHandler.playAudio("bump-1", 0, 1.0f);
             }
 
-            spritesManager.updateSprite();
+            movementSpritesManager.updateSprite();
+            getRenderComponent().setSprite(movementSpritesManager.getCurrentSprite(getMovementComponent().getDirection()));
+        } else if (!validKey && getRenderComponent().isAlive()) {
+            idleSpritesManager.updateSprite();
+            getRenderComponent().setSprite(idleSpritesManager.getCurrentSprite(getMovementComponent().getDirection()));
         }
     }
 
@@ -187,7 +191,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
 
     private void showXPBar(Graphics2D g2) {
         Font font = FontManager.getInstance().getFont("Dofded", 16f);
-        int screenWidth = Game.getInstance().getScreenWidth();
+        int screenWidth = Game.getInstance().getScreenWidth() - 4;
         int expWidth = (int) ((screenWidth / expToLevelUp) * exp);
         String expString = "EXP: " + exp + " / " + expToLevelUp;
 
@@ -226,8 +230,12 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         expToLevelUp = expToLevelUp + (level * 5);
     }
 
-    public void setSpritesManager(SpritesManager spritesManager) {
-        this.spritesManager = spritesManager;
+    public void setMovementSpritesManager(SpritesManager movementSpritesManager) {
+        this.movementSpritesManager = movementSpritesManager;
+    }
+
+    public void setIdleSpritesManager(SpritesManager idleSpritesManager) {
+        this.idleSpritesManager = idleSpritesManager;
     }
 
     @Override

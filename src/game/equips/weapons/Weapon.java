@@ -2,12 +2,15 @@ package game.equips.weapons;
 
 import game.equips.weapons.util.AttackingWeapon;
 import game.util.Directions;
+import game.util.managers.SpritesManager;
 
 public abstract class Weapon implements AttackingWeapon {
 
     private String weaponName;
 
     private WeaponType weaponType;
+
+    private SpritesManager spritesManager;
 
     private int damage;
 
@@ -69,6 +72,14 @@ public abstract class Weapon implements AttackingWeapon {
 
     public boolean canAttack() {
         return reloadCooldown >= fireRate;
+    }
+
+    public SpritesManager getSpritesManager() {
+        return spritesManager;
+    }
+
+    public void setSpritesManager(SpritesManager spritesManager) {
+        this.spritesManager = spritesManager;
     }
 
     @Override

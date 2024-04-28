@@ -1,6 +1,7 @@
 package game.ui.titlescreen;
 
 import game.Game;
+import game.ui.WeaponScreen;
 import game.util.handlers.ImageHandler;
 import game.util.managers.FontManager;
 
@@ -10,7 +11,7 @@ import java.util.Objects;
 public abstract class TitleScreen {
 
     public enum TitleScreenState {
-        BOARDING, MENU, LEADERBOARD, PLAYING
+        BOARDING, MENU, LEADERBOARD, WEAPON_SELECTION, PLAYING
     }
 
     private static final Color TITLE_SHADOW_COLOR = new Color(36, 12, 28);
@@ -52,6 +53,10 @@ public abstract class TitleScreen {
                 break;
             case LEADERBOARD:
                 LeaderboardScreen.draw(g2, menuCounter);
+                menuItems = 6;
+                break;
+            case WEAPON_SELECTION:
+                WeaponScreen.draw(g2, menuCounter);
                 menuItems = 6;
                 break;
         }

@@ -27,7 +27,8 @@ public class PlayerDirector {
         builder.setExp(0.0);
         builder.setLevel(1);
         builder.setExpToLevelUp(45.0);
-        builder.setSpritesManager(new SpritesManager("player", 3, 1));
+        builder.setMovementSpritesManager(new SpritesManager("worker/movement", 3, 1));
+        builder.setIdleSpritesManager(new SpritesManager("worker/idle", 2, 1));
         builder.setKeyboardController(keyboardController);
         builder.setMouseController(mouseController);
         builder.setWeapon(weapon);

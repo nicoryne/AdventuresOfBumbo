@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class UserDML {
@@ -26,9 +28,11 @@ public class UserDML {
             return false;
         }
 
-        String query = "INSERT INTO `login_schema`.`users` (`username`, `password`, `firstname`, `lastname`, `birthday`) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO users (username, password, firstname, lastname, birthdate) VALUES (?, ?, ?, ?, ?)";
         String encryptedPassword = FunnyEncryptor.encrypt(password);
-        executeUpdate(query, username, encryptedPassword, firstName, lastName, birthday);
+        java.sql.Date birthDate = java.sql.Date.valueOf(birthday);
+        LoggerHelper.logInfo(birthDate.toString());
+        executeUpdate(query, birthDate, username, encryptedPassword, firstName, lastName);
         return true;
     }
 
@@ -38,7 +42,7 @@ public class UserDML {
             return;
         }
 
-        String query = "UPDATE `login_schema`.`users` SET `password` = ? WHERE `username` = ?";
+        String query = "UPDATE users SET password = ? WHERE username = ?";
         executeUpdate(query, newPassword, username);
     }
 
@@ -48,7 +52,7 @@ public class UserDML {
             return;
         }
 
-        String query = "DELETE FROM `login_schema`.`users` WHERE `username` = ?";
+        String query = "DELETE FROM users WHERE username = ?";
         executeUpdate(query, username);
     }
 
@@ -58,7 +62,7 @@ public class UserDML {
             return false;
         }
 
-        String query = "SELECT * FROM `users` WHERE `username` = ?";
+        String query = "SELECT * FROM users WHERE username = ?";
         try (PreparedStatement preparedStatement = dbConnection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -68,10 +72,10 @@ public class UserDML {
                     String givenString = new String(password);
 
                     if (givenString.equals(decryptedPassword)) {
-                        int userId = resultSet.getInt("userId");
+                        int userId = resultSet.getInt("user_id");
                         String firstName = resultSet.getString("firstName");
                         String lastName = resultSet.getString("lastName");
-                        Date birthday = resultSet.getDate("birthday");
+                        Date birthday = resultSet.getDate("birthdate");
 
                         User user = new User(userId, firstName, lastName, username, birthday);
                         Game.getInstance().setUser(user);
@@ -84,6 +88,21 @@ public class UserDML {
         }
 
         return false;
+    }
+
+    private void executeUpdate(String query, java.sql.Date birthDate, String... parameters) {
+        try {
+            PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
+            for (int i = 0; i < parameters.length; i++) {
+                preparedStatement.setString(i + 1, parameters[i]);
+            }
+            preparedStatement.setDate(parameters.length + 1, birthDate);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            LoggerHelper.logInfo("Successfully executed update query: " + query);
+        } catch (SQLException e) {
+            LoggerHelper.logError("Error executing update query: " + query, e);
+        }
     }
 
     private void executeUpdate(String query, String... parameters) {
@@ -101,7 +120,7 @@ public class UserDML {
     }
 
     private boolean userExists(String username) {
-        String query = "SELECT COUNT(*) AS count FROM `login_schema`.`users` WHERE `username` = ?";
+        String query = "SELECT COUNT(*) AS count FROM users WHERE username = ?";
         try {
             PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
             preparedStatement.setString(1, username);

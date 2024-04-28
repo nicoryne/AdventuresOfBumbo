@@ -1,6 +1,7 @@
 package game.ui.dialogs;
 
-import game.Game;
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import game.util.managers.FontManager;
 import services.server.DBConnection;
 
@@ -10,10 +11,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class RegisterDialog extends JDialog {
+
+    private DatePicker birthdayPicker;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
     private JLabel verifyPasswordLabel;
@@ -23,7 +25,6 @@ public class RegisterDialog extends JDialog {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JPasswordField verifyPasswordField;
-    private JTextField birthdayField;
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JButton registerButton;
@@ -47,14 +48,12 @@ public class RegisterDialog extends JDialog {
         addComponentsToPanel(panel);
         panel.setBackground(new Color(22, 0, 10));
         getContentPane().add(panel, BorderLayout.CENTER);
-        setSize(300, 350);
+        setSize(350, 350);
 
-        // Center the dialog on the screen
         setLocationRelativeTo(null);
     }
 
     private void setupComponents() {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         usernameLabel = new JLabel("Username:");
         usernameField = new JTextField(20);
         passwordLabel = new JLabel("Password:");
@@ -62,7 +61,7 @@ public class RegisterDialog extends JDialog {
         verifyPasswordLabel = new JLabel("Verify Password:");
         verifyPasswordField = new JPasswordField(20);
         birthdayLabel = new JLabel("Birthday: ");
-        birthdayField = new JFormattedTextField(format);
+        birthdayPicker = new DatePicker();
         firstNameLabel = new JLabel("First Name: ");
         firstNameField = new JTextField(20);
         lastNameLabel = new JLabel("Last Name: ");
@@ -83,12 +82,14 @@ public class RegisterDialog extends JDialog {
         panel.add(verifyPasswordLabel);
         panel.add(verifyPasswordField);
         panel.add(birthdayLabel);
-        panel.add(birthdayField);
+        panel.add(birthdayPicker);
         panel.add(cancelButton);
         panel.add(registerButton);
     }
 
+
     private void styleComponents() {
+        setupDatePicker();
         setupFont();
         setupLabelTextColor();
         verifyPasswordField.addKeyListener(new KeyAdapter() {
@@ -102,6 +103,33 @@ public class RegisterDialog extends JDialog {
         setupButton(cancelButton);
     }
 
+    private void setupDatePicker() {
+        Font textFont = FontManager.getInstance().getFont("Pixellari", 16f);
+        Font buttonFont = FontManager.getInstance().getFont("Dofded", 14f);
+        birthdayPicker.setDateToToday();
+        birthdayPicker.setLocale(Locale.ENGLISH);
+
+        DatePickerSettings datePickerSettings = new DatePickerSettings();
+        datePickerSettings.setAllowEmptyDates(false);
+        datePickerSettings.setColor(DatePickerSettings.DateArea.DatePickerTextValidDate, new Color(22, 0, 10));
+        datePickerSettings.setFontValidDate(textFont);
+        datePickerSettings.setFontMonthAndYearNavigationButtons(buttonFont);
+        datePickerSettings.setFontTodayLabel(textFont);
+        datePickerSettings.setFontVetoedDate(textFont);
+        datePickerSettings.setFontCalendarDateLabels(textFont);
+        datePickerSettings.setFontCalendarWeekdayLabels(textFont);
+        datePickerSettings.setFontMonthAndYearMenuLabels(textFont);
+        birthdayPicker.setSettings(datePickerSettings);
+        birthdayPicker.getComponentToggleCalendarButton().setPreferredSize(new Dimension(30, 20));
+        birthdayPicker.getComponentToggleCalendarButton().setBackground(BUTTON_SELECTED_COLOR);
+        birthdayPicker.getComponentToggleCalendarButton().setForeground(Color.white);
+        birthdayPicker.getComponentToggleCalendarButton().setFont(textFont);
+        birthdayPicker.getComponentDateTextField().setFocusable(false);
+        birthdayPicker.getComponentDateTextField().setBackground(Color.white);
+        birthdayPicker.getComponentDateTextField().setColumns(10);
+        birthdayPicker.getComponentDateTextField().setEditable(false);
+    }
+
     private void setupFont() {
         Font font = FontManager.getInstance().getFont("Pixellari", 16f);
 
@@ -110,7 +138,7 @@ public class RegisterDialog extends JDialog {
         usernameField.setFont(font);
         verifyPasswordLabel.setFont(font);
         birthdayLabel.setFont(font);
-        birthdayField.setFont(font);
+        birthdayPicker.getComponentDateTextField().setFont(font);
         firstNameLabel.setFont(font);
         firstNameField.setFont(font);
         lastNameLabel.setFont(font);
@@ -208,7 +236,7 @@ public class RegisterDialog extends JDialog {
         char[] password = passwordField.getPassword();
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
-        String birthday = birthdayField.getText();
+        String birthday = String.valueOf(birthdayPicker.getDate());
         if(registerUser(username, password, firstName, lastName, birthday)) {
             showOKOptionPane("Welcome to hell, " + firstName + "!", "Registration successful");
             destroy();
@@ -233,7 +261,7 @@ public class RegisterDialog extends JDialog {
         if (checkPasswordFieldEmpty(verifyPasswordField, "Verify Password")) {
             return false;
         }
-        if (checkTextFieldEmpty(birthdayField, "Birthday")) {
+        if (checkTextFieldEmpty(birthdayPicker.getComponentDateTextField(), "Birthday")) {
             return false;
         }
         if (!isPasswordVerified) {

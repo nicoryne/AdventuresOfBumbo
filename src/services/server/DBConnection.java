@@ -7,21 +7,11 @@ import java.sql.*;
 public class DBConnection {
 
     private static final String DB_URL = "jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?user=postgres.zebyozrztwbzpxjcwrtq&password=uArpJ9Jt39UhfvoHvXGDSSOo32mwMhoS";
-
-    private static final String USERNAME = "root";
-
-    private static final String PASSWORD = "root";
-
     private Connection dbConnection;
 
     public DBConnection() {
         try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            LoggerHelper.logError("PostgreSQL JDBC Driver not found", e);
-        }
-        try {
-            dbConnection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            dbConnection = DriverManager.getConnection(DB_URL);
         } catch (SQLException e) {
             LoggerHelper.logError("Error connecting to database", e);
         }

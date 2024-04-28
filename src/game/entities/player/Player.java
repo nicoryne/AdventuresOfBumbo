@@ -17,15 +17,19 @@ import java.awt.image.BufferedImage;
 
 
 public class Player<T extends Weapon> extends CharacterEntity implements ControllableEntity {
+
     private KeyboardController keyboardController;
-    private MouseController mouseController;
     private SpritesManager movementSpritesManager;
     private SpritesManager idleSpritesManager;
+    private SpritesManager attackSpritesManager;
     private double exp;
     private int level = 1;
     private double expToLevelUp;
     private int points;
     private T weapon;
+    private boolean isAttacking;
+
+    private int attackingAnimationCounter = 0;
 
     @Override
     public void update() {
@@ -81,13 +85,17 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     }
 
     private void look() {
-        int screenPositionX = getPositionComponent().getScreenPositionX().intValue();
-        int screenPositionY = getPositionComponent().getScreenPositionY().intValue();
-
-        int dx = screenPositionX - mouseController.getMousePositionX();
-        int dy = screenPositionY - mouseController.getMousePositionY();
-
-        double angle = (Math.atan2(dy, dx)) - Math.PI / 2.0;
+        double angle = switch (getMovementComponent().getDirection()) {
+            case NORTH -> Math.toRadians(0);
+            case SOUTH -> Math.toRadians(180);
+            case WEST -> Math.toRadians(270);
+            case EAST -> Math.toRadians(90);
+            case NORTH_EAST -> Math.toRadians(45);
+            case NORTH_WEST -> Math.toRadians(315);
+            case SOUTH_EAST -> Math.toRadians(135);
+            case SOUTH_WEST -> Math.toRadians(225);
+            default -> getMovementComponent().getAngle();
+        };
 
         getMovementComponent().setAngle(angle);
     }
@@ -101,8 +109,18 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         double worldPositionY = getPositionComponent().getWorldPositionY().doubleValue();
         Directions direction = getMovementComponent().getDirection();
 
-        if (validKey) {
+        if (validKey && weapon.canAttack()) {
             weapon.attack(angle, screenX, screenY, worldPositionX, worldPositionY, direction);
+            isAttacking = true;
+        }
+
+        if(isAttacking && attackingAnimationCounter < 4) {
+            attackSpritesManager.updateSprite();
+            getRenderComponent().setSprite(attackSpritesManager.getCurrentSprite(getMovementComponent().getDirection()));
+            attackingAnimationCounter++;
+        } else if(isAttacking && attackingAnimationCounter == 4) {
+            isAttacking = false;
+            attackingAnimationCounter = 0;
         }
     }
 
@@ -238,14 +256,13 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         this.idleSpritesManager = idleSpritesManager;
     }
 
-    @Override
-    public void setKeyboardController(KeyboardController keyboardController) {
-        this.keyboardController = keyboardController;
+    public void setAttackSpritesManager(SpritesManager attackSpritesManager) {
+        this.attackSpritesManager = attackSpritesManager;
     }
 
     @Override
-    public void setMouseController(MouseController mouseController) {
-        this.mouseController = mouseController;
+    public void setKeyboardController(KeyboardController keyboardController) {
+        this.keyboardController = keyboardController;
     }
 
     public T getWeapon() {

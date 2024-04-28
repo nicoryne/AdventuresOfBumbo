@@ -10,8 +10,6 @@ public abstract class Weapon implements AttackingWeapon {
 
     private WeaponType weaponType;
 
-    private SpritesManager spritesManager;
-
     private int damage;
 
     private int range;
@@ -74,13 +72,6 @@ public abstract class Weapon implements AttackingWeapon {
         return reloadCooldown >= fireRate;
     }
 
-    public SpritesManager getSpritesManager() {
-        return spritesManager;
-    }
-
-    public void setSpritesManager(SpritesManager spritesManager) {
-        this.spritesManager = spritesManager;
-    }
 
     @Override
     public void attack(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, Directions currentDirection) {}

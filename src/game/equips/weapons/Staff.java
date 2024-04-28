@@ -15,7 +15,6 @@ public class Staff extends RangedWeapon<OrbProjectile> {
         this.setProjectile(new OrbProjectile());
         this.setWeaponName("Staff");
         this.setWeaponType(WeaponType.RANGED);
-        this.setSpritesManager(new SpritesManager(""));
         this.setDamage(30);
         this.setRange(20);
         this.setFireRate(60); // lowest should be 14 so that audio can catch up
@@ -27,15 +26,13 @@ public class Staff extends RangedWeapon<OrbProjectile> {
 
     @Override
     public void attack(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, Directions currentDirection) {
-        if(canAttack()) {
-            OrbProjectile projectile  = new OrbProjectile();
-            projectile.clone(angle, screenPositionX, screenPositionY, worldPositionX, worldPositionY, currentDirection);
-            projectile.setProjectileSize(getProjectileSize());
-            getProjectiles().add(projectile);
-            Game.getInstance().addMovingEntity(projectile);
+        OrbProjectile projectile  = new OrbProjectile();
+        projectile.clone(angle, screenPositionX, screenPositionY, worldPositionX, worldPositionY, currentDirection);
+        projectile.setProjectileSize(getProjectileSize());
+        getProjectiles().add(projectile);
+        Game.getInstance().addMovingEntity(projectile);
 
-            SoundHandler.playAudio("shoot-1", 0, 1.0f);
-            setReloadCooldown(0);
-        }
+        SoundHandler.playAudio("shoot-1", 0, 1.0f);
+        setReloadCooldown(0);
     }
 }

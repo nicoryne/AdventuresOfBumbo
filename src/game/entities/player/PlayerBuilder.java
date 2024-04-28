@@ -81,17 +81,16 @@ public class PlayerBuilder<W extends Weapon> implements CharacterBuilder {
     public void setExpToLevelUp(double expToLevelUp) {
         this.player.setExpToLevelUp(expToLevelUp);
     }
-
-    public void setMouseController(MouseController mouseController) {
-        this.player.setMouseController(mouseController);
-    }
-
     public void setMovementSpritesManager(SpritesManager spritesManager) {
         this.player.setMovementSpritesManager(spritesManager);
     }
 
     public void setIdleSpritesManager(SpritesManager spritesManager) {
         this.player.setIdleSpritesManager(spritesManager);
+    }
+
+    public void setAttackSpritesManager(SpritesManager spritesManager) {
+        this.player.setAttackSpritesManager(spritesManager);
     }
 
     public void setWeapon(W weapon) {

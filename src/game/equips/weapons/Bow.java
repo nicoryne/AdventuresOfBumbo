@@ -17,7 +17,7 @@ public class Bow extends RangedWeapon<ArrowProjectile> {
         this.setWeaponType(WeaponType.RANGED);
         this.setDamage(30);
         this.setRange(20);
-        this.setFireRate(14); // lowest should be 14 so that audio can catch up
+        this.setFireRate(14);
         this.setReloadCooldown(0);
 
         this.setProjectileSize(0);
@@ -26,15 +26,13 @@ public class Bow extends RangedWeapon<ArrowProjectile> {
 
     @Override
     public void attack(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, Directions currentDirection) {
-        if(canAttack()) {
-            ArrowProjectile projectile  = new ArrowProjectile();
-            projectile.clone(angle, screenPositionX, screenPositionY, worldPositionX, worldPositionY, currentDirection);
-            projectile.setProjectileSize(getProjectileSize());
-            getProjectiles().add(projectile);
-            Game.getInstance().addMovingEntity(projectile);
+        ArrowProjectile projectile  = new ArrowProjectile();
+        projectile.clone(angle, screenPositionX, screenPositionY, worldPositionX, worldPositionY, currentDirection);
+        projectile.setProjectileSize(getProjectileSize());
+        getProjectiles().add(projectile);
+        Game.getInstance().addMovingEntity(projectile);
 
-            SoundHandler.playAudio("shoot-1", 0, 1.0f);
-            setReloadCooldown(0);
-        }
+        SoundHandler.playAudio("shoot-1", 0, 1.0f);
+        setReloadCooldown(0);
     }
 }

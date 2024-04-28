@@ -7,6 +7,4 @@ public interface ControllableEntity {
 
     void setKeyboardController(KeyboardController keyboardController);
 
-    void setMouseController(MouseController mouseController);
-
 }

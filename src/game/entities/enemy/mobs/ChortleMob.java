@@ -18,5 +18,7 @@ public class ChortleMob extends Mob {
         this.getStatComponent().setMaxHitPoints(100);
         this.getStatComponent().setSpeed(10);
         this.getStatComponent().setDamage(50);
+        this.setExpDropped(3.0);
+        this.setPointsGiven(50);
     }
 }

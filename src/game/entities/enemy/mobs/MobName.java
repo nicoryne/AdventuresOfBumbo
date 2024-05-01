@@ -6,5 +6,6 @@ public enum MobName {
 
     CHORTLE,
 
+    SLIME,
 
 }

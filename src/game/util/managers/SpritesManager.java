@@ -39,8 +39,8 @@ public class SpritesManager {
         }
     }
 
-    public BufferedImage getCurrentSprite(Directions direction) {
-        int index = getCurrentSpriteIndex(direction);
+    public BufferedImage getCurrentSprite(Directions direction, boolean isDiagonal) {
+        int index = getCurrentSpriteIndex(direction, isDiagonal);
         return spriteList.get(index);
     }
 
@@ -49,15 +49,24 @@ public class SpritesManager {
         return spriteList.get(index);
     }
 
-    private int getCurrentSpriteIndex(Directions direction) {
+    private int getCurrentSpriteIndex(Directions direction, boolean isDiagonal) {
+        if(isDiagonal) {
+            return switch (direction) {
+                case EAST -> currentSpriteIndex;
+                case NORTH -> currentSpriteIndex + spritesAvailablePerDirection;
+                case NORTH_EAST -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
+                case NORTH_WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 3);
+                case SOUTH, NONE -> currentSpriteIndex + (spritesAvailablePerDirection * 4);
+                case SOUTH_EAST -> currentSpriteIndex + (spritesAvailablePerDirection * 5);
+                case SOUTH_WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 6);
+                case WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 7);
+            };
+        }
+
         return switch (direction) {
             case EAST -> currentSpriteIndex;
-            case NORTH -> currentSpriteIndex + spritesAvailablePerDirection;
-            case NORTH_EAST -> currentSpriteIndex + (spritesAvailablePerDirection * 2);
-            case NORTH_WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 3);
-            case SOUTH, NONE -> currentSpriteIndex + (spritesAvailablePerDirection * 4);
-            case SOUTH_EAST -> currentSpriteIndex + (spritesAvailablePerDirection * 5);
-            case SOUTH_WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 6);
+            case NORTH, NORTH_EAST, NORTH_WEST -> currentSpriteIndex + spritesAvailablePerDirection;
+            case SOUTH, SOUTH_EAST, SOUTH_WEST, NONE -> currentSpriteIndex + (spritesAvailablePerDirection * 4);
             case WEST -> currentSpriteIndex + (spritesAvailablePerDirection * 7);
         };
     }

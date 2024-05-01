@@ -3,7 +3,9 @@ package game;
 import game.entities.MovingEntity;
 import game.entities.drops.DropFlyweightFactory;
 import game.entities.enemy.mobs.BumboMob;
+import game.entities.enemy.mobs.ChortleMob;
 import game.entities.enemy.mobs.MobFlyweightFactory;
+import game.entities.enemy.mobs.SlimeMob;
 import game.entities.player.PlayerBuilder;
 import game.entities.player.PlayerDirector;
 import game.entities.EntityObject;
@@ -17,6 +19,7 @@ import game.util.controllers.ControllerComponents;
 import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
 import game.util.managers.GameManagerComponents;
+import org.checkerframework.checker.units.qual.C;
 import services.LoggerHelper;
 import services.models.User;
 
@@ -130,7 +133,7 @@ public class Game {
         player.update();
         updateEntityList();
         updateDropsList();
-//        spawnEnemy();
+        spawnEnemy();
     }
 
     private void renderDropsList(Graphics2D g2) {
@@ -208,9 +211,17 @@ public class Game {
             int spawnX = random.nextInt(8, maxWorldCol - 8);
             int spawnY = random.nextInt(7, maxWorldRow - 7);
 
-            BumboMob bumboMob = new BumboMob();
-            bumboMob.spawn(spawnX * tileSize, spawnY * tileSize);
-            entities.add(bumboMob);
+//            BumboMob bumboMob = new BumboMob();
+//            bumboMob.spawn(spawnX * tileSize, spawnY * tileSize);
+//            entities.add(bumboMob);
+
+//            ChortleMob chortleMob = new ChortleMob();
+//            chortleMob.spawn(spawnX * tileSize, spawnY * tileSize);
+//            entities.add(chortleMob);
+
+            SlimeMob slimeMob = new SlimeMob();
+            slimeMob.spawn(spawnX * tileSize, spawnY * tileSize);
+            entities.add(slimeMob);
         }
     }
 

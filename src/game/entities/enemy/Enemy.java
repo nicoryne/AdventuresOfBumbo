@@ -44,10 +44,9 @@ public abstract class Enemy extends CharacterEntity {
     public void render(Graphics2D g2) {
         double worldX = getPositionComponent().getWorldPositionX().doubleValue();
         double worldY = getPositionComponent().getWorldPositionY().doubleValue();
-        Directions direction = getMovementComponent().getDirection();
 
         if(RenderHandler.isViewableOnScreen(worldX, worldY)) {
-            BufferedImage sprite = spritesManager.getCurrentSprite(direction);
+            BufferedImage sprite = spritesManager.getCurrentSprite();
             RenderHandler.renderOnScreen(worldX, worldY, sprite, g2);
         }
     }

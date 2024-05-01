@@ -77,10 +77,10 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
             }
 
             movementSpritesManager.updateSprite();
-            getRenderComponent().setSprite(movementSpritesManager.getCurrentSprite(getMovementComponent().getDirection()));
+            getRenderComponent().setSprite(movementSpritesManager.getCurrentSprite(getMovementComponent().getDirection(), true));
         } else if (!validKey && getRenderComponent().isAlive()) {
             idleSpritesManager.updateSprite();
-            getRenderComponent().setSprite(idleSpritesManager.getCurrentSprite(getMovementComponent().getDirection()));
+            getRenderComponent().setSprite(idleSpritesManager.getCurrentSprite(getMovementComponent().getDirection(), true));
         }
     }
 
@@ -116,7 +116,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
 
         if(isAttacking && attackingAnimationCounter < 4) {
             attackSpritesManager.updateSprite();
-            getRenderComponent().setSprite(attackSpritesManager.getCurrentSprite(getMovementComponent().getDirection()));
+            getRenderComponent().setSprite(attackSpritesManager.getCurrentSprite(getMovementComponent().getDirection(), true));
             attackingAnimationCounter++;
         } else if(isAttacking && attackingAnimationCounter == 4) {
             isAttacking = false;

@@ -14,13 +14,12 @@ public class Staff extends RangedWeapon<FireballProjectile> {
 
     public Staff() {
         this.setProjectile(new FireballProjectile());
-        this.setWeaponName("Staff");
+        this.setWeaponName(WeaponNames.STAFF);
         this.setWeaponType(WeaponType.RANGED);
         this.setDamage(30);
         this.setRange(20);
         this.setFireRate(60); // lowest should be 14 so that audio can catch up
         this.setReloadCooldown(0);
-
         this.setProjectileSize(0);
         this.setProjectiles(new ArrayList<>());
     }

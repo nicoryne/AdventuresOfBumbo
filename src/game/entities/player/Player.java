@@ -114,11 +114,11 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
             isAttacking = true;
         }
 
-        if(isAttacking && attackingAnimationCounter < 4) {
+        if(isAttacking && attackingAnimationCounter < 18) {
             attackSpritesManager.updateSprite();
             getRenderComponent().setSprite(attackSpritesManager.getCurrentSprite(getMovementComponent().getDirection(), true));
             attackingAnimationCounter++;
-        } else if(isAttacking && attackingAnimationCounter == 4) {
+        } else if(isAttacking && attackingAnimationCounter == 18) {
             isAttacking = false;
             attackingAnimationCounter = 0;
         }

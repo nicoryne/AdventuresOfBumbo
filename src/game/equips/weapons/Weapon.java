@@ -6,7 +6,7 @@ import game.util.managers.SpritesManager;
 
 public abstract class Weapon implements AttackingWeapon {
 
-    private String weaponName;
+    private WeaponNames weaponName;
 
     private WeaponType weaponType;
 
@@ -18,11 +18,11 @@ public abstract class Weapon implements AttackingWeapon {
 
     private int reloadCooldown;
 
-    public String getWeaponName() {
+    public WeaponNames getWeaponName() {
         return weaponName;
     }
 
-    public void setWeaponName(String weaponName) {
+    public void setWeaponName(WeaponNames weaponName) {
         this.weaponName = weaponName;
     }
 

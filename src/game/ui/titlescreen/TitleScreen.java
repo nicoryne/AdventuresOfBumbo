@@ -57,7 +57,7 @@ public abstract class TitleScreen {
                 break;
             case WEAPON_SELECTION:
                 WeaponScreen.draw(g2, menuCounter);
-                menuItems = 6;
+                menuItems = 4;
                 break;
         }
     }

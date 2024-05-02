@@ -1,5 +1,6 @@
 package game;
 
+import game.equips.weapons.WeaponType;
 import game.ui.DeadScreen;
 import game.ui.PauseScreen;
 import game.ui.dialogs.LoginDialog;
@@ -133,6 +134,7 @@ public class GamePanel extends JPanel implements Runnable {
             switch(TitleScreen.getTitleState()) {
                 case BOARDING -> handleBoardingScreen();
                 case MENU -> handleMenuScreen();
+                case WEAPON_SELECTION -> handleWeaponScreen();
             }
         }
     }
@@ -141,8 +143,7 @@ public class GamePanel extends JPanel implements Runnable {
         int selected = TitleScreen.getMenuCounter();
         switch(selected) {
             case 0:
-                TitleScreen.setTitleState(TitleScreen.TitleScreenState.PLAYING);
-                screenState = ScreenStates.PLAYING;
+                TitleScreen.setTitleState(TitleScreen.TitleScreenState.WEAPON_SELECTION);
                 break;
             case 1:
                 TitleScreen.setTitleState(TitleScreen.TitleScreenState.LEADERBOARD);
@@ -157,7 +158,7 @@ public class GamePanel extends JPanel implements Runnable {
         int selected = TitleScreen.getMenuCounter();
         switch(selected) {
             case 0:
-                TitleScreen.setTitleState(TitleScreen.TitleScreenState.PLAYING);
+                TitleScreen.setTitleState(TitleScreen.TitleScreenState.MENU);
                 break;
             case 1:
                 TitleScreen.setTitleState(TitleScreen.TitleScreenState.LEADERBOARD);
@@ -166,6 +167,10 @@ public class GamePanel extends JPanel implements Runnable {
                 exitProgram();
                 break;
         }
+    }
+
+    private void setPlayerWeapon(WeaponType weapon) {
+
     }
 
     private void handleLoginScreen() {

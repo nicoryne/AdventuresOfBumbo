@@ -13,7 +13,7 @@ public class Bow extends RangedWeapon<ArrowProjectile> {
 
     public Bow() {
         this.setProjectile(new ArrowProjectile());
-        this.setWeaponName("Bow");
+        this.setWeaponName(WeaponNames.BOW);
         this.setWeaponType(WeaponType.RANGED);
         this.setDamage(30);
         this.setRange(20);

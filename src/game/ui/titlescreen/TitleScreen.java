@@ -53,11 +53,11 @@ public abstract class TitleScreen {
                 break;
             case LEADERBOARD:
                 LeaderboardScreen.draw(g2, menuCounter);
-                menuItems = 6;
+                menuItems = 4;
                 break;
             case WEAPON_SELECTION:
                 WeaponScreen.draw(g2, menuCounter);
-                menuItems = 4;
+                menuItems = 3;
                 break;
         }
     }

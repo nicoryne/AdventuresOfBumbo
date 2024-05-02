@@ -94,10 +94,7 @@ public class Game {
 
         KeyboardController keyboardController = controllerComponents.getKeyboardController();
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
-        Bow bow = new Bow();
-        Staff staff = new Staff();
-
-        playerDirector.constructPlayer(playerBuilder, keyboardController, staff);
+        playerDirector.constructPlayer(playerBuilder, keyboardController);
 
         this.player = playerBuilder.build();
         this.player.spawn(tileSize * 23, tileSize * 24);

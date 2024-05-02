@@ -1,6 +1,6 @@
 package game;
 
-import game.equips.weapons.WeaponType;
+import game.equips.weapons.*;
 import game.ui.DeadScreen;
 import game.ui.PauseScreen;
 import game.ui.dialogs.LoginDialog;
@@ -9,6 +9,7 @@ import game.util.ScreenStates;
 import game.ui.titlescreen.TitleScreen;
 import game.util.GameLoopSingleton;
 import game.util.handlers.SoundHandler;
+import game.util.managers.SpritesManager;
 import services.LoggerHelper;
 
 import javax.sound.sampled.Clip;
@@ -161,16 +162,44 @@ public class GamePanel extends JPanel implements Runnable {
                 TitleScreen.setTitleState(TitleScreen.TitleScreenState.MENU);
                 break;
             case 1:
-                TitleScreen.setTitleState(TitleScreen.TitleScreenState.LEADERBOARD);
+                setPlayerWeapon(WeaponNames.SWORD);
+                playGame();
                 break;
             case 2:
-                exitProgram();
+                setPlayerWeapon(WeaponNames.STAFF);
+                playGame();
+                break;
+            case 3:
+                setPlayerWeapon(WeaponNames.BOW);
+                playGame();
                 break;
         }
     }
 
-    private void setPlayerWeapon(WeaponType weapon) {
+    private void setPlayerWeapon(WeaponNames weapon) {
+        LoggerHelper.logInfo(weapon.name());
+        switch(weapon) {
+            case SWORD:
+                Sword sword = new Sword();
+                Game.getInstance().getPlayer().setWeapon(sword);
+                Game.getInstance().getPlayer().setAttackSpritesManager(new SpritesManager("worker/attack/sword", 4, 1));
+                break;
+            case STAFF:
+                Staff staff = new Staff();
+                Game.getInstance().getPlayer().setWeapon(staff);
+                Game.getInstance().getPlayer().setAttackSpritesManager(new SpritesManager("worker/attack/staff", 4, 1));
+                break;
+            case BOW:
+                Bow bow = new Bow();
+                Game.getInstance().getPlayer().setWeapon(bow);
+                Game.getInstance().getPlayer().setAttackSpritesManager(new SpritesManager("worker/attack/bow", 4, 1));
+                break;
+        }
+    }
 
+    private void playGame() {
+        TitleScreen.setTitleState(TitleScreen.TitleScreenState.PLAYING);
+        screenState = ScreenStates.PLAYING;
     }
 
     private void handleLoginScreen() {

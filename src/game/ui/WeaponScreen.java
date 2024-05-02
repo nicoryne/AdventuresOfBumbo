@@ -1,9 +1,13 @@
 package game.ui;
 
 import game.Game;
+import game.util.handlers.ImageHandler;
 import game.util.managers.FontManager;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
 
 public abstract class WeaponScreen {
 
@@ -22,6 +26,66 @@ public abstract class WeaponScreen {
         g2.setColor(strokeColor);
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x , y, width, height , 35, 35);
+
+        BufferedImage workerImage = ImageHandler.getBufferedImage(new File("src/res/sprites/worker/idle/worker-red-idle-south-00.png"));
+        workerImage = ImageHandler.scaleImageBasedOnTileSize(workerImage, 3);
+        y += tileSize * 2;
+        x += tileSize / 2;
+        if(menuCounter == 1) {
+            drawWeaponSelection(x, y, workerImage, g2, "Sword", Color.gray);
+        } else {
+            drawWeaponSelection(x, y, workerImage, g2, "Sword", Color.white);
+        }
+
+        x += tileSize + workerImage.getWidth();
+
+        if(menuCounter == 2) {
+            drawWeaponSelection(x, y, workerImage, g2, "Staff", Color.gray);
+        } else {
+            drawWeaponSelection(x, y, workerImage, g2, "Staff", Color.white);
+        }
+
+        x += tileSize + workerImage.getWidth();
+
+        if(menuCounter == 3) {
+            drawWeaponSelection(x, y, workerImage, g2, "Bow", Color.gray);
+        } else {
+            drawWeaponSelection(x, y, workerImage, g2, "Bow", Color.white);
+        }
+        x = tileSize;
+        y = tileSize;
+        Font font = FontManager.getInstance().getFont("Dofded", 48f);
+        g2.setFont(font);
+        if(menuCounter == 0) {
+            g2.setColor(Color.gray);
+            g2.drawString("<", x, y);
+        } else {
+            g2.setColor(Color.white);
+            g2.drawString("<", x, y);
+        }
+
+        font = FontManager.getInstance().getFont("Dofded", 36f);
+        g2.setFont(font);
+        g2.setColor(Color.white);
+        String text = "Select your weapon";
+        x = getXCenteredText(text, g2);
+        y = (Game.getInstance().getScreenHeight() / 2) - tileSize;
+        g2.drawString(text, x, y);
+    }
+
+    private static void drawWeaponSelection(int x, int y, BufferedImage sprite, Graphics2D g2, String name, Color strokeColor) {
+        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
+        Font font = FontManager.getInstance().getFont("Dofded", 24f);
+        g2.setFont(font);
+        g2.drawImage(sprite, x, y, null);
+        g2.setColor(strokeColor);
+        g2.setStroke(new BasicStroke(5));
+        g2.drawRoundRect(x , y, sprite.getWidth(), sprite.getHeight() , 35, 35);
+        int stringY = y + tileSize / 2;
+        int length = (int) g2.getFontMetrics().getStringBounds(name, g2).getWidth();
+        int stringX = x + (sprite.getWidth() / 2) - (length / 2);
+
+        g2.drawString(name, stringX, stringY);
     }
 
 

@@ -89,14 +89,6 @@ public class PlayerBuilder<W extends Weapon> implements CharacterBuilder {
         this.player.setIdleSpritesManager(spritesManager);
     }
 
-    public void setAttackSpritesManager(SpritesManager spritesManager) {
-        this.player.setAttackSpritesManager(spritesManager);
-    }
-
-    public void setWeapon(W weapon) {
-        this.player.setWeapon(weapon);
-    }
-
 
     public Player<W> build() {
         return this.player;

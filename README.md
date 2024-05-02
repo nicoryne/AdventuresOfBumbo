@@ -10,7 +10,6 @@ In addition to its frontend, Bumbo Hell makes use of PostgreSQL as its database 
 Bumbo Hell is <b>currently under development.</b>
 
 ### Features in Development
-- Weapon Selection Screen
 - Weapon Buff Selection Screen
 - Leaderboard Screen
 - Game Result Screen
@@ -30,6 +29,9 @@ Bumbo Hell is <b>currently under development.</b>
 
 ### Menu Screen
 ![img.png](rm/img3.png)
+
+### Weapon Screen
+![img2.png](rm/img4.png)
 
 ### Game Screen
 ![img2.png](rm/img2.png)

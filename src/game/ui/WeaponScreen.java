@@ -27,30 +27,36 @@ public abstract class WeaponScreen {
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x , y, width, height , 35, 35);
 
-        BufferedImage workerImage = ImageHandler.getBufferedImage(new File("src/res/sprites/worker/idle/worker-red-idle-south-00.png"));
-        workerImage = ImageHandler.scaleImageBasedOnTileSize(workerImage, 3);
+        BufferedImage warrior = ImageHandler.getBufferedImage(new File("src/res/sprites/warrior/tile000.png"));
+        warrior = ImageHandler.scaleImageBasedOnTileSize(warrior, 3);
         y += tileSize * 2;
         x += tileSize / 2;
         if(menuCounter == 1) {
-            drawWeaponSelection(x, y, workerImage, g2, "Sword", Color.gray);
+            drawWeaponSelection(x, y, warrior, g2, "Sword", Color.gray);
         } else {
-            drawWeaponSelection(x, y, workerImage, g2, "Sword", Color.white);
+            drawWeaponSelection(x, y, warrior, g2, "Sword", Color.white);
         }
 
-        x += tileSize + workerImage.getWidth();
+        BufferedImage mage = ImageHandler.getBufferedImage(new File("src/res/sprites/mage/mage-idle-south-00.png"));
+        mage = ImageHandler.scaleImageBasedOnTileSize(mage, 3);
+
+        x += tileSize + mage.getWidth();
 
         if(menuCounter == 2) {
-            drawWeaponSelection(x, y, workerImage, g2, "Staff", Color.gray);
+            drawWeaponSelection(x, y, mage, g2, "Staff", Color.gray);
         } else {
-            drawWeaponSelection(x, y, workerImage, g2, "Staff", Color.white);
+            drawWeaponSelection(x, y, mage, g2, "Staff", Color.white);
         }
 
-        x += tileSize + workerImage.getWidth();
+        BufferedImage archer = ImageHandler.getBufferedImage(new File("src/res/sprites/archer/tile000.png"));
+        archer = ImageHandler.scaleImageBasedOnTileSize(archer, 3);
+
+        x += tileSize + archer.getWidth();
 
         if(menuCounter == 3) {
-            drawWeaponSelection(x, y, workerImage, g2, "Bow", Color.gray);
+            drawWeaponSelection(x, y, archer, g2, "Bow", Color.gray);
         } else {
-            drawWeaponSelection(x, y, workerImage, g2, "Bow", Color.white);
+            drawWeaponSelection(x, y, archer, g2, "Bow", Color.white);
         }
         x = tileSize;
         y = tileSize;

@@ -34,7 +34,7 @@ public abstract class TitleScreen {
 
     public static void draw(Graphics2D g2) {
 
-        if(titleState != TitleScreenState.PLAYING && titleState != TitleScreenState.LEADERBOARD) {
+        if(titleState != TitleScreenState.PLAYING) {
             // background
             g2.drawImage(getBackgroundImage(), 0, 0, Game.getInstance().getScreenWidth(), Game.getInstance().getScreenHeight(), null);
 

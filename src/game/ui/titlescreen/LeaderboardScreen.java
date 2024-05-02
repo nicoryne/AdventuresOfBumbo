@@ -17,6 +17,8 @@ public abstract class LeaderboardScreen {
 
     private static final Color TITLE_MAIN_COLOR = new Color(102, 33, 55);
 
+    private static final Color TITLE_SHADOW_COLOR = new Color(36, 12, 28);
+
     private static User currentUser;
 
     private static ArrayList<User> users;
@@ -27,7 +29,6 @@ public abstract class LeaderboardScreen {
 
     public static void draw(Graphics2D g2, int menuCounter) {
         currentUser = Game.getInstance().getUser();
-        g2.drawImage(getBackgroundImage(), 0, 0, Game.getInstance().getScreenWidth(), Game.getInstance().getScreenHeight(), null);
         drawTitle(g2);
         drawBackButton(g2);
         drawBodyContainer(g2);
@@ -79,7 +80,7 @@ public abstract class LeaderboardScreen {
 
     private static void drawTitle(Graphics2D g2)  {
         String text = "LEADERBOARD";
-        Font font = FontManager.getInstance().getFont("Dofded", 48f);
+        Font font = FontManager.getInstance().getFont("Dofded", 64f);
 
         g2.setFont(font);
 
@@ -87,8 +88,8 @@ public abstract class LeaderboardScreen {
         int y = Game.getInstance().getScreenHeight() / 10;
 
         // shadowing
-        g2.setColor(LEADERBOARD_A_COLOR);
-        g2.drawString(text, x, y);
+        g2.setColor(TITLE_SHADOW_COLOR);
+        g2.drawString(text, x + 5, y + 5);
 
         // main color
         g2.setColor(TITLE_MAIN_COLOR);
@@ -119,11 +120,6 @@ public abstract class LeaderboardScreen {
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 
         return Game.getInstance().getScreenWidth() / 2 - length / 2;
-    }
-
-    private static Image getBackgroundImage() {
-        String path = "src/res/img/leaderboard_bg.gif";
-        return Objects.requireNonNull(ImageHandler.getImageIcon(path)).getImage();
     }
 
     public static int getMenuCounter() {

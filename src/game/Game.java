@@ -114,6 +114,11 @@ public class Game {
         getGameManagerComponents().getTileManager().render(g2);
         renderEntityList(g2);
         renderDropsList(g2);
+        if(gamePanel.isPaused()) {
+            stopwatch.pause();
+        } else {
+            stopwatch.resume();
+        }
         stopwatch.draw(g2);
         player.render(g2);
     }
@@ -302,5 +307,9 @@ public class Game {
 
     public GamePanel getGamePanel() {
         return gamePanel;
+    }
+
+    public Stopwatch getStopwatch() {
+        return stopwatch;
     }
 }

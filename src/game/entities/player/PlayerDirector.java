@@ -29,6 +29,8 @@ public class PlayerDirector {
         builder.setExpToLevelUp(45.0);
         builder.setMovementSpritesManager(new SpritesManager("worker/movement", 3, 1));
         builder.setIdleSpritesManager(new SpritesManager("worker/idle", 2, 1));
+        builder.setDamagedSpritesManager(new SpritesManager("worker/damaged", 3, 1));
+        builder.setDyingSpritesManager(new SpritesManager("worker/dying", 2, 1));
         builder.setKeyboardController(keyboardController);
         builder.setHitPoints(100);
         builder.setSpeed(10);

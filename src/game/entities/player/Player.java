@@ -8,12 +8,16 @@ import game.util.Directions;
 import game.util.handlers.CollisionHandler;
 import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
+import game.util.handlers.FileHandler;
+import game.util.handlers.ImageHandler;
 import game.util.managers.FontManager;
 import game.util.managers.SpritesManager;
 import game.util.handlers.SoundHandler;
+import services.LoggerHelper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 
 public class Player<T extends Weapon> extends CharacterEntity implements ControllableEntity {
@@ -22,14 +26,25 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     private SpritesManager movementSpritesManager;
     private SpritesManager idleSpritesManager;
     private SpritesManager attackSpritesManager;
+    private SpritesManager damagedSpritesManager;
+    private SpritesManager dyingSpritesManager;
+    private BufferedImage pointHudImage;
     private double exp;
     private int level = 1;
     private double expToLevelUp;
     private int points;
     private T weapon;
     private boolean isAttacking;
-
+    private boolean isDamaged;
+    private boolean isDying;
     private int attackingAnimationCounter = 0;
+    private int damagedAnimationCounter = 0;
+    private int dyingAnimationCounter = 0;
+
+    public Player() {
+        BufferedImage originalPointHudImage = ImageHandler.getBufferedImage(new File("src/res/hud/star.png"));
+        pointHudImage = ImageHandler.scaleImageBasedOnTileSize(originalPointHudImage, 1);
+    }
 
     @Override
     public void update() {
@@ -40,6 +55,8 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         attack();
         weapon.incrementReloadCooldown();
         incrementTakeDamageCounter();
+        checkTakingDamage();
+        checkDying();
     }
 
     @Override
@@ -208,30 +225,47 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     }
 
     private void showXPBar(Graphics2D g2) {
+        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         Font font = FontManager.getInstance().getFont("Dofded", 16f);
-        int screenWidth = Game.getInstance().getScreenWidth() - 4;
+        String levelString = "Lvl. " + level;
+        int screenWidth = (Game.getInstance().getScreenWidth() - 4) / 2;
         int expWidth = (int) ((screenWidth / expToLevelUp) * exp);
+        int dY = 25;
         String expString = "EXP: " + exp + " / " + expToLevelUp;
+        Stroke defaultStroke = g2.getStroke();
 
+        Color bgColor = new Color(0, 0, 0, 180);
+        g2.setColor(bgColor);
+        g2.fillRoundRect(screenWidth / 2, dY, screenWidth, 30, 35, 35);
+
+        Color expColor = new Color(10, 10, 255, 180);
+        g2.setColor(expColor);
+        g2.fillRoundRect(screenWidth / 2, dY, expWidth, 30, 35, 35);
+
+        g2.setStroke(new BasicStroke(5));
         g2.setColor(Color.WHITE);
-        g2.drawRect(0, 0, screenWidth, 30);
-        g2.setColor(Color.BLUE);
-        g2.fillRect(0, 0, expWidth, 30);
+        g2.drawRoundRect(screenWidth / 2, dY, screenWidth, 30, 35, 35);
+        g2.setStroke(defaultStroke);
 
         g2.setFont(font);
         int x = getXCenteredText(expString, g2);
         g2.setColor(Color.white);
-        g2.drawString(expString, x, 20);
+        g2.drawString(expString, x, dY + 20);
+
+        g2.drawString(levelString, screenWidth + (screenWidth / 2) + tileSize, dY + 20);
+
     }
 
     private void showPoints(Graphics2D g2) {
+        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         Font font = FontManager.getInstance().getFont("Dofded", 24f);
-        String pointString = "Points: " + points;
+        String pointString = String.valueOf(points);
 
         g2.setColor(Color.WHITE);
         g2.setFont(font);
-        int x = Game.getInstance().getScreenWidth() / 2;
-        int y = Game.getInstance().getScreenHeight() / 8;
+        int x = tileSize * 10;
+        int y = tileSize + (tileSize / 2);
+        g2.drawImage(pointHudImage, x - 55, y - 50, null);
         g2.setColor(Color.white);
         g2.drawString(pointString, x, y);
     }
@@ -260,9 +294,47 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         this.attackSpritesManager = attackSpritesManager;
     }
 
+    public void setDamagedSpritesManager(SpritesManager damagedSpritesManager) {
+        this.damagedSpritesManager = damagedSpritesManager;
+    }
+
+    public void setDyingSpritesManager(SpritesManager dyingSpritesManager) {
+        this.dyingSpritesManager = dyingSpritesManager;
+    }
+
     @Override
     public void setKeyboardController(KeyboardController keyboardController) {
         this.keyboardController = keyboardController;
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        super.takeDamage(damage);
+        isDamaged = true;
+        if (getStatComponent().getCurrentHitPoints() <= 0.0) {
+            isDying = true;
+        }
+    }
+
+    private void checkDying() {
+        if(isDying && dyingAnimationCounter < 12) {
+            dyingSpritesManager.updateSprite();
+            getRenderComponent().setSprite(dyingSpritesManager.getCurrentSprite(getMovementComponent().getDirection(), true));
+            dyingAnimationCounter++;
+        } else if(isDying && dyingAnimationCounter == 12) {
+            this.kill();
+        }
+    }
+
+    private void checkTakingDamage() {
+        if(isDamaged && damagedAnimationCounter < 18) {
+            damagedSpritesManager.updateSprite();
+            getRenderComponent().setSprite(damagedSpritesManager.getCurrentSprite(getMovementComponent().getDirection(), true));
+            damagedAnimationCounter++;
+        } else if(isDamaged && damagedAnimationCounter == 18) {
+            isDamaged = false;
+            damagedAnimationCounter = 0;
+        }
     }
 
     public T getWeapon() {

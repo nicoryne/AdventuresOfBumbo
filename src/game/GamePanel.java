@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final JFrame window;
     private static final int MENU_UPDATE_COOLDOWN_MS = 200;
     private long lastMenuUpdateTime = 0;
+    private boolean isPaused = false;
 
 
     public GamePanel(JFrame window){
@@ -232,13 +233,17 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void drawPlaying(Graphics2D g2) {
         Game.getInstance().renderEntities(g2);
+        isPaused = false;
     }
 
     private void drawPaused(Graphics2D g2) {
+        drawPlaying(g2);
+        isPaused = true;
         PauseScreen.draw(g2);
     }
 
     private void drawDead(Graphics2D g2) {
+        drawPlaying(g2);
         DeadScreen.draw(g2);
     }
 
@@ -252,5 +257,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setScreenState(ScreenStates screenState) {
         this.screenState = screenState;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
     }
 }

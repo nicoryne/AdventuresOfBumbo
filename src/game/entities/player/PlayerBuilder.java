@@ -81,6 +81,7 @@ public class PlayerBuilder<W extends Weapon> implements CharacterBuilder {
     public void setExpToLevelUp(double expToLevelUp) {
         this.player.setExpToLevelUp(expToLevelUp);
     }
+
     public void setMovementSpritesManager(SpritesManager spritesManager) {
         this.player.setMovementSpritesManager(spritesManager);
     }
@@ -89,6 +90,13 @@ public class PlayerBuilder<W extends Weapon> implements CharacterBuilder {
         this.player.setIdleSpritesManager(spritesManager);
     }
 
+    public void setDamagedSpritesManager(SpritesManager spritesManager) {
+        this.player.setDamagedSpritesManager(spritesManager);
+    }
+
+    public void setDyingSpritesManager(SpritesManager spritesManager) {
+        this.player.setDyingSpritesManager(spritesManager);
+    }
 
     public Player<W> build() {
         return this.player;

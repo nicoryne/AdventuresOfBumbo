@@ -6,6 +6,7 @@ import game.util.Directions;
 import game.util.handlers.CollisionHandler;
 import game.util.handlers.RenderHandler;
 import game.util.managers.SpritesManager;
+import services.LoggerHelper;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -42,8 +43,6 @@ public class Projectile extends MovingEntity {
         checkTileCollision();
         checkEntityCollision();
 
-        spritesManager.updateSprite();
-
         if(isProjectileOutOfScreen() || getMovementComponent().isColliding()) {
             kill();
         }
@@ -55,8 +54,8 @@ public class Projectile extends MovingEntity {
         double worldY = getPositionComponent().getWorldPositionY().doubleValue();
 
         if(RenderHandler.isViewableOnScreen(worldX, worldY)) {
-            BufferedImage sprite = spritesManager.getCurrentSprite(getMovementComponent().getDirection(), true);
-            RenderHandler.renderOnScreen(worldX, worldY, sprite, g2);
+            this.getRenderComponent().setSprite(spritesManager.getCurrentSprite(this.getMovementComponent().getDirection(), true));
+            RenderHandler.renderOnScreen(worldX, worldY, getRenderComponent().getSprite()   , g2);
         }
     }
 

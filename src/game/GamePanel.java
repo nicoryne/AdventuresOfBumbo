@@ -3,6 +3,7 @@ package game;
 import game.equips.weapons.*;
 import game.ui.DeadScreen;
 import game.ui.PauseScreen;
+import game.ui.ResultScreen;
 import game.ui.dialogs.LoginDialog;
 import game.ui.dialogs.RegisterDialog;
 import game.util.ScreenStates;
@@ -11,10 +12,15 @@ import game.util.GameLoopSingleton;
 import game.util.handlers.SoundHandler;
 import game.util.managers.SpritesManager;
 import services.LoggerHelper;
+import services.models.Score;
+import services.server.DBConnection;
 
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Time;
 
 /**
  * The GamePanel class represents a JPanel used for displaying a game screen.
@@ -65,7 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
         switch(screenState) {
             case TITLE_SCREEN:
                 menuSelector();
-                checkEntered();
+                checkTitleScreenEntered();
                 break;
             case PLAYING:
                 Game.getInstance().updateEntities();
@@ -78,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
                 toggleGameState();
                 break;
             case DEAD:
+                timerPanelTransition();
                 break;
         }
         playAudio();
@@ -91,6 +98,7 @@ public class GamePanel extends JPanel implements Runnable {
             case PLAYING -> drawPlaying(g2);
             case PAUSED -> drawPaused(g2);
             case DEAD -> drawDead(g2);
+            case RESULT -> drawResultScreen(g2, game.getLatestScore());
         }
 
         g2.dispose();
@@ -130,7 +138,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    private void checkEntered() {
+    private void checkTitleScreenEntered() {
         boolean isMenuEntered = Game.getInstance().getControllerComponents().getKeyboardController().isMenuEntered();
         if(isMenuEntered) {
             switch(TitleScreen.getTitleState()) {
@@ -138,6 +146,52 @@ public class GamePanel extends JPanel implements Runnable {
                 case MENU -> handleMenuScreen();
                 case WEAPON_SELECTION -> handleWeaponScreen();
             }
+        }
+    }
+
+    private void timerPanelTransition() {
+        Timer timer = new Timer(5000, e -> {
+            switch (screenState) {
+                case DEAD -> handleDeadScreen();
+                case RESULT -> handleResultScreen();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private void handleResultScreen() {
+
+    }
+
+    private void handleDeadScreen() {
+        int points = game.getPlayer().getPoints();
+        Time time = new Time(game.getStopwatch().getTime());
+        int userId = game.getUser().getUserId();
+        String weaponUsed = game.getPlayer().getWeapon().getWeaponName().toString();
+        Score score = new Score(
+                points,
+                time,
+                userId,
+                weaponUsed
+        );
+
+        if(addScore(score)) {
+            LoggerHelper.logInfo("[GamePanel] Added new score for user id: " + score.getUserId());
+        } else {
+            LoggerHelper.logWarning("[GamePanel] Failed to add new score for user id: " + score.getScoreId());
+        }
+
+        screenState = ScreenStates.RESULT;
+    }
+
+
+    private boolean addScore(Score score) {
+        DBConnection db = new DBConnection();
+        try {
+            return db.getScoreDML().addUScore(score);
+        } finally {
+            db.close();
         }
     }
 
@@ -245,6 +299,12 @@ public class GamePanel extends JPanel implements Runnable {
     private void drawDead(Graphics2D g2) {
         drawPlaying(g2);
         DeadScreen.draw(g2);
+    }
+
+
+
+    private void drawResultScreen(Graphics2D g2, Score score) {
+        ResultScreen.draw(g2, score);
     }
 
     private boolean isPlayerDead() {

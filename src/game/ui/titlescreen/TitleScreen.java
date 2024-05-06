@@ -4,6 +4,7 @@ import game.Game;
 import game.ui.WeaponScreen;
 import game.util.handlers.ImageHandler;
 import game.util.managers.FontManager;
+import services.LoggerHelper;
 
 import java.awt.*;
 import java.util.Objects;
@@ -53,7 +54,7 @@ public abstract class TitleScreen {
                 break;
             case LEADERBOARD:
                 LeaderboardScreen.draw(g2, menuCounter);
-                menuItems = 4;
+                menuItems = Game.getInstance().getLeaderboard().getScores().size() + 1;
                 break;
             case WEAPON_SELECTION:
                 WeaponScreen.draw(g2, menuCounter);
@@ -68,13 +69,22 @@ public abstract class TitleScreen {
     }
 
     private static void drawTitle(Graphics2D g2)  {
-        String text = "BUMBO HELL";
-        Font font = FontManager.getInstance().getFont("Dofded", 84f);
+        String text;
+        Font font;
+        int y;
+        if(titleState == TitleScreenState.LEADERBOARD) {
+            text = "LEADERBOARD";
+            font = FontManager.getInstance().getFont("Dofded", 64f);
+            y = Game.getInstance().getScreenHeight() / 8;
+        } else {
+            text = "BUMBO HELL";
+            font = FontManager.getInstance().getFont("Dofded", 84f);
+            y = Game.getInstance().getScreenHeight() / 4;
+        }
 
         g2.setFont(font);
 
         int x = getXCenteredText(text, g2);
-        int y = Game.getInstance().getScreenHeight() / 4;
 
         // shadowing
         g2.setColor(TITLE_SHADOW_COLOR);

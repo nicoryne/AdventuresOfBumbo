@@ -1,140 +1,148 @@
 package game.ui.titlescreen;
 
+import com.mysql.cj.log.Log;
 import game.Game;
 import game.util.handlers.ImageHandler;
 import game.util.managers.FontManager;
+import services.Leaderboard;
+import services.LoggerHelper;
+import services.models.Score;
+import services.models.ScoreEntry;
 import services.models.User;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 
 public abstract class LeaderboardScreen {
 
-    private static final Color LEADERBOARD_A_COLOR = new Color(36, 12, 28);
-
-    private static final Color LEADERBOARD_B_COLOR = new Color(46, 18, 37);
-
-    private static final Color TITLE_MAIN_COLOR = new Color(102, 33, 55);
-
-    private static final Color TITLE_SHADOW_COLOR = new Color(36, 12, 28);
-
-    private static User currentUser;
-
-    private static ArrayList<User> users;
-
-    private static int menuCounter = 0;
-
-    private static int menuItems;
+    private static int startIndex = 0;
+    private static int selectedIndex;
+    private static int lastMenuCounter;
+    private static boolean isMenuCounterDifferent;
+    private static boolean isMenuIncremented;
+    private static final ArrayList<ScoreEntry> activeScores = new ArrayList<>();
+    private static Leaderboard leaderboard;
 
     public static void draw(Graphics2D g2, int menuCounter) {
-        currentUser = Game.getInstance().getUser();
-        drawTitle(g2);
-        drawBackButton(g2);
-        drawBodyContainer(g2);
-    }
+        leaderboard = Game.getInstance().getLeaderboard();
+        selectedIndex = menuCounter - 1;
+        isMenuCounterDifferent = menuCounter != lastMenuCounter;
+        isMenuIncremented = menuCounter > lastMenuCounter;
 
-    private static void drawBodyContainer(Graphics2D g2) {
-        Font font = FontManager.getInstance().getFont("Dofded", 32f);
-
+        leaderboard.sortScoresBy(Leaderboard.LeaderboardFilters.POINTS);
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
-        int x = (Game.getInstance().getScreenWidth() / 14);
-        int y = (Game.getInstance().getScreenHeight() / 6);
-        int width = (Game.getInstance().getScreenWidth() - (tileSize * 2));
-        int height = (Game.getInstance().getScreenHeight() - (tileSize * 4));
+        int x = tileSize * 2;
+        int y = (Game.getInstance().getScreenHeight() / 8) + tileSize;
+        int width = Game.getInstance().getScreenWidth() - (tileSize * 4);
+        int height = tileSize * 8;
 
-        g2.setColor(LEADERBOARD_A_COLOR);
-        g2.drawRect(x, y, width, height);
-        g2.setColor(Color.GRAY);
-        g2.fillRect(x, y, width, height);
+        Color bgColor = new Color(0, 0, 0, 210);
+        g2.setColor(bgColor);
+        g2.fillRoundRect(x, y, width, height, 35, 35);
 
-        height = 64;
-        drawPlayerProfile(x, y, width, height, g2, LEADERBOARD_A_COLOR, currentUser);
-        y+=64;
-        drawPlayerProfile(x, y, width, height, g2, LEADERBOARD_B_COLOR, currentUser);
-        y+=64;
-        drawPlayerProfile(x, y, width, height, g2, LEADERBOARD_A_COLOR, currentUser);
-        y+=64;
-        drawPlayerProfile(x, y, width, height, g2, LEADERBOARD_B_COLOR, currentUser);
-        y+=128;
-        drawPlayerProfile(x, y, width, height, g2, LEADERBOARD_A_COLOR, currentUser);
-    }
+        Color strokeColor = new Color(255, 255, 255);
+        g2.setColor(strokeColor);
+        g2.setStroke(new BasicStroke(5));
+        g2.drawRoundRect(x , y, width, height , 35, 35);
 
-    private static void drawBackButton(Graphics2D g2) {
-        String text = "<";
         Font font = FontManager.getInstance().getFont("Dofded", 48f);
-
         g2.setFont(font);
+        y = Game.getInstance().getScreenHeight() / 8;
+        if(menuCounter == 0) {
+            g2.setColor(Color.gray);
+            g2.drawString("<", x, y);
+        } else {
+            g2.setColor(Color.white);
+            g2.drawString("<", x, y);
+        }
 
-        int x = Game.getInstance().getScreenWidth() / 14;
-        int y = Game.getInstance().getScreenHeight() / 10;
-
-        // shadowing
-        g2.setColor(LEADERBOARD_A_COLOR);
-        g2.drawString(text, x, y);
-
-        // main color
-        g2.setColor(TITLE_MAIN_COLOR);
-        g2.drawString(text, x, y);
-    }
-
-    private static void drawTitle(Graphics2D g2)  {
-        String text = "LEADERBOARD";
-        Font font = FontManager.getInstance().getFont("Dofded", 64f);
-
+        y = Game.getInstance().getScreenHeight() / 4;
+        font = FontManager.getInstance().getFont("Dofded", 36f);
         g2.setFont(font);
-
-        int x = getXCenteredText(text, g2);
-        int y = Game.getInstance().getScreenHeight() / 10;
-
-        // shadowing
-        g2.setColor(TITLE_SHADOW_COLOR);
-        g2.drawString(text, x + 5, y + 5);
-
-        // main color
-        g2.setColor(TITLE_MAIN_COLOR);
-        g2.drawString(text, x, y);
-    }
-
-    private static void drawPlayerProfile(int x, int y, int width, int height, Graphics2D g2, Color bgColor, User user) {
-        Font font = FontManager.getInstance().getFont("Dofded", 32f);
-
-        g2.setFont(font);
-        g2.setColor(bgColor);
-        g2.drawRect(x, y, width, height);
-        g2.setColor(bgColor);
-        g2.fillRect(x, y, width, height);
-
-        String name = user.getUsername();
-        String birthday = user.getBirthday().toString();
-
-        x += 16;
-        y += 32;
         g2.setColor(Color.white);
-        g2.drawString(name, x, y );
-        g2.drawString(birthday, x * 4, y);
+
+
+       if(isMenuCounterDifferent && selectedIndex > 3 && isMenuIncremented) {
+           startIndex++;
+       } else if (isMenuCounterDifferent && selectedIndex > 0 && !isMenuIncremented) {
+           startIndex--;
+       }
+
+        updateArrayList(startIndex);
+
+
+        if(leaderboard.getScores().isEmpty()) {
+            String noEntries = "NO ENTRIES";
+            x = getXCenteredText(noEntries, g2);
+            g2.drawString("NO ENTRIES", x, y + tileSize * 6);
+        } else {
+            x = tileSize * 2;
+            for (int i = 0; i < activeScores.size(); i++) {
+                ScoreEntry currentScoreEntry = activeScores.get(i);
+                Score score = currentScoreEntry.getScore();
+                User user = currentScoreEntry.getUser();
+                drawScoreRow(score, user, x, y - 32, g2, i == selectedIndex % 4);
+                y += tileSize * 2;
+            }
+        }
+
+
+        lastMenuCounter = menuCounter;
     }
 
+    private static void updateArrayList(int startIndex) {
+        activeScores.clear();
+        for(int i = startIndex; i < 4; i++) {
+            activeScores.add(leaderboard.getScores().get(i));
+        }
+    }
+
+    private static void drawScoreRow(Score score, User user, int x, int y, Graphics2D g2, boolean isSelected) {
+        int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
+        int width = Game.getInstance().getScreenWidth() - (tileSize * 4);
+        int height = tileSize * 2;
+        Color bgColor = new Color(0, 0, 0, 210);
+        Color bgSelectedColor = new Color(36, 12, 28, 210);
+        if(isSelected) {
+            g2.setColor(bgSelectedColor);
+        } else {
+            g2.setColor(bgColor);
+        }
+        g2.fillRoundRect(x, y, width, height, 35, 35);
+
+        Color strokeColor = new Color(255, 255, 255);
+        g2.setColor(strokeColor);
+        g2.setStroke(new BasicStroke(5));
+        g2.drawRoundRect(x , y, width, height , 35, 35);
+
+        if(user.getUserId() == Game.getInstance().getUser().getUserId()) {
+            g2.setColor(Color.orange);
+            g2.drawString("you", x + tileSize, y + (height / 2) + 10);
+            g2.setColor(Color.white);
+        } else {
+            g2.drawString(user.getUsername(), x + tileSize, y + (height / 2) + 10);
+        }
+
+        BufferedImage originalPointHudImage = ImageHandler.getBufferedImage(new File("src/res/hud/star.png"));
+        BufferedImage pointHudImage = ImageHandler.scaleImageBasedOnTileSize(originalPointHudImage, 1);
+
+        g2.drawImage(pointHudImage, x + (tileSize * 3), y + 20, null);
+        g2.drawString(String.valueOf(score.getPoints()), x + (tileSize * 4), y + (height / 2) + 10);
+
+        BufferedImage originalStopwatchImage = ImageHandler.getBufferedImage(new File("src/res/hud/clock.png"));
+        BufferedImage stopwatchImage = ImageHandler.scaleImageBasedOnTileSize(originalStopwatchImage, 1);
+
+        g2.drawImage(stopwatchImage, x + (tileSize * 6), y + 24, null);
+        g2.drawString(score.getTimeSurvived().toString(), x + (tileSize * 7), y + (height / 2) + 10);
+}
 
     private static int getXCenteredText(String text, Graphics2D g2) {
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 
         return Game.getInstance().getScreenWidth() / 2 - length / 2;
-    }
-
-    public static int getMenuCounter() {
-        return menuCounter;
-    }
-
-    public static void incrementMenuItem() {
-        if(menuCounter < menuItems) {
-            menuCounter++;
-        }
-    }
-
-    public static void decrementMenuItem() {
-        if(menuCounter > 0) {
-            menuCounter--;
-        }
     }
 }

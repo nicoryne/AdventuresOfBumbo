@@ -20,7 +20,9 @@ import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
 import game.util.managers.GameManagerComponents;
 import org.checkerframework.checker.units.qual.C;
+import services.Leaderboard;
 import services.LoggerHelper;
+import services.models.Score;
 import services.models.User;
 
 import java.awt.*;
@@ -51,7 +53,11 @@ public class Game {
 
     private Stopwatch stopwatch;
 
+    private Score latestScore;
+
     private int difficulty;
+
+    private Leaderboard leaderboard;
 
     private Game() {}
 
@@ -75,6 +81,7 @@ public class Game {
         this.gameManagerComponents = new GameManagerComponents();
         this.stopwatch = new Stopwatch();
         this.difficulty = 1;
+        this.leaderboard = new Leaderboard();
     }
 
     private void setupProperties() {
@@ -311,5 +318,17 @@ public class Game {
 
     public Stopwatch getStopwatch() {
         return stopwatch;
+    }
+
+    public Score getLatestScore() {
+        return latestScore;
+    }
+
+    public void setLatestScore(Score latestScore) {
+        this.latestScore = latestScore;
+    }
+
+    public Leaderboard getLeaderboard() {
+        return leaderboard;
     }
 }

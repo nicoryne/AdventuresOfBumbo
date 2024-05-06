@@ -2,11 +2,13 @@ package game.entities.projectile;
 
 import game.entities.EntityType;
 import game.entities.MovingEntity;
+import game.util.Directions;
 import game.util.handlers.CollisionHandler;
 import game.util.handlers.RenderHandler;
 import game.util.managers.SpritesManager;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Projectile extends MovingEntity {
@@ -55,6 +57,7 @@ public class Projectile extends MovingEntity {
             RenderHandler.renderOnScreen(worldX, worldY, sprite, g2);
         }
     }
+
 
 
     private boolean isProjectileOutOfScreen() {

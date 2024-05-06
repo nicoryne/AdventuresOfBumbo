@@ -15,7 +15,7 @@ public class Stopwatch {
     private long start;
     private long startPauseTime;
     private long accumulatedPauseTime;
-    private double lastActiveTime;
+    private long lastActiveTime;
     private boolean isActive;
     private boolean isPaused;
     private BufferedImage stopwatchImage;
@@ -44,11 +44,16 @@ public class Stopwatch {
                 startPauseTime = 0;
                 return (accumulatedPauseTime - start) / 1000.0;
             }
-            lastActiveTime = (now - start) / 1000.0;
+            lastActiveTime = (now - start);
+
         } else {
             startPauseTime = System.currentTimeMillis();
         }
 
+        return lastActiveTime / 1000.0;
+    }
+
+    public long getTime() {
         return lastActiveTime;
     }
 

@@ -3,8 +3,11 @@ package game.entities.player;
 import game.Game;
 import game.entities.CharacterEntity;
 import game.entities.util.ControllableEntity;
+import game.equips.weapons.Bow;
 import game.equips.weapons.Weapon;
+import game.equips.weapons.WeaponNames;
 import game.util.Directions;
+import game.util.PlayerSpritesFactory;
 import game.util.handlers.CollisionHandler;
 import game.util.controllers.KeyboardController;
 import game.util.controllers.MouseController;
@@ -18,6 +21,7 @@ import services.LoggerHelper;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class Player<T extends Weapon> extends CharacterEntity implements ControllableEntity {
@@ -280,6 +284,22 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         this.exp = 0;
         level++;
         expToLevelUp = expToLevelUp + (level * 5);
+
+        if(level == 3) {
+            WeaponNames weaponName = weapon.getWeaponName();
+            ArrayList<SpritesManager> newSprites = new ArrayList<>();
+            switch(weaponName) {
+                case BOW -> newSprites = PlayerSpritesFactory.getPlayerSprites(PlayerSpritesFactory.PlayerSprites.ARCHER);
+                case SWORD -> newSprites = PlayerSpritesFactory.getPlayerSprites(PlayerSpritesFactory.PlayerSprites.WARRIOR);
+                case STAFF ->  newSprites = PlayerSpritesFactory.getPlayerSprites(PlayerSpritesFactory.PlayerSprites.MAGE);
+            }
+
+            setMovementSpritesManager(newSprites.get(0));
+            setIdleSpritesManager(newSprites.get(1));
+            setDamagedSpritesManager(newSprites.get(2));
+            setDyingSpritesManager(newSprites.get(3));
+            setAttackSpritesManager(newSprites.get(4));
+        }
     }
 
     public void setMovementSpritesManager(SpritesManager movementSpritesManager) {
@@ -359,6 +379,8 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
             levelUp();
         }
     }
+
+
 
 
     public int getLevel() {

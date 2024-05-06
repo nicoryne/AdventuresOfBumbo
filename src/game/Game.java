@@ -14,6 +14,7 @@ import game.entities.projectile.ProjectileFlyweightFactory;
 import game.equips.weapons.Bow;
 import game.equips.weapons.Staff;
 import game.equips.weapons.Weapon;
+import game.util.PlayerSpritesFactory;
 import game.util.Stopwatch;
 import game.util.controllers.ControllerComponents;
 import game.util.controllers.KeyboardController;
@@ -93,6 +94,7 @@ public class Game {
         ProjectileFlyweightFactory.initializeFlyweightProjectiles();
         MobFlyweightFactory.initializeFlyweightEnemies();
         DropFlyweightFactory.initializeFlyweightDrops();
+        PlayerSpritesFactory.load();
     }
 
     private void setupPlayer() {

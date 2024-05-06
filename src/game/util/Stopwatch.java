@@ -8,6 +8,7 @@ import services.LoggerHelper;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.sql.Time;
 import java.util.logging.Logger;
 
 public class Stopwatch {
@@ -53,8 +54,8 @@ public class Stopwatch {
         return lastActiveTime / 1000.0;
     }
 
-    public long getTime() {
-        return lastActiveTime;
+    public Time getTime() {
+        return new Time((long) elapsedTime());
     }
 
     public boolean isActive() {

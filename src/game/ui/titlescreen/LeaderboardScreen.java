@@ -68,7 +68,7 @@ public abstract class LeaderboardScreen {
 
        if(isMenuCounterDifferent && selectedIndex > 3 && isMenuIncremented) {
            startIndex++;
-       } else if (isMenuCounterDifferent && selectedIndex > 0 && !isMenuIncremented) {
+       } else if (isMenuCounterDifferent && startIndex > 0 && !isMenuIncremented) {
            startIndex--;
        }
 

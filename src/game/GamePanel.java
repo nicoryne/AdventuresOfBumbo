@@ -166,7 +166,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private void handleDeadScreen() {
         int points = game.getPlayer().getPoints();
-        Time time = new Time(game.getStopwatch().getTime());
+        Time time = game.getStopwatch().getTime();
         int userId = game.getUser().getUserId();
         String weaponUsed = game.getPlayer().getWeapon().getWeaponName().toString();
         Score score = new Score(

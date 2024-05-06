@@ -145,6 +145,7 @@ public class GamePanel extends JPanel implements Runnable {
                 case BOARDING -> handleBoardingScreen();
                 case MENU -> handleMenuScreen();
                 case WEAPON_SELECTION -> handleWeaponScreen();
+                case LEADERBOARD -> handleLeaderboardScreen();
             }
         }
     }
@@ -227,6 +228,15 @@ public class GamePanel extends JPanel implements Runnable {
             case 3:
                 setPlayerWeapon(WeaponNames.BOW);
                 playGame();
+                break;
+        }
+    }
+
+    private void handleLeaderboardScreen() {
+        int selected = TitleScreen.getMenuCounter();
+        switch(selected) {
+            case 0:
+                TitleScreen.setTitleState(TitleScreen.TitleScreenState.MENU);
                 break;
         }
     }

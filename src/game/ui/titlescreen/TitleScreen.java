@@ -54,7 +54,7 @@ public abstract class TitleScreen {
                 break;
             case LEADERBOARD:
                 LeaderboardScreen.draw(g2, menuCounter);
-                menuItems = Game.getInstance().getLeaderboard().getScores().size() + 1;
+                menuItems = Game.getInstance().getLeaderboard().getScores().size();
                 break;
             case WEAPON_SELECTION:
                 WeaponScreen.draw(g2, menuCounter);

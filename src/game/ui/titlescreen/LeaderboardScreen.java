@@ -66,11 +66,13 @@ public abstract class LeaderboardScreen {
         g2.setColor(Color.white);
 
 
-       if(isMenuCounterDifferent && selectedIndex > 3 && isMenuIncremented) {
-           startIndex++;
-       } else if (isMenuCounterDifferent && startIndex > 0 && !isMenuIncremented) {
-           startIndex--;
-       }
+        if (menuCounter == 0) {
+            startIndex = 0;
+        } else if (isMenuCounterDifferent && selectedIndex >= 4 && isMenuIncremented && (leaderboard.getScores().size() - startIndex > 4)) {
+            startIndex++;
+        } else if (isMenuCounterDifferent && (selectedIndex == startIndex - 1) && startIndex > 0 && !isMenuIncremented) {
+            startIndex--;
+        }
 
         updateArrayList(startIndex);
 
@@ -81,13 +83,14 @@ public abstract class LeaderboardScreen {
             g2.drawString("NO ENTRIES", x, y + tileSize * 6);
         } else {
             x = tileSize * 2;
-            for (int i = 0; i < activeScores.size(); i++) {
-                ScoreEntry currentScoreEntry = activeScores.get(i);
+            for (int i = startIndex, ctr = 0; i < leaderboard.getScores().size() && ctr < activeScores.size(); i++, ctr++) {
+                ScoreEntry currentScoreEntry = activeScores.get(ctr);
                 Score score = currentScoreEntry.getScore();
                 User user = currentScoreEntry.getUser();
-                drawScoreRow(score, user, x, y - 32, g2, i == selectedIndex % 4);
+                drawScoreRow(score, user, x, y - 32, g2, i == selectedIndex);
                 y += tileSize * 2;
             }
+            LoggerHelper.logInfo("Selected Index: " + selectedIndex);
         }
 
 
@@ -96,7 +99,7 @@ public abstract class LeaderboardScreen {
 
     private static void updateArrayList(int startIndex) {
         activeScores.clear();
-        for(int i = startIndex; i < 4; i++) {
+        for(int i = startIndex, ctr = 0; i < leaderboard.getScores().size() && ctr < 4; i++, ctr++) {
             activeScores.add(leaderboard.getScores().get(i));
         }
     }

@@ -300,6 +300,13 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
             setDyingSpritesManager(newSprites.get(3));
             setAttackSpritesManager(newSprites.get(4));
         }
+
+        Game.getInstance().getGamePanel().setPickBuff(true);
+        heal();
+    }
+
+    private void heal() {
+        getStatComponent().setCurrentHitPoints(getStatComponent().getMaxHitPoints());
     }
 
     public void setMovementSpritesManager(SpritesManager movementSpritesManager) {

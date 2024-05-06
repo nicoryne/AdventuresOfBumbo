@@ -23,7 +23,7 @@ public class GameFrame extends JFrame {
         this.setShape(new RoundRectangle2D.Double(
                 0,
                 0,
-                1024,
+                1280,
                 768,
                 frameCornerArcWidth,
                 frameCornerArcHeight

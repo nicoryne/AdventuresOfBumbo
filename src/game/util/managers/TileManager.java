@@ -29,7 +29,7 @@ public class TileManager {
         MAX_WORLD_ROW = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_ROW"));
         TILE_SIZE = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         this.tileArrayList = loadTilesFromFolder();
-        this.mapTile2DArray = MapHandler.loadMap("world01.txt", MAX_WORLD_COL, MAX_WORLD_ROW);
+        this.mapTile2DArray = MapHandler.loadMap("world02.txt", MAX_WORLD_COL, MAX_WORLD_ROW);
     }
 
     private ArrayList<Tile> loadTilesFromFolder() {

@@ -46,7 +46,7 @@ public abstract class Enemy extends CharacterEntity {
         double worldY = getPositionComponent().getWorldPositionY().doubleValue();
 
         if(RenderHandler.isViewableOnScreen(worldX, worldY)) {
-            BufferedImage sprite = spritesManager.getCurrentSprite();
+            BufferedImage sprite = getRenderComponent().getSprite();
             RenderHandler.renderOnScreen(worldX, worldY, sprite, g2);
         }
     }
@@ -73,6 +73,7 @@ public abstract class Enemy extends CharacterEntity {
 
         if(spriteMoveDelayCounter >= SPRITE_MOVE_DELAY_MS) {
             spritesManager.updateSprite();
+            this.getRenderComponent().setSprite(spritesManager.getCurrentSprite());
             spriteMoveDelayCounter = 0;
         } else {
             spriteMoveDelayCounter++;
@@ -114,7 +115,7 @@ public abstract class Enemy extends CharacterEntity {
         }
     }
 
-    private void handleMovement(int worldPositionX, int worldPositionY, int speed, int diagonalSpeed) {
+    protected void handleMovement(int worldPositionX, int worldPositionY, int speed, int diagonalSpeed) {
         switch (getMovementComponent().getDirection()) {
             case NORTH_EAST:
                 getPositionComponent().setWorldPositionY(worldPositionY - diagonalSpeed);

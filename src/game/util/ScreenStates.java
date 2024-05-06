@@ -9,5 +9,10 @@ public enum ScreenStates {
     PAUSED,
 
     DEAD,
-    RESULT
+
+    RESULT,
+
+    BUFF_SELECTION,
+
+    INTRO,
 }

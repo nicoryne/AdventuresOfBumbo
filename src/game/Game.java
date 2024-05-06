@@ -2,8 +2,7 @@ package game;
 
 import game.entities.MovingEntity;
 import game.entities.drops.DropFlyweightFactory;
-import game.entities.enemy.mobs.BumboMob;
-import game.entities.enemy.mobs.ChortleMob;
+import game.entities.enemy.bosses.Bumbo;
 import game.entities.enemy.mobs.MobFlyweightFactory;
 import game.entities.enemy.mobs.SlimeMob;
 import game.entities.player.PlayerBuilder;
@@ -11,16 +10,12 @@ import game.entities.player.PlayerDirector;
 import game.entities.EntityObject;
 import game.entities.player.Player;
 import game.entities.projectile.ProjectileFlyweightFactory;
-import game.equips.weapons.Bow;
-import game.equips.weapons.Staff;
 import game.equips.weapons.Weapon;
 import game.util.PlayerSpritesFactory;
 import game.util.Stopwatch;
 import game.util.controllers.ControllerComponents;
 import game.util.controllers.KeyboardController;
-import game.util.controllers.MouseController;
 import game.util.managers.GameManagerComponents;
-import org.checkerframework.checker.units.qual.C;
 import services.Leaderboard;
 import services.LoggerHelper;
 import services.models.Score;
@@ -35,6 +30,8 @@ import java.util.*;
 public class Game {
 
     private Properties gameProperties;
+
+    private Properties introDialogue;
 
     private User user;
 
@@ -60,6 +57,10 @@ public class Game {
 
     private Leaderboard leaderboard;
 
+    private Bumbo bumbo;
+
+    private boolean bumboSpawned = false;
+
     private Game() {}
 
 
@@ -74,6 +75,7 @@ public class Game {
     public void setupGame(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         setupProperties();
+        this.bumbo = new Bumbo();
         setupFlyweightFactories();
         this.entities = new ArrayList<>();
         this.drops = new ArrayList<>();
@@ -87,6 +89,7 @@ public class Game {
 
     private void setupProperties() {
         this.gameProperties = new Properties();
+        this.introDialogue = new Properties();
         loadPropertiesFile();
     }
 
@@ -94,6 +97,7 @@ public class Game {
         ProjectileFlyweightFactory.initializeFlyweightProjectiles();
         MobFlyweightFactory.initializeFlyweightEnemies();
         DropFlyweightFactory.initializeFlyweightDrops();
+        bumbo.initializeSprites();
         PlayerSpritesFactory.load();
     }
 
@@ -111,11 +115,17 @@ public class Game {
 
     private void loadPropertiesFile() {
         String gameConfigPath = "src/conf/game.properties";
-
+        String introPath = "src/res/dialogue/intro.properties";
         try (FileInputStream inputStream = new FileInputStream(gameConfigPath)) {
             gameProperties.load(inputStream);
         } catch (IOException e) {
             LoggerHelper.logError("Error loading properties file: ", e);
+        }
+
+        try (FileInputStream inputStream = new FileInputStream(introPath)) {
+            introDialogue.load(inputStream);
+        } catch (IOException e) {
+            LoggerHelper.logError("Error loading intro dialogue file: ", e);
         }
     }
 
@@ -222,17 +232,16 @@ public class Game {
             int spawnX = random.nextInt(8, maxWorldCol - 8);
             int spawnY = random.nextInt(7, maxWorldRow - 7);
 
-//            BumboMob bumboMob = new BumboMob();
-//            bumboMob.spawn(spawnX * tileSize, spawnY * tileSize);
-//            entities.add(bumboMob);
-
-//            ChortleMob chortleMob = new ChortleMob();
-//            chortleMob.spawn(spawnX * tileSize, spawnY * tileSize);
-//            entities.add(chortleMob);
-
             SlimeMob slimeMob = new SlimeMob();
             slimeMob.spawn(spawnX * tileSize, spawnY * tileSize);
             entities.add(slimeMob);
+        }
+
+        if(stopwatch.elapsedTime() > 5 && !bumboSpawned) {
+            bumbo.spawn(player.getPositionComponent().getWorldPositionX().doubleValue(), player.getPositionComponent().getWorldPositionY().doubleValue());
+            entities.add(bumbo);
+            bumboSpawned = true;
+            LoggerHelper.logInfo("BUMBO SPAWNED!");
         }
     }
 
@@ -306,6 +315,9 @@ public class Game {
         return gameProperties.getProperty(key);
     }
 
+    public String getIntroDialogue(String key) {
+        return introDialogue.getProperty(key);
+    }
     public void setUser(User user) {
         this.user = user;
     }

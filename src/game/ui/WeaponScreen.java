@@ -27,36 +27,36 @@ public abstract class WeaponScreen {
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x , y, width, height , 35, 35);
 
-        BufferedImage warrior = ImageHandler.getBufferedImage(new File("src/res/sprites/warrior/idle/warrior-idle-south-00.png"));
-        warrior = ImageHandler.scaleImageBasedOnTileSize(warrior, 3);
-        y += tileSize * 2;
-        x += tileSize / 2;
-        if(menuCounter == 1) {
-            drawWeaponSelection(x, y, warrior, g2, "Sword", Color.gray);
-        } else {
-            drawWeaponSelection(x, y, warrior, g2, "Sword", Color.white);
-        }
-
         BufferedImage mage = ImageHandler.getBufferedImage(new File("src/res/sprites/mage/idle/mage-idle-south-01.png"));
         mage = ImageHandler.scaleImageBasedOnTileSize(mage, 3);
+        y += tileSize * 2;
 
-        x += tileSize + mage.getWidth();
+        int xMage = getXCenteredText("Staff", g2);
 
         if(menuCounter == 2) {
-            drawWeaponSelection(x, y, mage, g2, "Staff", Color.gray);
+            drawWeaponSelection(xMage, y, mage, g2, "Staff", Color.gray);
         } else {
-            drawWeaponSelection(x, y, mage, g2, "Staff", Color.white);
+            drawWeaponSelection(xMage, y, mage, g2, "Staff", Color.white);
+        }
+
+        BufferedImage warrior = ImageHandler.getBufferedImage(new File("src/res/sprites/warrior/idle/warrior-idle-south-00.png"));
+        warrior = ImageHandler.scaleImageBasedOnTileSize(warrior, 3);
+        int xWarrior = getXCenteredText("Sword", g2) + (xMage - width - (tileSize * 2)) / 2;
+        if(menuCounter == 1) {
+            drawWeaponSelection(xWarrior, y, warrior, g2, "Sword", Color.gray);
+        } else {
+            drawWeaponSelection(xWarrior, y, warrior, g2, "Sword", Color.white);
         }
 
         BufferedImage archer = ImageHandler.getBufferedImage(new File("src/res/sprites/archer/idle/archer-idle-south-00.png"));
         archer = ImageHandler.scaleImageBasedOnTileSize(archer, 3);
 
-        x += tileSize + archer.getWidth();
+        int xArcher = getXCenteredText("Bow", g2) - (xMage - width + (tileSize * 3)) / 2;
 
         if(menuCounter == 3) {
-            drawWeaponSelection(x, y, archer, g2, "Bow", Color.gray);
+            drawWeaponSelection(xArcher, y, archer, g2, "Bow", Color.gray);
         } else {
-            drawWeaponSelection(x, y, archer, g2, "Bow", Color.white);
+            drawWeaponSelection(xArcher, y, archer, g2, "Bow", Color.white);
         }
         x = tileSize;
         y = tileSize;

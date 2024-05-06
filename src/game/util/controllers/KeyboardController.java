@@ -20,11 +20,17 @@ public class KeyboardController implements KeyListener {
         UP, DOWN, ENTER
     }
 
+    private enum AllAction {
+        FULLSCREEN
+    }
+
     private final boolean[] keyGameDirectionStates = new boolean[4]; // Array to store key states for each direction
 
     private final boolean[] keyGameActionStates = new boolean[1];
     
-    private final boolean[] keyTitleActionStates = new boolean[3];
+    private final boolean[] keyTitleActionStates = new boolean[4];
+
+    private final boolean[] keyAllActionStates = new boolean[4];
 
     private boolean isPauseToggled;
 
@@ -40,8 +46,10 @@ public class KeyboardController implements KeyListener {
 
         switch(currentState) {
             case PLAYING, PAUSED -> updateGameKeyState(e.getKeyCode(), true);
-            case TITLE_SCREEN -> updateTitleKeyState(e.getKeyCode(), true);
+            case TITLE_SCREEN, INTRO -> updateTitleKeyState(e.getKeyCode(), true);
         }
+
+        updateAllKeyState(e.getKeyCode(), true);
     }
 
     @Override
@@ -51,6 +59,16 @@ public class KeyboardController implements KeyListener {
         switch(currentState) {
             case PLAYING, PAUSED -> updateGameKeyState(e.getKeyCode(), false);
             case TITLE_SCREEN -> updateTitleKeyState(e.getKeyCode(), false);
+        }
+
+        updateAllKeyState(e.getKeyCode(), false);
+    }
+
+    private void updateAllKeyState(int keyCode, boolean state) {
+        switch (keyCode) {
+            case KeyEvent.VK_O:
+                keyAllActionStates[AllAction.FULLSCREEN.ordinal()] = state;
+                break;
         }
     }
 
@@ -115,6 +133,10 @@ public class KeyboardController implements KeyListener {
 
     public boolean isPaused() {
         return isPauseToggled;
+    }
+
+    public boolean isFullScreen() {
+        return keyAllActionStates[AllAction.FULLSCREEN.ordinal()];
     }
 
     public boolean isMenuIncrement() {

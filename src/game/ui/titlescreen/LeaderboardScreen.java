@@ -90,7 +90,6 @@ public abstract class LeaderboardScreen {
                 drawScoreRow(score, user, x, y - 32, g2, i == selectedIndex);
                 y += tileSize * 2;
             }
-            LoggerHelper.logInfo("Selected Index: " + selectedIndex);
         }
 
 

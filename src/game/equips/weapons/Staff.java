@@ -10,10 +10,10 @@ import game.util.managers.SpritesManager;
 
 import java.util.ArrayList;
 
-public class Staff extends RangedWeapon<FireballProjectile> {
+public class Staff extends RangedWeapon<OrbProjectile> {
 
     public Staff() {
-        this.setProjectile(new FireballProjectile());
+        this.setProjectile(new OrbProjectile());
         this.setWeaponName(WeaponNames.STAFF);
         this.setWeaponType(WeaponType.RANGED);
         this.setDamage(30);
@@ -26,7 +26,7 @@ public class Staff extends RangedWeapon<FireballProjectile> {
 
     @Override
     public void attack(double angle, double screenPositionX, double screenPositionY, double worldPositionX, double worldPositionY, Directions currentDirection) {
-        FireballProjectile projectile  = new FireballProjectile();
+        OrbProjectile projectile  = new OrbProjectile();
         projectile.clone(angle, screenPositionX, screenPositionY, worldPositionX, worldPositionY, currentDirection);
         projectile.setProjectileSize(getProjectileSize());
         getProjectiles().add(projectile);

@@ -1,9 +1,7 @@
 package game;
 
 import game.equips.weapons.*;
-import game.ui.DeadScreen;
-import game.ui.PauseScreen;
-import game.ui.ResultScreen;
+import game.ui.*;
 import game.ui.dialogs.LoginDialog;
 import game.ui.dialogs.RegisterDialog;
 import game.util.ScreenStates;
@@ -20,7 +18,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.sql.Time;
+import java.util.logging.Logger;
 
 /**
  * The GamePanel class represents a JPanel used for displaying a game screen.
@@ -38,11 +39,15 @@ public class GamePanel extends JPanel implements Runnable {
     private static final int MENU_UPDATE_COOLDOWN_MS = 200;
     private long lastMenuUpdateTime = 0;
     private boolean isPaused = false;
-
+    private boolean isPickBuff = false;
+    private int buffSelector = 0;
+    private int introDialogueCounter = 1;
+    private final int DIALOGUE_INCREMENT_DELAY = 5000; // 5 seconds in milliseconds
+    private long lastDialogueIncrementTime = 0;
 
     public GamePanel(JFrame window){
         this.game = Game.getInstance();
-        this.screenState = ScreenStates.TITLE_SCREEN;
+        this.screenState = ScreenStates.INTRO;
         this.window = window;
         game.setupGame(this);
         this.setPreferredSize(new Dimension(game.getScreenWidth(), game.getScreenHeight()));
@@ -69,6 +74,15 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         switch(screenState) {
+            case INTRO:
+                loadIntro();
+                boolean isMenuEntered = Game.getInstance().getControllerComponents().getKeyboardController().isMenuEntered();
+                if(isMenuEntered) {
+                    handleIntroScreen();
+                }
+                timerDialogue(5000);
+                timerPanelTransition(82000);
+                break;
             case TITLE_SCREEN:
                 menuSelector();
                 checkTitleScreenEntered();
@@ -79,18 +93,26 @@ public class GamePanel extends JPanel implements Runnable {
                 if(isPlayerDead()) {
                     screenState = ScreenStates.DEAD;
                 }
+
+                if(isPickBuff) {
+                    screenState = ScreenStates.BUFF_SELECTION;
+                }
+
                 break;
             case PAUSED:
                 toggleGameState();
                 break;
             case DEAD:
-                timerPanelTransition();
+                timerPanelTransition(3000);
+                break;
+            case BUFF_SELECTION:
+                buffSelector();
                 break;
         }
         playAudio();
     }
-
-    public void paintComponent(Graphics g) {
+    @Override
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         switch(screenState) {
@@ -99,9 +121,9 @@ public class GamePanel extends JPanel implements Runnable {
             case PAUSED -> drawPaused(g2);
             case DEAD -> drawDead(g2);
             case RESULT -> drawResultScreen(g2, game.getLatestScore());
+            case BUFF_SELECTION -> drawBuffSelection(g2);
+            case INTRO -> drawIntroScreen(g2);
         }
-
-        g2.dispose();
     }
 
     private void toggleGameState() {
@@ -129,10 +151,24 @@ public class GamePanel extends JPanel implements Runnable {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastMenuUpdateTime >= MENU_UPDATE_COOLDOWN_MS) {
             if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuIncrement()) {
+                LoggerHelper.logInfo("test");
                 TitleScreen.incrementMenuItem();
                 lastMenuUpdateTime = currentTime;
             } else if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuDecrement()) {
                 TitleScreen.decrementMenuItem();
+                lastMenuUpdateTime = currentTime;
+            }
+        }
+    }
+
+    private void buffSelector() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastMenuUpdateTime >= MENU_UPDATE_COOLDOWN_MS) {
+            if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuIncrement()) {
+                BuffSelectionScreen.incrementMenuItem();
+                lastMenuUpdateTime = currentTime;
+            } else if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuDecrement()) {
+                BuffSelectionScreen.decrementMenuItem();
                 lastMenuUpdateTime = currentTime;
             }
         }
@@ -150,19 +186,37 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    private void timerPanelTransition() {
-        Timer timer = new Timer(5000, e -> {
+    private void timerPanelTransition(int delay) {
+        Timer timer = new Timer(delay, e -> {
             switch (screenState) {
                 case DEAD -> handleDeadScreen();
                 case RESULT -> handleResultScreen();
+                case INTRO -> handleIntroScreen();
             }
         });
         timer.setRepeats(false);
         timer.start();
     }
 
+    private void timerDialogue(int delay) {
+        Timer timer = new Timer(delay, e -> {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastDialogueIncrementTime >= DIALOGUE_INCREMENT_DELAY) {
+                introDialogueCounter++;
+                lastDialogueIncrementTime = currentTime;
+                repaint();
+            }
+        });
+        timer.setRepeats(true);
+        timer.start();
+    }
+
     private void handleResultScreen() {
 
+    }
+
+    private void loadIntro() {
+        SoundHandler.playAudio("intro", 0, 0.8f);
     }
 
     private void handleDeadScreen() {
@@ -185,6 +239,12 @@ public class GamePanel extends JPanel implements Runnable {
 
         screenState = ScreenStates.TITLE_SCREEN;
         TitleScreen.setTitleState(TitleScreen.TitleScreenState.MENU);
+    }
+
+    private void handleIntroScreen() {
+        SoundHandler.stopAudio("intro");
+        screenState = ScreenStates.TITLE_SCREEN;
+        TitleScreen.setTitleState(TitleScreen.TitleScreenState.BOARDING);
     }
 
 
@@ -312,10 +372,17 @@ public class GamePanel extends JPanel implements Runnable {
         DeadScreen.draw(g2);
     }
 
-
+    private void drawBuffSelection(Graphics2D g2) {
+        drawPlaying(g2);
+        BuffSelectionScreen.draw(g2, buffSelector);
+    }
 
     private void drawResultScreen(Graphics2D g2, Score score) {
         ResultScreen.draw(g2, score);
+    }
+
+    private void drawIntroScreen(Graphics2D g2) {
+        IntroScreen.draw(g2, introDialogueCounter);
     }
 
     private boolean isPlayerDead() {
@@ -332,5 +399,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public boolean isPaused() {
         return isPaused;
+    }
+
+    public void setPickBuff(boolean state) {
+        isPickBuff = state;
     }
 }

@@ -18,7 +18,7 @@ public abstract class ProjectileFlyweightFactory {
     }
 
     public static void initializeFlyweightProjectiles() {
-        addProjectileFlyweight(ProjectileType.ARROW, new SpritesManager("projectiles/arrow", 0, 1));
+        addProjectileFlyweight(ProjectileType.ARROW, new SpritesManager("projectiles/arrow", 1, 1));
         addProjectileFlyweight(ProjectileType.ORB, new SpritesManager("projectiles/test", 0, 1));
         addProjectileFlyweight(ProjectileType.FIREBALL, new SpritesManager("projectiles/fireball", 5, 1));
     }

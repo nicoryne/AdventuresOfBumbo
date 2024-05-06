@@ -17,9 +17,8 @@ public class Bow extends RangedWeapon<ArrowProjectile> {
         this.setWeaponType(WeaponType.RANGED);
         this.setDamage(30);
         this.setRange(20);
-        this.setFireRate(14);
+        this.setFireRate(40);
         this.setReloadCooldown(0);
-
         this.setProjectileSize(0);
         this.setProjectiles(new ArrayList<>());
     }
@@ -32,7 +31,7 @@ public class Bow extends RangedWeapon<ArrowProjectile> {
         getProjectiles().add(projectile);
         Game.getInstance().addMovingEntity(projectile);
 
-        SoundHandler.playAudio("shoot-1", 0, 1.0f);
+        SoundHandler.playAudio("bow_virtue", 0, 0.8f);
         setReloadCooldown(0);
     }
 }

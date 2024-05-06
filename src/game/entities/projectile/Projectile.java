@@ -42,6 +42,8 @@ public class Projectile extends MovingEntity {
         checkTileCollision();
         checkEntityCollision();
 
+        spritesManager.updateSprite();
+
         if(isProjectileOutOfScreen() || getMovementComponent().isColliding()) {
             kill();
         }
@@ -53,7 +55,7 @@ public class Projectile extends MovingEntity {
         double worldY = getPositionComponent().getWorldPositionY().doubleValue();
 
         if(RenderHandler.isViewableOnScreen(worldX, worldY)) {
-            BufferedImage sprite = spritesManager.getCurrentSprite();
+            BufferedImage sprite = spritesManager.getCurrentSprite(getMovementComponent().getDirection(), true);
             RenderHandler.renderOnScreen(worldX, worldY, sprite, g2);
         }
     }

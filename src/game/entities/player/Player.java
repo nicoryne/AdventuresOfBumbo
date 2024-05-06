@@ -334,14 +334,19 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         if (getStatComponent().getCurrentHitPoints() <= 0.0) {
             isDying = true;
         }
+
+        SoundHandler.playAudio("hit_virtue", 0, 0.8f);
     }
 
     private void checkDying() {
-        if(isDying && dyingAnimationCounter < 12) {
+        if(isDying && dyingAnimationCounter < 6) {
             dyingSpritesManager.updateSprite();
             getRenderComponent().setSprite(dyingSpritesManager.getCurrentSprite(getMovementComponent().getDirection(), true));
             dyingAnimationCounter++;
-        } else if(isDying && dyingAnimationCounter == 12) {
+        } else if(isDying && dyingAnimationCounter == 6) {
+            dyingSpritesManager.updateSprite();
+            getRenderComponent().setSprite(dyingSpritesManager.getCurrentSprite(getMovementComponent().getDirection(), true));
+            SoundHandler.playAudio("ughh_virtue", 0, 0.8f);
             this.kill();
         }
     }
@@ -379,8 +384,6 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
             levelUp();
         }
     }
-
-
 
 
     public int getLevel() {

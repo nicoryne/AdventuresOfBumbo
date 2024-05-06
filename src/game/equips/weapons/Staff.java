@@ -18,7 +18,7 @@ public class Staff extends RangedWeapon<FireballProjectile> {
         this.setWeaponType(WeaponType.RANGED);
         this.setDamage(30);
         this.setRange(20);
-        this.setFireRate(60); // lowest should be 14 so that audio can catch up
+        this.setFireRate(80); // lowest should be 14 so that audio can catch up
         this.setReloadCooldown(0);
         this.setProjectileSize(0);
         this.setProjectiles(new ArrayList<>());
@@ -32,7 +32,7 @@ public class Staff extends RangedWeapon<FireballProjectile> {
         getProjectiles().add(projectile);
         Game.getInstance().addMovingEntity(projectile);
 
-        SoundHandler.playAudio("shoot-1", 0, 1.0f);
+        SoundHandler.playAudio("fire_virtue", 0, 0.8f);
         setReloadCooldown(0);
     }
 }

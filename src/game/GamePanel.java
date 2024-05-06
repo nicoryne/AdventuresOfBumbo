@@ -183,7 +183,8 @@ public class GamePanel extends JPanel implements Runnable {
             LoggerHelper.logWarning("[GamePanel] Failed to add new score for user id: " + score.getScoreId());
         }
 
-        screenState = ScreenStates.RESULT;
+        screenState = ScreenStates.TITLE_SCREEN;
+        TitleScreen.setTitleState(TitleScreen.TitleScreenState.MENU);
     }
 
 

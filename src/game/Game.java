@@ -246,13 +246,8 @@ public class Game {
             entities.add(slimeMob);
         }
 
-        if(stopwatch.elapsedTime() > 300 && !bumboSpawned) {
-            int maxWorldCol = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_COL"));
-            int maxWorldRow = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_ROW"));
-
-            int spawnX = random.nextInt(8, maxWorldCol - 8);
-            int spawnY = random.nextInt(7, maxWorldRow - 7);
-            bumbo.spawn(spawnX, spawnY);
+        if(stopwatch.elapsedTime() > 5 && !bumboSpawned) {
+            bumbo.spawn(Game.getInstance().getPlayer().getPositionComponent().getWorldPositionX().intValue(), Game.getInstance().getPlayer().getPositionComponent().getWorldPositionY().intValue());
             entities.add(bumbo);
             bumboSpawned = true;
         }

@@ -140,11 +140,11 @@ public class GamePanel extends JPanel implements Runnable {
     private void playAudio() {
         switch(screenState) {
             case PLAYING:
-                SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.5f);
+                SoundHandler.playAudio("bgm-1-reincarnated", Clip.LOOP_CONTINUOUSLY, 0.7f);
                 SoundHandler.stopAudio("bgm-2-vempair");
                 break;
             case TITLE_SCREEN:
-                SoundHandler.playAudio("bgm-2-vempair", Clip.LOOP_CONTINUOUSLY, 0.5f);
+                SoundHandler.playAudio("bgm-2-vempair", Clip.LOOP_CONTINUOUSLY, 0.7f);
                 SoundHandler.stopAudio("bgm-1-reincarnated");
                 break;
         }

@@ -87,7 +87,7 @@ public abstract class LeaderboardScreen {
                 ScoreEntry currentScoreEntry = activeScores.get(ctr);
                 Score score = currentScoreEntry.getScore();
                 User user = currentScoreEntry.getUser();
-                drawScoreRow(score, user, x, y - 32, g2, i == selectedIndex);
+                drawScoreRow(score, user, x, y - 32, g2, i == selectedIndex, i);
                 y += tileSize * 2;
             }
         }
@@ -103,7 +103,7 @@ public abstract class LeaderboardScreen {
         }
     }
 
-    private static void drawScoreRow(Score score, User user, int x, int y, Graphics2D g2, boolean isSelected) {
+    private static void drawScoreRow(Score score, User user, int x, int y, Graphics2D g2, boolean isSelected, int index) {
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         int width = Game.getInstance().getScreenWidth() - (tileSize * 4);
         int height = tileSize * 2;
@@ -121,25 +121,31 @@ public abstract class LeaderboardScreen {
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x , y, width, height , 35, 35);
 
+        BufferedImage originalShieldImage = ImageHandler.getBufferedImage(new File("src/res/hud/shield.png"));
+        BufferedImage shieldImage = ImageHandler.scaleImageBasedOnTileSize(originalShieldImage, 1);
+
+        g2.drawImage(shieldImage, x + 10, y + 40, null);
         if(user.getUserId() == Game.getInstance().getUser().getUserId()) {
             g2.setColor(Color.orange);
-            g2.drawString("you", x + tileSize, y + (height / 2) + 10);
+            g2.drawString(String.valueOf(index + 1), (x + 10) + tileSize, y + (height / 2) + 10);
+            g2.drawString("you", x + tileSize * 3, y + (height / 2) + 10);
             g2.setColor(Color.white);
         } else {
-            g2.drawString(user.getUsername(), x + tileSize, y + (height / 2) + 10);
+            g2.drawString(String.valueOf(index + 1), (x + 10) + tileSize, y + (height / 2) + 10);
+            g2.drawString(user.getUsername(), x + tileSize * 3, y + (height / 2) + 10);
         }
 
         BufferedImage originalPointHudImage = ImageHandler.getBufferedImage(new File("src/res/hud/star.png"));
         BufferedImage pointHudImage = ImageHandler.scaleImageBasedOnTileSize(originalPointHudImage, 1);
 
-        g2.drawImage(pointHudImage, x + (tileSize * 3), y + 20, null);
-        g2.drawString(String.valueOf(score.getPoints()), x + (tileSize * 4), y + (height / 2) + 10);
+        g2.drawImage(pointHudImage, x + (tileSize * 8), y + 20, null);
+        g2.drawString(String.valueOf(score.getPoints()), x + (tileSize * 9), y + (height / 2) + 10);
 
         BufferedImage originalStopwatchImage = ImageHandler.getBufferedImage(new File("src/res/hud/clock.png"));
         BufferedImage stopwatchImage = ImageHandler.scaleImageBasedOnTileSize(originalStopwatchImage, 1);
 
-        g2.drawImage(stopwatchImage, x + (tileSize * 6), y + 24, null);
-        g2.drawString(score.getTimeSurvived().toString(), x + (tileSize * 7), y + (height / 2) + 10);
+        g2.drawImage(stopwatchImage, x + (tileSize * 12), y + 24, null);
+        g2.drawString(score.getTimeSurvived().toString(), x + (tileSize * 13), y + (height / 2) + 10);
 }
 
     private static int getXCenteredText(String text, Graphics2D g2) {

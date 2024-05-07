@@ -7,6 +7,8 @@ import game.ui.dialogs.RegisterDialog;
 import game.util.ScreenStates;
 import game.ui.titlescreen.TitleScreen;
 import game.util.GameLoopSingleton;
+import game.util.handlers.FileHandler;
+import game.util.handlers.ImageHandler;
 import game.util.handlers.SoundHandler;
 import game.util.managers.SpritesManager;
 import services.LoggerHelper;
@@ -20,7 +22,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 /**
@@ -44,12 +49,15 @@ public class GamePanel extends JPanel implements Runnable {
     private int introDialogueCounter = 1;
     private final int DIALOGUE_INCREMENT_DELAY = 5000;
     private long lastDialogueIncrementTime = 0;
+    private HashMap<String, BufferedImage> hudIcons;
 
     public GamePanel(JFrame window){
         this.game = Game.getInstance();
         this.screenState = ScreenStates.INTRO;
         this.window = window;
+        this.hudIcons = new HashMap<>();
         game.setupGame(this);
+        loadHudIcons();
         this.setPreferredSize(new Dimension(game.getScreenWidth(), game.getScreenHeight()));
         this.setDoubleBuffered(true);
         this.addKeyListener(game.getControllerComponents().getKeyboardController());
@@ -244,6 +252,18 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
+    private void loadHudIcons() {
+        File[] dir = FileHandler.getListingsFromRes("hud");
+
+        for(File file : dir) {
+            BufferedImage bufferedImage = ImageHandler.getBufferedImage(file);
+
+            BufferedImage scaledImage = ImageHandler.scaleImageBasedOnTileSize(bufferedImage, 1);
+            LoggerHelper.logInfo("[GamePanel] Loaded hud image file: " + file.getName());
+            hudIcons.put(file.getName(), scaledImage);
+        }
+    }
+
     private void loadIntro() {
         SoundHandler.playAudio("intro", 0, 0.8f);
     }
@@ -433,5 +453,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setPickBuff(boolean state) {
         isPickBuff = state;
+    }
+
+    public BufferedImage getHudImage(String fileName) {
+        return hudIcons.get(fileName);
     }
 }

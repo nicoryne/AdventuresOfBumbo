@@ -121,8 +121,7 @@ public abstract class LeaderboardScreen {
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x , y, width, height , 35, 35);
 
-        BufferedImage originalShieldImage = ImageHandler.getBufferedImage(new File("src/res/hud/shield.png"));
-        BufferedImage shieldImage = ImageHandler.scaleImageBasedOnTileSize(originalShieldImage, 1);
+        BufferedImage shieldImage = Game.getInstance().getGamePanel().getHudImage("shield.png");
 
         g2.drawImage(shieldImage, x + 10, y + 40, null);
         if(user.getUserId() == Game.getInstance().getUser().getUserId()) {
@@ -135,14 +134,12 @@ public abstract class LeaderboardScreen {
             g2.drawString(user.getUsername(), x + tileSize * 3, y + (height / 2) + 10);
         }
 
-        BufferedImage originalPointHudImage = ImageHandler.getBufferedImage(new File("src/res/hud/star.png"));
-        BufferedImage pointHudImage = ImageHandler.scaleImageBasedOnTileSize(originalPointHudImage, 1);
+        BufferedImage pointHudImage = Game.getInstance().getGamePanel().getHudImage("star.png");
 
         g2.drawImage(pointHudImage, x + (tileSize * 8), y + 20, null);
         g2.drawString(String.valueOf(score.getPoints()), x + (tileSize * 9), y + (height / 2) + 10);
 
-        BufferedImage originalStopwatchImage = ImageHandler.getBufferedImage(new File("src/res/hud/clock.png"));
-        BufferedImage stopwatchImage = ImageHandler.scaleImageBasedOnTileSize(originalStopwatchImage, 1);
+        BufferedImage stopwatchImage = Game.getInstance().getGamePanel().getHudImage("clock.png");
 
         g2.drawImage(stopwatchImage, x + (tileSize * 12), y + 24, null);
         g2.drawString(score.getTimeSurvived().toString(), x + (tileSize * 13), y + (height / 2) + 10);

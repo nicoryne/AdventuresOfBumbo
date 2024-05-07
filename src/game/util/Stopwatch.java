@@ -23,8 +23,7 @@ public class Stopwatch {
 
     public void start() {
         this.start = System.currentTimeMillis();
-        BufferedImage originalStopwatchImage = ImageHandler.getBufferedImage(new File("src/res/hud/clock.png"));
-        stopwatchImage = ImageHandler.scaleImageBasedOnTileSize(originalStopwatchImage, 1);
+        stopwatchImage = Game.getInstance().getGamePanel().getHudImage("clock.png");
         isActive = true;
         resume();
     }

@@ -32,7 +32,6 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     private SpritesManager attackSpritesManager;
     private SpritesManager damagedSpritesManager;
     private SpritesManager dyingSpritesManager;
-    private BufferedImage pointHudImage;
     private double exp;
     private int level = 1;
     private double expToLevelUp;
@@ -44,11 +43,6 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
     private int attackingAnimationCounter = 0;
     private int damagedAnimationCounter = 0;
     private int dyingAnimationCounter = 0;
-
-    public Player() {
-        BufferedImage originalPointHudImage = ImageHandler.getBufferedImage(new File("src/res/hud/star.png"));
-        pointHudImage = ImageHandler.scaleImageBasedOnTileSize(originalPointHudImage, 1);
-    }
 
     @Override
     public void update() {
@@ -264,7 +258,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         Font font = FontManager.getInstance().getFont("Dofded", 24f);
         String pointString = String.valueOf(points);
-
+        BufferedImage pointHudImage = Game.getInstance().getGamePanel().getHudImage("star.png");
         g2.setColor(Color.WHITE);
         g2.setFont(font);
         int x = (Game.getInstance().getScreenWidth() / 2) + (tileSize * 3);

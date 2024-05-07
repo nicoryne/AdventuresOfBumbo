@@ -20,6 +20,6 @@ public class MobFlyweightFactory {
     public static void initializeFlyweightEnemies() {
         addMobFlyweight(MobName.BUMBO, new SpritesManager("enemies/bumbo", 3, 1));
         addMobFlyweight(MobName.CHORTLE, new SpritesManager("enemies/chortle", 2, 1));
-        addMobFlyweight(MobName.SLIME, new SpritesManager("enemies/slime", 2, 1));
+        addMobFlyweight(MobName.SLIME, new SpritesManager("enemies/slime/movement", 5, 1));
     }
 }

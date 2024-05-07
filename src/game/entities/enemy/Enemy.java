@@ -47,7 +47,7 @@ public abstract class Enemy extends CharacterEntity {
 
         if(RenderHandler.isViewableOnScreen(worldX, worldY)) {
             BufferedImage sprite = getRenderComponent().getSprite();
-            RenderHandler.renderOnScreen(worldX, worldY, sprite, g2);
+            RenderHandler.renderOnScreen(worldX, worldY, sprite, g2, this);
         }
     }
 

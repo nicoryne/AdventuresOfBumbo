@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean isPickBuff = false;
     private int buffSelector = 0;
     private int introDialogueCounter = 1;
-    private final int DIALOGUE_INCREMENT_DELAY = 5000; // 5 seconds in milliseconds
+    private final int DIALOGUE_INCREMENT_DELAY = 5000;
     private long lastDialogueIncrementTime = 0;
 
     public GamePanel(JFrame window){
@@ -106,7 +106,10 @@ public class GamePanel extends JPanel implements Runnable {
                 timerPanelTransition(3000);
                 break;
             case BUFF_SELECTION:
-                buffSelector();
+                if(buffSelector()) {
+                    screenState = ScreenStates.PLAYING;
+                    isPickBuff = false;
+                }
                 break;
         }
         playAudio();
@@ -151,7 +154,6 @@ public class GamePanel extends JPanel implements Runnable {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastMenuUpdateTime >= MENU_UPDATE_COOLDOWN_MS) {
             if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuIncrement()) {
-                LoggerHelper.logInfo("test");
                 TitleScreen.incrementMenuItem();
                 lastMenuUpdateTime = currentTime;
             } else if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuDecrement()) {
@@ -161,17 +163,44 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    private void buffSelector() {
+    private boolean buffSelector() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastMenuUpdateTime >= MENU_UPDATE_COOLDOWN_MS) {
             if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuIncrement()) {
-                BuffSelectionScreen.incrementMenuItem();
+                if(buffSelector < 3) {
+                    buffSelector++;
+                }
                 lastMenuUpdateTime = currentTime;
             } else if (Game.getInstance().getControllerComponents().getKeyboardController().isMenuDecrement()) {
-                BuffSelectionScreen.decrementMenuItem();
+                if(buffSelector > 0) {
+                    buffSelector--;
+                }
                 lastMenuUpdateTime = currentTime;
+            } else if(Game.getInstance().getControllerComponents().getKeyboardController().isMenuEntered()) {
+                return applyBuff();
             }
         }
+        return false;
+    }
+
+    private boolean applyBuff() {
+        switch(buffSelector) {
+            case 1: // HEAL
+                int currentMaxHp = Game.getInstance().getPlayer().getStatComponent().getMaxHitPoints();
+                Game.getInstance().getPlayer().getStatComponent().setCurrentHitPoints(currentMaxHp);
+                return true;
+            case 0: // SPEED
+                int currentSpeed = Game.getInstance().getPlayer().getStatComponent().getSpeed();
+                currentSpeed += (int) Math.ceil(currentSpeed * 0.2);
+                Game.getInstance().getPlayer().getStatComponent().setSpeed(currentSpeed);
+                return true;
+            case 2: // DMG
+                int currentDamage = Game.getInstance().getPlayer().getStatComponent().getDamage();
+                currentDamage += (int) Math.ceil(currentDamage * 0.8);
+                Game.getInstance().getPlayer().getStatComponent().setDamage(currentDamage);
+                return true;
+        }
+        return false;
     }
 
     private void checkTitleScreenEntered() {
@@ -239,6 +268,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         screenState = ScreenStates.TITLE_SCREEN;
         TitleScreen.setTitleState(TitleScreen.TitleScreenState.MENU);
+        Game.getInstance().restartGame();
     }
 
     private void handleIntroScreen() {

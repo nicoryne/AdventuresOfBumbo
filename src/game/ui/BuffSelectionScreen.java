@@ -3,6 +3,7 @@ package game.ui;
 import game.Game;
 import game.util.handlers.ImageHandler;
 import game.util.managers.FontManager;
+import services.LoggerHelper;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -10,9 +11,6 @@ import java.io.File;
 
 public abstract class BuffSelectionScreen {
 
-    private static int menuCounter = 0;
-
-    private static int menuItems;
     public static void draw(Graphics2D g2, int menuCounter)  {
         int tileSize = Integer.parseInt(Game.getInstance().getProperty("TILE_SIZE"));
         int x = tileSize * 2;
@@ -29,50 +27,39 @@ public abstract class BuffSelectionScreen {
         g2.setStroke(new BasicStroke(5));
         g2.drawRoundRect(x , y, width, height , 35, 35);
 
-        BufferedImage warrior = ImageHandler.getBufferedImage(new File("src/res/sprites/warrior/idle/warrior-idle-south-00.png"));
-        warrior = ImageHandler.scaleImageBasedOnTileSize(warrior, 3);
-        y += tileSize * 2;
-        x += tileSize / 2;
-        if(menuCounter == 1) {
-            drawWeaponSelection(x, y, warrior, g2, "Sword", Color.gray);
-        } else {
-            drawWeaponSelection(x, y, warrior, g2, "Sword", Color.white);
-        }
-
-        BufferedImage mage = ImageHandler.getBufferedImage(new File("src/res/sprites/mage/idle/mage-idle-south-01.png"));
+        BufferedImage mage = ImageHandler.getBufferedImage(new File("src/res/hud/heart.png"));
         mage = ImageHandler.scaleImageBasedOnTileSize(mage, 3);
+        y += tileSize * 2;
 
-        x += tileSize + mage.getWidth();
+        int xMage = (Game.getInstance().getScreenWidth() / 2) - mage.getWidth() / 2;
 
-        if(menuCounter == 2) {
-            drawWeaponSelection(x, y, mage, g2, "Staff", Color.gray);
+        if(menuCounter == 1) {
+            drawWeaponSelection(xMage, y, mage, g2, "HEAL", Color.gray);
         } else {
-            drawWeaponSelection(x, y, mage, g2, "Staff", Color.white);
+            drawWeaponSelection(xMage, y, mage, g2, "HEAL", Color.white);
         }
 
-        BufferedImage archer = ImageHandler.getBufferedImage(new File("src/res/sprites/archer/idle/archer-idle-south-00.png"));
+        BufferedImage warrior = ImageHandler.getBufferedImage(new File("src/res/hud/lightning.png"));
+        warrior = ImageHandler.scaleImageBasedOnTileSize(warrior, 3);
+        int xWarrior = getXCenteredText("+SPEED", g2) + (xMage - width - (tileSize * 2)) / 2;
+        if(menuCounter == 0) {
+            drawWeaponSelection(xWarrior, y, warrior, g2, "+SPEED", Color.gray);
+        } else {
+            drawWeaponSelection(xWarrior, y, warrior, g2, "+SPEED", Color.white);
+        }
+
+        BufferedImage archer = ImageHandler.getBufferedImage(new File("src/res/hud/sword.png"));
         archer = ImageHandler.scaleImageBasedOnTileSize(archer, 3);
 
-        x += tileSize + archer.getWidth();
+        int xArcher = getXCenteredText("+DMG", g2) - (xMage - width + (tileSize * 2)) / 2;
 
-        if(menuCounter == 3) {
-            drawWeaponSelection(x, y, archer, g2, "Bow", Color.gray);
+        if(menuCounter == 2) {
+            drawWeaponSelection(xArcher, y, archer, g2, "+DMG", Color.gray);
         } else {
-            drawWeaponSelection(x, y, archer, g2, "Bow", Color.white);
-        }
-        x = tileSize;
-        y = tileSize;
-        Font font = FontManager.getInstance().getFont("Dofded", 48f);
-        g2.setFont(font);
-        if(menuCounter == 0) {
-            g2.setColor(Color.gray);
-            g2.drawString("<", x, y);
-        } else {
-            g2.setColor(Color.white);
-            g2.drawString("<", x, y);
+            drawWeaponSelection(xArcher, y, archer, g2, "+DMG", Color.white);
         }
 
-        font = FontManager.getInstance().getFont("Dofded", 36f);
+        Font font = FontManager.getInstance().getFont("Dofded", 36f);
         g2.setFont(font);
         g2.setColor(Color.white);
         String text = "Select a buff";
@@ -102,21 +89,5 @@ public abstract class BuffSelectionScreen {
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 
         return Game.getInstance().getScreenWidth() / 2 - length / 2;
-    }
-
-    public static void incrementMenuItem() {
-        if(menuCounter < menuItems) {
-            menuCounter++;
-        }
-    }
-
-    public static void decrementMenuItem() {
-        if(menuCounter > 0) {
-            menuCounter--;
-        }
-    }
-
-    public static int getMenuCounter() {
-        return menuCounter;
     }
 }

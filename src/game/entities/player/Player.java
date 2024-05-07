@@ -267,7 +267,7 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
 
         g2.setColor(Color.WHITE);
         g2.setFont(font);
-        int x = tileSize * 10;
+        int x = (Game.getInstance().getScreenWidth() / 2) + (tileSize * 3);
         int y = tileSize + (tileSize / 2);
         g2.drawImage(pointHudImage, x - 55, y - 50, null);
         g2.setColor(Color.white);
@@ -302,11 +302,6 @@ public class Player<T extends Weapon> extends CharacterEntity implements Control
         }
 
         Game.getInstance().getGamePanel().setPickBuff(true);
-        heal();
-    }
-
-    private void heal() {
-        getStatComponent().setCurrentHitPoints(getStatComponent().getMaxHitPoints());
     }
 
     public void setMovementSpritesManager(SpritesManager movementSpritesManager) {

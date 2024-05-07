@@ -55,7 +55,7 @@ public class Projectile extends MovingEntity {
 
         if(RenderHandler.isViewableOnScreen(worldX, worldY)) {
             this.getRenderComponent().setSprite(spritesManager.getCurrentSprite(this.getMovementComponent().getDirection(), true));
-            RenderHandler.renderOnScreen(worldX, worldY, getRenderComponent().getSprite()   , g2);
+            RenderHandler.renderOnScreen(worldX, worldY, getRenderComponent().getSprite(), g2, this);
         }
     }
 

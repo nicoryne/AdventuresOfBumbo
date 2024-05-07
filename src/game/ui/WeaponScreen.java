@@ -31,7 +31,7 @@ public abstract class WeaponScreen {
         mage = ImageHandler.scaleImageBasedOnTileSize(mage, 3);
         y += tileSize * 2;
 
-        int xMage = getXCenteredText("Staff", g2);
+        int xMage = (Game.getInstance().getScreenWidth() / 2) - mage.getWidth() / 2;
 
         if(menuCounter == 2) {
             drawWeaponSelection(xMage, y, mage, g2, "Staff", Color.gray);
@@ -51,7 +51,7 @@ public abstract class WeaponScreen {
         BufferedImage archer = ImageHandler.getBufferedImage(new File("src/res/sprites/archer/idle/archer-idle-south-00.png"));
         archer = ImageHandler.scaleImageBasedOnTileSize(archer, 3);
 
-        int xArcher = getXCenteredText("Bow", g2) - (xMage - width + (tileSize * 3)) / 2;
+        int xArcher = getXCenteredText("Bow", g2) - (xMage - width + (tileSize * 2)) / 2;
 
         if(menuCounter == 3) {
             drawWeaponSelection(xArcher, y, archer, g2, "Bow", Color.gray);

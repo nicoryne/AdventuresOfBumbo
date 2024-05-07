@@ -57,7 +57,7 @@ public abstract class Drop extends MovingEntity {
 
         if(RenderHandler.isViewableOnScreen(worldX, worldY)) {
             BufferedImage sprite = spritesManager.getCurrentSprite();
-            RenderHandler.renderOnScreen(worldX, worldY, sprite, g2);
+            RenderHandler.renderOnScreen(worldX, worldY, sprite, g2, this);
         }
     }
 

@@ -2,6 +2,7 @@ package game.util.controllers;
 
 import game.Game;
 import game.util.ScreenStates;
+import services.LoggerHelper;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -46,7 +47,7 @@ public class KeyboardController implements KeyListener {
 
         switch(currentState) {
             case PLAYING, PAUSED -> updateGameKeyState(e.getKeyCode(), true);
-            case TITLE_SCREEN, INTRO -> updateTitleKeyState(e.getKeyCode(), true);
+            case TITLE_SCREEN, INTRO, BUFF_SELECTION -> updateTitleKeyState(e.getKeyCode(), true);
         }
 
         updateAllKeyState(e.getKeyCode(), true);
@@ -58,7 +59,7 @@ public class KeyboardController implements KeyListener {
 
         switch(currentState) {
             case PLAYING, PAUSED -> updateGameKeyState(e.getKeyCode(), false);
-            case TITLE_SCREEN -> updateTitleKeyState(e.getKeyCode(), false);
+            case TITLE_SCREEN, BUFF_SELECTION -> updateTitleKeyState(e.getKeyCode(), false);
         }
 
         updateAllKeyState(e.getKeyCode(), false);

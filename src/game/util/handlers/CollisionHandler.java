@@ -7,6 +7,7 @@ import game.entities.MovingEntity;
 import game.entities.drops.DropStandardExp;
 import game.entities.enemy.Enemy;
 import game.entities.drops.Drop;
+import game.entities.enemy.bosses.Boss;
 import game.entities.player.Player;
 import game.entities.projectile.Projectile;
 import game.equips.weapons.Weapon;
@@ -38,7 +39,10 @@ public abstract class CollisionHandler {
             if (entityHitbox.intersects(targetHitbox) && valid) {
                 projectile.kill();
                 if (targetEntity instanceof Enemy enemy) {
-                    enemy.takeDamage(20);
+                    enemy.takeDamage(Game.getInstance().getPlayer().getWeapon().getDamage());
+                    if(enemy instanceof Boss) {
+                        LoggerHelper.logInfo("HIT");
+                    }
                 }
             }
         }
@@ -265,7 +269,7 @@ public abstract class CollisionHandler {
         return worldPositionY + yHitbox + heightHitbox;
     }
 
-    private static Rectangle handleSolidArea(EntityObject entity) {
+    public static Rectangle handleSolidArea(EntityObject entity) {
         return new Rectangle(getEntityWestPosition(entity),
                 getEntityNorthPosition(entity),
                 (int) entity.getRenderComponent().getHitbox().getWidth(),

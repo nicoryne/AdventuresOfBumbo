@@ -70,7 +70,7 @@ public class Stopwatch {
         int seconds = (int) elapsedTime % 60;
         int minutes = (int) elapsedTime / 60;
 
-        int x = tileSize * 5;
+        int x = (Game.getInstance().getScreenWidth() / 2) - (tileSize * 3);
         int y = tileSize + (tileSize / 2);
         String timeString = String.format("%02d:%02d", minutes, seconds);
         g2.drawImage(stopwatchImage, x - 45, y - 45, null);

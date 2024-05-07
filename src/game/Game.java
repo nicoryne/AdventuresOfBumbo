@@ -87,6 +87,15 @@ public class Game {
         this.leaderboard = new Leaderboard();
     }
 
+    public void restartGame() {
+        this.entities = new ArrayList<>();
+        this.drops = new ArrayList<>();
+        setupPlayer();
+        this.stopwatch = new Stopwatch();
+        this.difficulty = 1;
+        this.leaderboard = new Leaderboard();
+    }
+
     private void setupProperties() {
         this.gameProperties = new Properties();
         this.introDialogue = new Properties();
@@ -237,11 +246,15 @@ public class Game {
             entities.add(slimeMob);
         }
 
-        if(stopwatch.elapsedTime() > 5 && !bumboSpawned) {
-            bumbo.spawn(player.getPositionComponent().getWorldPositionX().doubleValue(), player.getPositionComponent().getWorldPositionY().doubleValue());
+        if(stopwatch.elapsedTime() > 300 && !bumboSpawned) {
+            int maxWorldCol = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_COL"));
+            int maxWorldRow = Integer.parseInt(Game.getInstance().getProperty("MAX_WORLD_ROW"));
+
+            int spawnX = random.nextInt(8, maxWorldCol - 8);
+            int spawnY = random.nextInt(7, maxWorldRow - 7);
+            bumbo.spawn(spawnX, spawnY);
             entities.add(bumbo);
             bumboSpawned = true;
-            LoggerHelper.logInfo("BUMBO SPAWNED!");
         }
     }
 

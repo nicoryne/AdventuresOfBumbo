@@ -26,12 +26,12 @@ public abstract class CharacterEntity extends MovingEntity{
 
     public void takeDamage(int damage) {
         if(takeDamageCounter >= TAKE_DAMAGE_COOLDOWN_MS) {
-            statComponent.setCurrentHitPoints(statComponent.getCurrentHitPoints() - damage);
+            this.getStatComponent().setCurrentHitPoints(this.getStatComponent().getCurrentHitPoints() - damage);
             damaged = true;
             resetTakeDamageCounter();
         }
 
-        if(statComponent.getCurrentHitPoints() <= 0.0 && !(this instanceof Player<?>)) {
+        if(this.getStatComponent().getCurrentHitPoints() <= 0.0 && !(this instanceof Player<?>)) {
             this.kill();
         }
     }

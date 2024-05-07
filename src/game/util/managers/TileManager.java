@@ -98,7 +98,7 @@ public class TileManager {
 
         if (RenderHandler.isViewableOnScreen(worldX, worldY)) {
             BufferedImage image = tileArrayList.get(tileNum).getRenderComponent().getSprite();
-            RenderHandler.renderOnScreen(worldX, worldY, image, g2);
+            RenderHandler.renderOnScreen(worldX, worldY, image, g2, null);
         }
     }
 

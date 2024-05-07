@@ -1,6 +1,8 @@
 package game.util.handlers;
 
 import game.Game;
+import game.entities.EntityObject;
+import game.entities.MovingEntity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,10 +23,13 @@ public abstract class RenderHandler {
                 worldPositionY - tileSize < playerViewableMaxY;
     }
 
-    public static void renderOnScreen(double worldPositionX, double worldPositionY, BufferedImage image, Graphics2D g2) {
+    public static void renderOnScreen(double worldPositionX, double worldPositionY, BufferedImage image, Graphics2D g2, EntityObject entity) {
         int screenX = calculateScreenX(worldPositionX).intValue();
         int screenY = calculateScreenY(worldPositionY).intValue();
-
+        if(entity != null) {
+            entity.getPositionComponent().setScreenPositionX(screenX);
+            entity.getPositionComponent().setScreenPositionY(screenY);
+        }
         g2.drawImage(image, screenX, screenY, null);
     }
 
